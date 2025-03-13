@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1044368411693",
+    "firebase_url": "https://e-commerce-d0d19-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "e-commerce-d0d19",
+    "storage_bucket": "e-commerce-d0d19.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044368411693:android:cd39ca2ce90f8e671fbca4",
+        "android_client_info": {
+          "package_name": "com.b21dccn216.shop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqPuwK0TkLIYutXCxU6x-ATdjvCPGvUJY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
