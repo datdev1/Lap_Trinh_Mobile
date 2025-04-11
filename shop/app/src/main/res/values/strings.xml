@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Shop</string>
+    <string name="enter_your_username_email">Enter your email</string>
+    <string name="enter_your_password">Enter your password</string>
 </resources>
