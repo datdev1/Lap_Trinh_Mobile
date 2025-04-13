@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <dimen name="width">200dp</dimen>
+    <dimen name="hex_vertical_offset">20dp</dimen>
+    <dimen name="hex_horizontal_gap">16dp</dimen>
+
+</resources>
