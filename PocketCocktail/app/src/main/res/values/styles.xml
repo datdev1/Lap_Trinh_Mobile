@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="NormalString">
+        <item name="android:textColor">@color/textSecondary</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="AppTitle">
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textSize">34sp</item>
+        <item name="android:letterSpacing">0.08</item>
+    </style>
+
+    <style name="AppSecondaryTitle">
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:letterSpacing">0.08</item>
+    </style>
+
+    <style name="AppLogo">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">84sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:letterSpacing">0.08</item>
+    </style>
+
+
+
+</resources>

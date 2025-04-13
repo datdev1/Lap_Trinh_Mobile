@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="rounded_two_corner">
+        <item name="cornerSize">20dp</item>
+    </style>
+
+    <style name="cut_corner">
+        <item name="cornerSize">25%</item>
+        <item name="cornerFamily">cut</item>
+    </style>
+
+    <style name="specific_rounded_corner">
+        <item name="cornerSizeTopLeft">40%</item>
+        <item name="cornerFamilyTopLeft">rounded</item>
+        <item name="cornerSizeBottomRight">40%</item>
+        <item name="cornerFamilyBottomRight">rounded</item>
+    </style>
+
+    <style name="circle">
+        <item name="cornerSize">50%</item>
+    </style>
+
+
+    <style name="topLeft_rightBottom_cut_corner">
+        <item name="cornerSizeTopLeft">75%</item>
+        <item name="cornerSizeBottomRight">75%</item>
+        <item name="cornerFamilyTopLeft">cut</item>
+        <item name="cornerFamilyBottomRight">cut</item>
+    </style>
+
+    <style name="rightBottom_cut_corner">
+        <item name="cornerSizeBottomRight">80%</item>
+        <item name="cornerFamilyBottomRight">cut</item>
+    </style>
+
+    <style name="HexShape" parent="">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">25%</item> <!-- Adjust this for hex effect -->
+    </style>
+
+
+</resources>
