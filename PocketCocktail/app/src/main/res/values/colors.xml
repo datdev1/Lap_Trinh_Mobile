@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+
+
+    <color name="transparent">#00000000</color>
+    <color name="grey">#2AFFFFFF</color>
+
+    <!-- Primary Cocktail Colors -->
+    <color name="colorPrimary">#F66372</color> <!-- Raspberry Pink -->
+    <color name="colorPrimaryDark">#A31B2C</color> <!-- Darker Raspberry -->
+    <color name="colorAccent">#F4A259</color> <!-- Citrus Orange -->
+
+    <!-- Secondary and Backgrounds -->
+    <color name="mintGreen">#3DBE9E</color>
+    <color name="backgroundCream">#FFF8F0</color>
+    <color name="cardBlush">#FFE3E3</color>
+
+    <!-- Text Colors -->
+    <color name="textPrimary">#2D2D2D</color>
+    <color name="textSecondary">#5E5E5E</color>
+
+    <!-- Extra Accent / Garnish Colors -->
+    <color name="limeGreen">#BFD200</color>
+    <color name="grapePurple">#6A0572</color>
+    <color name="iceBlue">#A8E0FF</color>
+</resources>
