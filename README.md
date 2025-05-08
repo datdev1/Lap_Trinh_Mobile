@@ -10,6 +10,8 @@
 | Đặng Thị Hồng Ngát |  B21DCCN564  | Báo cáo + slide, trang discover                               |
 | Nguyễn Quang Hà    |  B21DCCN312  | Chức năng tạo công thức mới (Logic + giao diện)               |
 
+Hẹn 21 thứ 2 12/05/2025
+
 ## Chủ đề
 
 App tạo và chia sẻ công thức pha chế các loại đồ uống hấp dẫn như: Trà, Nước trái cây, Cocktail không cồn, Cocktail có cồn, Thức uống nạp năng lượng,...
