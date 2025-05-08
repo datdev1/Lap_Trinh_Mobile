@@ -1,4 +1,4 @@
-package com.b21dccn216.pocketcocktail.Welcome;
+package com.b21dccn216.pocketcocktail.Welcome.Adapter;
 
 
 import android.os.Bundle;

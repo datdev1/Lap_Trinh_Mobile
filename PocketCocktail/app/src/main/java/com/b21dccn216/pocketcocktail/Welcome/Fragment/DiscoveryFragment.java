@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.b21dccn216.pocketcocktail.R;
+import com.b21dccn216.pocketcocktail.Welcome.Adapter.ImageRecyclerAdapter;
 import com.b21dccn216.pocketcocktail.databinding.FragmentDiscoveryBinding;
 
 

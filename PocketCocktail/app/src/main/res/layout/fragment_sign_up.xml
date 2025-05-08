@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:divider="@drawable/divider_vertical_16dp"
+    android:showDividers="middle"
+    android:padding="16dp"
+    android:gravity="center"
+    tools:context=".Login.Fragment.SignUpFragment"
+    >
+
+    <!-- TODO: Update blank fragment layout -->
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:fontFamily="@font/poppins_bold"
+        android:hint="Full name"
+        android:background="@drawable/bg_login_tf"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:fontFamily="@font/poppins_bold"
+        android:hint="Phone"
+        android:background="@drawable/bg_login_tf"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:fontFamily="@font/poppins_bold"
+        android:hint="Email"
+        android:background="@drawable/bg_login_tf"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_login_tf"
+        android:padding="16dp"
+        android:fontFamily="@font/poppins_bold"
+        android:hint="Password"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textColor="@color/white"
+        android:fontFamily="@font/poppins_bold"
+        android:background="@drawable/bg_btn_login"
+        />
+
+</LinearLayout>

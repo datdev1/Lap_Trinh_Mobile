@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -29,6 +30,9 @@ android {
     viewBinding{
         enable=true
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -37,6 +41,15 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+    implementation libs.annotation
+    implementation libs.lifecycle.livedata.ktx
+    implementation libs.lifecycle.viewmodel.ktx
+    // Firebase
+    implementation libs.firebase.database
+    implementation libs.firebase.auth
+    implementation libs.credentials
+    implementation libs.credentials.play.services.auth
+    implementation libs.googleid
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
@@ -46,5 +59,17 @@ dependencies {
     implementation ("com.google.android.material:material:1.2.0")
 
     //Carousel Layout Manager
-    implementation ("com.mig35:carousellayoutmanager:1.4.6")
+//    implementation ("com.mig35:carousellayoutmanager:1.4.6")
+
+    //arc layout
+    //git docs: https://github.com/ogaclejapan/ArcLayout
+    implementation ("com.ogaclejapan.arclayout:library:1.1.0@aar")
+
+    // lib for loading image link
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+
+    // viewpager
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
 }
+

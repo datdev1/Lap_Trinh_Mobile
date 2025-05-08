@@ -1,4 +1,4 @@
-package com.b21dccn216.pocketcocktail.Welcome.Fragment;
+package com.b21dccn216.pocketcocktail.View;
 
 
 import android.annotation.SuppressLint;

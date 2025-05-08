@@ -1,6 +1,8 @@
 package com.b21dccn216.pocketcocktail.Welcome;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,19 +10,24 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.b21dccn216.pocketcocktail.Home.HomeActivity;
+import com.b21dccn216.pocketcocktail.Login.LoginActivity;
 import com.b21dccn216.pocketcocktail.R;
-import com.b21dccn216.pocketcocktail.databinding.ActivityMainBinding;
+import com.b21dccn216.pocketcocktail.Welcome.Adapter.ViewPagerAdapter;
+import com.b21dccn216.pocketcocktail.Welcome.Helper.HorizontalFlipTransformation;
+import com.b21dccn216.pocketcocktail.databinding.ActivityWelcomeBinding;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class WelcomeActivity extends AppCompatActivity {
+public class WelcomeActivity extends AppCompatActivity{
 
-    private ActivityMainBinding binding;
+    private ActivityWelcomeBinding binding;
     private ViewPagerAdapter viewPagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -40,31 +47,27 @@ public class WelcomeActivity extends AppCompatActivity {
 
             }
         }).attach();
-                binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                    @Override
-                    public void onTabSelected(TabLayout.Tab tab) {
-                        binding.viewPager.setCurrentItem(tab.getPosition() < 3 ? tab.getPosition() : 0);
-//                switch (tab.getPosition()) {
-//                    case 0:
-//                        break;
-//                    case 1:
-//                        break;
-//                    case 2:
-//                        break;
-//                    default:
-//                }
-                    }
 
-                    @Override
-                    public void onTabUnselected(TabLayout.Tab tab) {
+        binding.btnNext.setOnClickListener(v -> {
+            int currentItem = binding.viewPager.getCurrentItem();
+            if (currentItem == 2) {
+                // TODO: Navigate to next activity or fragment
+                Toast.makeText(this, "Navigate to next activity or fragment", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+            } else {
+                binding.viewPager.setCurrentItem(binding.viewPager.getCurrentItem() + 1, true);
+            }
+        });
 
-                    }
-
-                    @Override
-                    public void onTabReselected(TabLayout.Tab tab) {
-
-                    }
-                });
+        binding.btnBack.setOnClickListener(v -> {
+            int currentItem = binding.viewPager.getCurrentItem();
+            if (currentItem == 0) {
+                return;
+            } else {
+                binding.viewPager.setCurrentItem(binding.viewPager.getCurrentItem() - 1, true);
+            }
+        });
 
     }
 }

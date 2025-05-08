@@ -1,4 +1,5 @@
-package com.b21dccn216.pocketcocktail.Welcome.Fragment;
+package com.b21dccn216.pocketcocktail.Welcome.Adapter;
+
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -7,35 +8,38 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.b21dccn216.pocketcocktail.R;
-import com.b21dccn216.pocketcocktail.databinding.ItemImageDiscoveryBinding;
+
+import com.b21dccn216.pocketcocktail.databinding.ItemImageBinding;
 
 import java.util.ArrayList;
 
-public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdapter.ImageViewHolder>{
+public class ImageCurveRecyclerAdapter extends RecyclerView.Adapter<ImageCurveRecyclerAdapter.ImageViewHolder>{
     private ArrayList<Integer> images = new ArrayList<>(
     );
 
-    public ImageRecyclerAdapter() {
-        images.add(R.drawable.sample_cocktail);
-        images.add(R.drawable.sample_cocktail_2);
-        images.add(R.drawable.sample_cocktail_3);
-        images.add(R.drawable.sample_cocktail_4);
-        images.add(R.drawable.sample_cocktail_5);
-        images.add(R.drawable.sample_cocktail_6);
+    public ImageCurveRecyclerAdapter() {
+        images.add(R.drawable.view_top_refreshing_mint_lime);
+        images.add(R.drawable.view_top_blood_whisky_leaf);
+        images.add(R.drawable.view_top_blue_lagoon_mocktail);
+        images.add(R.drawable.view_top_cocktail_chery);
+        images.add(R.drawable.view_top_smoothie_raspberry_blueberry);
 
 
-        images.add(R.drawable.sample_cocktail);
-        images.add(R.drawable.sample_cocktail_2);
-        images.add(R.drawable.sample_cocktail_3);
-        images.add(R.drawable.sample_cocktail_4);
-        images.add(R.drawable.sample_cocktail_5);
-        images.add(R.drawable.sample_cocktail_6);
+        images.add(R.drawable.view_top_refreshing_mint_lime);
+        images.add(R.drawable.view_top_blood_whisky_leaf);
+        images.add(R.drawable.view_top_blue_lagoon_mocktail);
+        images.add(R.drawable.view_top_cocktail_chery);
+        images.add(R.drawable.view_top_smoothie_raspberry_blueberry);
+
+
+
+
     }
 
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemImageDiscoveryBinding binding = ItemImageDiscoveryBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        ItemImageBinding binding = ItemImageBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         return new ImageViewHolder(binding);
     }
 
@@ -54,7 +58,7 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
 //                    .setBottomRightCorner(CornerFamily.CUT,  0.8f);
 //        }
 //        holder.binding.imageFlavors.setShapeAppearanceModel(shapeAppearanceModelBuilder.build());
-        holder.binding.imageFlavors.setImageResource(images.get(position));
+        holder.binding.img.setImageResource(images.get(position));
     }
 
     @Override
@@ -63,9 +67,9 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
     }
 
     public static class ImageViewHolder extends RecyclerView.ViewHolder{
-        private ItemImageDiscoveryBinding binding;
+        private ItemImageBinding binding;
 
-        public ImageViewHolder(ItemImageDiscoveryBinding binding) {
+        public ImageViewHolder(ItemImageBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }

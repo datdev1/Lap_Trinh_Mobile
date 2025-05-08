@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -64,11 +63,22 @@ public class ChooseMeasurementFragment extends Fragment {
 //            // TODO: Navigate to next fragment or activity
 //            Toast.makeText(getContext(), "Selected: " + selectedUnit, Toast.LENGTH_SHORT).show();
 //        });
-        binding.container.post(this::randomPositionImage);
-        ImageView[] imageViews = {binding.img1, binding.img2, binding.img3, binding.img4, binding.img5};
-        for (ImageView imageView : imageViews) {
-            startFloatingAnimation_2(imageView);
-        }
+//        binding.container.post(this::randomPositionImage);
+//        ImageView[] imageViews = {binding.img1, binding.img2, binding.img3, binding.img4, binding.img5};
+//        for (ImageView imageView : imageViews) {
+//            startFloatingAnimation_2(imageView);
+//        }
+
+//        ImageCurveRecyclerAdapter adapter = new ImageCurveRecyclerAdapter();
+//        CurveLayoutManager layoutManager = new CurveLayoutManager();
+//        binding.recycler.setLayoutManager(layoutManager);
+//        binding.recycler.setAdapter(adapter);
+
+//        binding.arcLayout.animate()
+//                .rotationBy(360f)
+//                .setDuration(10000)
+//                .start();
+
         return binding.getRoot();
     }
 
@@ -89,32 +99,32 @@ public class ChooseMeasurementFragment extends Fragment {
         editor.apply();
     }
 
-    private void randomPositionImage(){
-        ImageView[] imageViews = {binding.img1, binding.img2, binding.img3, binding.img4, binding.img5};
-        int layoutWidth = binding.getRoot().getWidth();
-        int layoutHeight = binding.getRoot().getHeight();
-        ConstraintSet set = new ConstraintSet();
-        set.clone(binding.container);
-
-        Random random = new Random();
-        for (ImageView imageView : imageViews) {
-            int id = imageView.getId();
-            int x = random.nextInt(layoutWidth - 200);
-            int y = random.nextInt(layoutHeight - 200);
-
-            set.connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, x);
-            set.connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, y);
-            set.clear(id, ConstraintSet.END); // Remove old constraints if any
-            set.clear(id, ConstraintSet.BOTTOM);
-        }
-
-//        ChangeBounds transition = new ChangeBounds();
-//        transition.setDuration(10000);
-//        transition.setInterpolator(new AccelerateDecelerateInterpolator());
-//        TransitionManager.beginDelayedTransition(binding.container, transition);
-
-        set.applyTo(binding.container);
-    }
+//    private void randomPositionImage(){
+//        ImageView[] imageViews = {binding.img1, binding.img2, binding.img3, binding.img4, binding.img5};
+//        int layoutWidth = binding.getRoot().getWidth();
+//        int layoutHeight = binding.getRoot().getHeight();
+//        ConstraintSet set = new ConstraintSet();
+//        set.clone(binding.container);
+//
+//        Random random = new Random();
+//        for (ImageView imageView : imageViews) {
+//            int id = imageView.getId();
+//            int x = random.nextInt(layoutWidth - 200);
+//            int y = random.nextInt(layoutHeight - 200);
+//
+//            set.connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, x);
+//            set.connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, y);
+//            set.clear(id, ConstraintSet.END); // Remove old constraints if any
+//            set.clear(id, ConstraintSet.BOTTOM);
+//        }
+//
+////        ChangeBounds transition = new ChangeBounds();
+////        transition.setDuration(10000);
+////        transition.setInterpolator(new AccelerateDecelerateInterpolator());
+////        TransitionManager.beginDelayedTransition(binding.container, transition);
+//
+//        set.applyTo(binding.container);
+//    }
 
     private void startFloatingAnimation(ImageView imageView) {
         Random random = new Random();
