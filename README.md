@@ -109,5 +109,17 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
         "idCategory = xyz, idIngredient = null" đi đén Trang tìm kiếm.
 
 ## Các công nghệ áp dụng
-
+- Công cụ: Android studio
+- Ngôn ngữ: Java
+- UI framework: 
+  - XML: xây dựng giao diện
+  - View Binding
+- Architecture: MVP (Model - View - Presenter)
+- Database: 
+  - Firebase Authentication: Đăng nhập và xác thực người dùng.
+  - ... + ... (Firebase Realtime Database) //TODO:: Update
+  - SharedPreferences (lưu cài đặt người dùng cục bộ)
+- Các thư viện hỗ trợ:
+  - Retrofit: gọi API ngoài
+  - Glide: Thư viện load và caching ảnh từ link
 ## Hướng dẫn cài đặt
