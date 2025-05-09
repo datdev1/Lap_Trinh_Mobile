@@ -1,7 +1,161 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.PocketCocktail" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme for night mode -->
+    <style name="Theme.MintPink" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand colors -->
+        <item name="colorPrimary">@color/primary_light</item>
+        <item name="colorPrimaryVariant">@color/primary</item>
+        <item name="colorOnPrimary">@color/text_primary</item>
+        
+        <!-- Font family -->
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="fontFamily">@font/poppins_regular</item>
+        
+        <!-- Secondary brand colors -->
+        <item name="colorSecondary">@color/secondary_light</item>
+        <item name="colorSecondaryVariant">@color/secondary</item>
+        <item name="colorOnSecondary">@color/text_primary</item>
+        
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">#121212</item>
+        <item name="android:windowLightStatusBar">false</item>
+        
+        <!-- Background colors -->
+        <item name="android:windowBackground">#121212</item>
+        <item name="colorSurface">#1E1E1E</item>
+        <item name="colorOnSurface">#F5F5F5</item>
+        <item name="android:colorBackground">#121212</item>
+        
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">#F5F5F5</item>
+        <item name="android:textColorSecondary">#D3D3D3</item>
+        <item name="android:textColorTertiary">#A0A0A0</item>
+        <item name="android:textColorLink">@color/primary_light</item>
+        
+        <!-- Error & State colors -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">#F5F5F5</item>
+        
+        <!-- Ripple effects -->
+        <item name="colorControlHighlight">@color/ripple_light</item>
+        
+        <!-- Other Material attributes -->
+        <item name="materialCardViewStyle">@style/Widget.MintPink.CardView.Dark</item>
+        <item name="buttonStyle">@style/Widget.MintPink.Button.Dark</item>
+        <item name="toolbarStyle">@style/Widget.MintPink.Toolbar.Dark</item>
+        <item name="bottomNavigationStyle">@style/Widget.MintPink.BottomNavigation.Dark</item>
+        
+        <!-- Typography -->
+        <item name="textAppearanceHeadline1">@style/TextAppearance.MintPink.Headline1.Dark</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.MintPink.Headline2.Dark</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.MintPink.Headline3.Dark</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.MintPink.Headline4.Dark</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.MintPink.Headline5.Dark</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.MintPink.Headline6.Dark</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.MintPink.Body1.Dark</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.MintPink.Body2.Dark</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.MintPink.Caption.Dark</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.MintPink.Overline.Dark</item>
+    </style>
+    
+    <!-- Component styles -->
+    <style name="Widget.MintPink.CardView.Dark" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">#1E1E1E</item>
+        <item name="cardElevation">2dp</item>
+        <item name="contentPadding">16dp</item>
+        <item name="cardCornerRadius">8dp</item>
+    </style>
+    
+    <style name="Widget.MintPink.Button.Dark" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/primary_light</item>
+        <item name="android:textColor">#121212</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+    </style>
+    
+    <style name="Widget.MintPink.Button.Secondary.Dark" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/secondary_light</item>
+        <item name="android:textColor">@color/secondary_light</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+    
+    <style name="Widget.MintPink.Button.Text.Dark" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/primary_light</item>
+    </style>
+    
+    <style name="Widget.MintPink.Toolbar.Dark" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:background">#1E1E1E</item>
+        <item name="titleTextColor">#F5F5F5</item>
+        <item name="subtitleTextColor">#D3D3D3</item>
+        <item name="colorControlNormal">#F5F5F5</item>
+    </style>
+    
+    <style name="Widget.MintPink.BottomNavigation.Dark" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="backgroundTint">#1E1E1E</item>
+        <item name="itemIconTint">@color/primary_light</item>
+        <item name="itemTextColor">@color/primary_light</item>
+    </style>
+    
+    <style name="TextAppearance.MintPink.Headline1.Dark" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="android:textColor">#F5F5F5</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="fontFamily">@font/poppins_bold</item>
+    </style>
+    
+    <style name="TextAppearance.MintPink.Headline2.Dark" parent="TextAppearance.MaterialComponents.Headline2">
+        <item name="android:textColor">#F5F5F5</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="fontFamily">@font/poppins_bold</item>
+    </style>
+    
+    <style name="TextAppearance.MintPink.Headline3.Dark" parent="TextAppearance.MaterialComponents.Headline3">
+        <item name="android:textColor">#F5F5F5</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="fontFamily">@font/poppins_bold</item>
+    </style>
+    
+    <style name="TextAppearance.MintPink.Headline4.Dark" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">#F5F5F5</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="fontFamily">@font/poppins_bold</item>
+    </style>
+    
+    <style name="TextAppearance.MintPink.Headline5.Dark" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor">#F5F5F5</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="fontFamily">@font/poppins_regular</item>
+    </style>
+    
+    <style name="TextAppearance.MintPink.Headline6.Dark" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">#F5F5F5</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="fontFamily">@font/poppins_regular</item>
+    </style>
+    
+    <style name="TextAppearance.MintPink.Body1.Dark" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">#D3D3D3</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="fontFamily">@font/poppins_regular</item>
+    </style>
+    
+    <style name="TextAppearance.MintPink.Body2.Dark" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textColor">#D3D3D3</item>
+        <item name="android:fontFamily">@font/poppins_light</item>
+        <item name="fontFamily">@font/poppins_light</item>
+    </style>
+    
+    <style name="TextAppearance.MintPink.Caption.Dark" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">#A0A0A0</item>
+        <item name="android:fontFamily">@font/poppins_light</item>
+        <item name="fontFamily">@font/poppins_light</item>
+    </style>
+    
+    <style name="TextAppearance.MintPink.Overline.Dark" parent="TextAppearance.MaterialComponents.Overline">
+        <item name="android:textColor">#A0A0A0</item>
+        <item name="android:fontFamily">@font/poppins_thin</item>
+        <item name="fontFamily">@font/poppins_thin</item>
     </style>
 </resources>
