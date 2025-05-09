@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.view.Login.fragment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
 import com.b21dccn216.pocketcocktail.view.Login.LoginContract;
 import com.b21dccn216.pocketcocktail.view.Login.LoginPresenter;
 import com.b21dccn216.pocketcocktail.view.Login.model.User;
@@ -59,6 +62,9 @@ public class LoginFragment extends BaseFragment<LoginContract.View, LoginContrac
             User user = new User();
             user.setEmail(binding.edtEmail.getText().toString());
             user.setPassword(binding.edtPassword.getText().toString());
+            if(!validateLoginInput(user)){
+                return;
+            }
             presenter.loginByEmailAndPassword(user);
         });
 
@@ -67,15 +73,43 @@ public class LoginFragment extends BaseFragment<LoginContract.View, LoginContrac
 
             if ((inputType & InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
                 // Hide password
+                binding.showPassword.setImageResource(R.drawable.eye_crossed);
                 binding.edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             } else {
                 // Show password
+                binding.showPassword.setImageResource(R.drawable.eye);
                 binding.edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             }
             // Move cursor to the end
             binding.edtPassword.setSelection(binding.edtPassword.getText().length());
         });
 
+    }
+
+
+    private boolean validateLoginInput(User user) {
+        if(user == null) {
+            DialogHelper.showAlertDialog(getActivity(),
+                    "User is invalid", "User is invalid");
+            return false;
+        }
+        String email = user.getEmail(),
+                password = user.getPassword();
+
+        if(email == null || email.trim().isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            DialogHelper.showAlertDialog(getActivity(),
+                    "Email is invalid",
+                    "Ensure email is in correct format");
+            return false;
+        }
+
+        if (password == null || password.trim().isEmpty() || password.length() < 6) {
+            DialogHelper.showAlertDialog(getActivity(),
+                    "Password is invalid",
+                    "Ensure password is more than 6 digit");
+            return false;
+        }
+        return true;
     }
 
 
@@ -86,7 +120,7 @@ public class LoginFragment extends BaseFragment<LoginContract.View, LoginContrac
     }
 
     @Override
-    public void loginSuccess() {
+    public void authSuccess() {
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         startActivity(intent);
     }
@@ -94,5 +128,12 @@ public class LoginFragment extends BaseFragment<LoginContract.View, LoginContrac
     @Override
     public void showLoading(boolean isLoading) {
 
+    }
+
+    @Override
+    public void authFail(String mess) {
+        DialogHelper.showAlertDialog(getActivity(),
+                null,
+                mess);
     }
 }

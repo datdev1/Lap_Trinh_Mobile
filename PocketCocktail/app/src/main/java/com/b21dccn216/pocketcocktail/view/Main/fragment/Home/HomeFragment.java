@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Home;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -79,10 +80,11 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
         return binding.getRoot();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showDrinks(List<Drink> drinks) {
-        drinks.clear();
-        drinks.addAll(drinks);
+        this.drinkList.clear();
+        this.drinkList.addAll(drinks);
         adapter.notifyDataSetChanged();
     }
 }

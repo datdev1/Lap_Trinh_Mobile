@@ -36,7 +36,7 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
 ## Thiết kế model
 
 - Model Drink đồ uống:
-  - id
+  - uuid
   - Tên đồ uống
   - id user
   - Image
@@ -45,33 +45,37 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
   - Description
   - Rate (mặc định)
 - Model Recipe
+  - uuid
   - id đồ uống
   - id Nguyên liệu
   - Liều lượng/số lượng
 - Model Nguyên liệu (Ingredients) - Mặc định
-  - id
+  - uuid
   - Tên nguyên liệu
   - Description
   - Image
   - Đơn vị
   
 - Model user
-  - id
+  - uuid
+  - saveUuidFromAuthen
   - name
   - email
   - password
   - Image
 - Model Category - Mặc định
-  - id
+  - uuid
   - name
+  - description
+  - image
 - Model Review
-  - id
+  - uuid
   - id user
   - id đồ uống
   - comment
   - rate
 - Model Favorite
-  - id
+  - uuid
   - id user
   - id đồ uống
 
