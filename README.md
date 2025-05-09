@@ -69,9 +69,9 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
   - rate
 
 ## Các đầu mục công việc
-- Nghiên cứu kết nối dữ liệu AtlasMongo và Imagekit Dao + Model (Dũng)
-~~- Chức năng đăng kí, đăng nhập bằng Email, password~~
-- Chức năng tạo công thức mới (Logic + giao diện) (Hà)
+- Nghiên cứu kết nối dữ liệu AtlasMongo và Imagekit Dao + Model (Dũng) (Package data)
+~~- Chức năng đăng kí, đăng nhập bằng Email, password (Package Login)~~
+- Chức năng tạo công thức mới (Logic + giao diện) (Hà) (Activity) (Package CreateDrink)
   - Ô nhập tên đồ uống
   - Thêm ảnh đồ uống
   - Ô nhập String hướng dẫn các bước pha chế
@@ -83,10 +83,10 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
     - Dropdown chọn nguyên liệu (có ảnh nguyên liệu sẵn và tên)
     - Số lượng, liều lượng (có đơn vị ở cạnh)
 
-- Trang chủ, trang favorite, trang profile, Navigation (Đạt)
+- Trang chủ, trang favorite, trang profile, Navigation (Đạt) (Package Main)
 
-- Trang chi tiết đồ uống, trang tìm kiếm có filter (Lộc)
-  - Trang chi tiết đồ uống
+- Trang chi tiết đồ uống, trang tìm kiếm có filter (Lộc) 
+  - Trang chi tiết đồ uống (Activity) (Package DetailDrink)
     - Nút favorite
     - Nút Chia sẻ (Optional)
     - Tên
@@ -97,12 +97,12 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
     - Rate (mặc định)
     - Review list
     - Ô review + Rate (0 - 5 star) giống cô hướng dẫn (Option)
-  - Trang tìm kiếm
+  - Trang tìm kiếm (Activity) (Package Search)
     - Thanh tìm kiếm tìm tực thì khi gõ.
     - filter
       - category : checkbox + recycle view
       - ingredients: dropdown
-- Báo cáo + slide, trang discover (Ngát)
+- Báo cáo + slide, trang discover (Ngát) (Fragment) (Package Discover)
   - Category: Recycle view
   - Ingredient: Recycle view
   - Khi ấn gửi Intent chứa nội dung 
