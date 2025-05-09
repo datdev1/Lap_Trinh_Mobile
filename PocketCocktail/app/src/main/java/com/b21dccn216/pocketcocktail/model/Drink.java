@@ -16,6 +16,13 @@ public class Drink {
     public Drink() {
     }
 
+    public Drink(String name, String categoryId, String instruction, String description, double rate) {
+        this.name = name;
+        this.categoryId = categoryId;
+        this.instruction = instruction;
+        this.description = description;
+        this.rate = rate;
+    }
 
     public Drink(String name, String userId, String image, String categoryId, String instruction, String description, double rate) {
         this.name = name;

@@ -6,7 +6,7 @@ public class Recipe {
     private String uuid;
     private String drinkId;
     private String ingredientId;
-    private double quantity;
+    private double amount;
 
     public Recipe() {
     }
@@ -14,7 +14,7 @@ public class Recipe {
     public Recipe(String drinkId, String ingredientId, double quantity) {
         this.drinkId = drinkId;
         this.ingredientId = ingredientId;
-        this.quantity = quantity;
+        this.amount = quantity;
     }
 
     public String getUuid() {
@@ -43,12 +43,12 @@ public class Recipe {
         this.ingredientId = ingredientId;
     }
 
-    public double getQuantity() {
-        return quantity;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setQuantity(double quantity) {
-        this.quantity = quantity;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class Recipe {
                 "uuid='" + uuid + '\'' +
                 ", drinkId='" + drinkId + '\'' +
                 ", ingredientId='" + ingredientId + '\'' +
-                ", quantity=" + quantity +
+                ", quantity=" + amount +
                 '}';
     }
 }

@@ -1,4 +1,4 @@
-package com.b21dccn216.pocketcocktail.test.adapter;
+package com.b21dccn216.pocketcocktail.test_database.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

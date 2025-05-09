@@ -1,4 +1,4 @@
-package com.b21dccn216.pocketcocktail.test;
+package com.b21dccn216.pocketcocktail.test_database;
 
 import android.os.Bundle;
 import android.view.View;
@@ -14,13 +14,13 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.b21dccn216.pocketcocktail.R;
-import com.b21dccn216.pocketcocktail.test.fragment.CategoryFragment;
-import com.b21dccn216.pocketcocktail.test.fragment.DrinkFragment;
-import com.b21dccn216.pocketcocktail.test.fragment.IngredientFragment;
-import com.b21dccn216.pocketcocktail.test.fragment.RecipeFragment;
-import com.b21dccn216.pocketcocktail.test.fragment.ReviewFragment;
-import com.b21dccn216.pocketcocktail.test.fragment.FavoriteFragment;
-import com.b21dccn216.pocketcocktail.test.fragment.UserFragment;
+import com.b21dccn216.pocketcocktail.test_database.fragment.CategoryFragment;
+import com.b21dccn216.pocketcocktail.test_database.fragment.DrinkFragment;
+import com.b21dccn216.pocketcocktail.test_database.fragment.IngredientFragment;
+import com.b21dccn216.pocketcocktail.test_database.fragment.RecipeFragment;
+import com.b21dccn216.pocketcocktail.test_database.fragment.ReviewFragment;
+import com.b21dccn216.pocketcocktail.test_database.fragment.FavoriteFragment;
+import com.b21dccn216.pocketcocktail.test_database.fragment.UserFragment;
 
 public class TestDatabaseActivity extends AppCompatActivity {
     private Spinner spinnerModelSelect;

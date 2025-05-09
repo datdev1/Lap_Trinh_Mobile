@@ -1,100 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/main"
-tools:context=".test.TestDatabaseActivity"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:fillViewport="true"
-android:padding="16dp">
-
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    tools:context=".test_database.TestDatabaseActivity"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Spinner for model selection -->
+    <Spinner
+        android:id="@+id/spinnerModelSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:minHeight="48dp" />
+
+    <!-- Fragment container -->
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <!-- Nhập thông tin đồ uống -->
-    <EditText
-        android:id="@+id/edtName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tên đồ uống" />
-
-    <EditText
-        android:id="@+id/edtDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Mô tả" />
-
-    <EditText
-        android:id="@+id/edtInstruction"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Hướng dẫn pha chế" />
-
-    <EditText
-        android:id="@+id/edtCategoryId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Category ID" />
-
-    <EditText
-        android:id="@+id/edtRate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Đánh giá (số thực)" />
-
-    <!-- Chọn ảnh -->
-    <Button
-        android:id="@+id/btnChooseImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Chọn ảnh từ bộ nhớ" />
-
-    <!-- Hiển thị ảnh đã chọn -->
-    <ImageView
-        android:id="@+id/imgPreview"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:scaleType="centerCrop"
-        android:layout_marginVertical="8dp" />
-
-    <!-- Buttons Layout -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="8dp">
-
-        <Button
-            android:id="@+id/btnCreateDrink"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Tạo mới"
-            android:layout_marginEnd="4dp" />
-
-        <Button
-            android:id="@+id/btnUpdateDrink"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Cập nhật"
-            android:enabled="false"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp" />
-
-        <Button
-            android:id="@+id/btnDeleteDrink"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Xóa"
-            android:enabled="false"
-            android:layout_marginStart="4dp" />
-    </LinearLayout>
 
     <!-- Danh sách đồ uống -->
     <androidx.recyclerview.widget.RecyclerView
@@ -103,4 +33,3 @@ android:padding="16dp">
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp" />
 </LinearLayout>
-</ScrollView>

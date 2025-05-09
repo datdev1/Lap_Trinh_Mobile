@@ -2,6 +2,7 @@ package com.b21dccn216.pocketcocktail.dao;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -105,6 +106,7 @@ public class DrinkDAO {
                             drinks.add(drink);
                         }
                     }
+                    Log.e("load Drink", "getAllDrinks: " + drinks);
                     callback.onDrinkListLoaded(drinks);
                 })
                 .addOnFailureListener(callback::onError);

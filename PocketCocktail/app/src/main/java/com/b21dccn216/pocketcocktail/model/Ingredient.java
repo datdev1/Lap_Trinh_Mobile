@@ -13,6 +13,12 @@ public class Ingredient {
     public Ingredient() {
     }
 
+    public Ingredient(String name, String description, String unit) {
+        this.name = name;
+        this.description = description;
+        this.unit = unit;
+    }
+
     public Ingredient(String name, String description, String unit, String image) {
         this.name = name;
         this.description = description;
