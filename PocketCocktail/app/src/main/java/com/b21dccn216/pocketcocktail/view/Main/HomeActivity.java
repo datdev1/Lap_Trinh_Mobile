@@ -5,8 +5,14 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.view.Login.LoginContract;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.CocktailHomeItemAdapter;
@@ -33,6 +39,12 @@ public class HomeActivity extends AppCompatActivity{
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-            
+//        Fragment navController = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+//        NavigationUI.setupWithNavController(binding.bottomNavigationView, navCo);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_container);
+        NavController navCo = navHostFragment.getNavController();
+        NavigationUI.setupWithNavController(binding.bottomNavigationView, navCo);
+
     }
 }

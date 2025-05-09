@@ -13,6 +13,7 @@
 
     <!-- TODO: Update blank fragment layout -->
     <EditText
+        android:id="@+id/fullname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -21,6 +22,7 @@
         android:background="@drawable/bg_login_tf"
         />
     <EditText
+        android:id="@+id/phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -29,6 +31,7 @@
         android:background="@drawable/bg_login_tf"
         />
     <EditText
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -38,6 +41,7 @@
         />
 
     <EditText
+        android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_login_tf"
@@ -47,9 +51,10 @@
         />
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="Signup"
         android:textColor="@color/white"
         android:fontFamily="@font/poppins_bold"
         android:background="@drawable/bg_btn_login"

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_home"
+    >
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.b21dccn216.pocketcocktail.view.Main.fragment.Home.HomeFragment"
+        android:label="Home" />
+    <fragment
+        android:id="@+id/nav_discover"
+        android:name="com.b21dccn216.pocketcocktail.view.Main.fragment.Discover.DiscoverFragment"
+        android:label="Discover" />
+    <fragment
+        android:id="@+id/nav_favorite"
+        android:name="com.b21dccn216.pocketcocktail.view.Main.fragment.Favorite.FavoriteFragment"
+        android:label="Favorite" />
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.b21dccn216.pocketcocktail.view.Main.fragment.Profile.ProfileFragment"
+        android:label="Profile" />
+
+</navigation>
