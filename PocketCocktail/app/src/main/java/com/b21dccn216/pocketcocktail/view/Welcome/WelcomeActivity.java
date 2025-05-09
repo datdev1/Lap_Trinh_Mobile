@@ -1,6 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Welcome;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -23,16 +24,25 @@ public class WelcomeActivity extends AppCompatActivity{
     private ActivityWelcomeBinding binding;
     private ViewPagerAdapter viewPagerAdapter;
 
+    private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = getSharedPreferences("welcome", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        boolean isFirstTime = sharedPreferences.getBoolean("isFirstTime", true);
+        if(isFirstTime){
+            editor.putBoolean("isFirstTime", false);
+            editor.apply();
+        }else{
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+
         binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         viewPagerAdapter = new ViewPagerAdapter(this);
         binding.viewPager.setPageTransformer(new HorizontalFlipTransformation());

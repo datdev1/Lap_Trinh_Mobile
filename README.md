@@ -124,3 +124,7 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
   - Retrofit: gọi API ngoài
   - Glide: Thư viện load và caching ảnh từ link
 ## Hướng dẫn cài đặt
+
+Tài khoản sample:
+- Email: datforitwork@gmail.com
+- Password: D@tb21dccn216
