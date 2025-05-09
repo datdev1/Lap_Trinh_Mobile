@@ -59,7 +59,8 @@ dependencies {
     implementation ("com.google.android.material:material:1.2.0")
 
     //Carousel Layout Manager
-//    implementation ("com.mig35:carousellayoutmanager:1.4.6")
+    // git docs: https://github.com/Azoft/CarouselLayoutManager
+    implementation ("com.mig35:carousellayoutmanager:1.4.6")
 
     //arc layout
     //git docs: https://github.com/ogaclejapan/ArcLayout

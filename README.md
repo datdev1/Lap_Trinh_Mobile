@@ -6,7 +6,7 @@
 | :----------------- | :----------: | :------------------------------------------------------------ |
 | Trần Việt Dũng     |  B21DCCN036  | Nghiên cứu kết nối dữ liệu AtlasMongo và Imagekit Dao + Model |
 | Trần Đức Lộc       |  B21DCCN492  | Trang chi tiết đồ uống, trang tìm kiếm có filter              |
-| Nguyễn Trần Đạt    |  B21DCCN216  | Trang chủ, trang favorite, trang profile, Navigation          |
+| Nguyễn Trần Đạt    |  B21DCCN216  | Trang chủ, trang favorite, trang profile, Navigation, Login, Signup, Welcoming        |
 | Đặng Thị Hồng Ngát |  B21DCCN564  | Báo cáo + slide, trang discover                               |
 | Nguyễn Quang Hà    |  B21DCCN312  | Chức năng tạo công thức mới (Logic + giao diện)               |
 
@@ -70,7 +70,7 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
 
 ## Các đầu mục công việc
 - Nghiên cứu kết nối dữ liệu AtlasMongo và Imagekit Dao + Model (Dũng) (Package data)
-~~- Chức năng đăng kí, đăng nhập bằng Email, password (Package Login)~~
+- Chức năng đăng kí, đăng nhập bằng Email, password (Package Login) (ĐạtĐạt)
 - Chức năng tạo công thức mới (Logic + giao diện) (Hà) (Activity) (Package CreateDrink)
   - Ô nhập tên đồ uống
   - Thêm ảnh đồ uống
@@ -83,7 +83,7 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
     - Dropdown chọn nguyên liệu (có ảnh nguyên liệu sẵn và tên)
     - Số lượng, liều lượng (có đơn vị ở cạnh)
 
-- Trang chủ, trang favorite, trang profile, Navigation (Đạt) (Package Main)
+- Trang chủ, trang profile, Navigation (Đạt) (Package Main)
 
 - Trang chi tiết đồ uống, trang tìm kiếm có filter (Lộc) 
   - Trang chi tiết đồ uống (Activity) (Package DetailDrink)
@@ -102,11 +102,12 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
     - filter
       - category : checkbox + recycle view
       - ingredients: dropdown
-- Báo cáo + slide, trang discover (Ngát) (Fragment) (Package Discover)
+- Trang discover, trang favorite, (Ngát) (Fragment) (Package Discover)
   - Category: Recycle view
   - Ingredient: Recycle view
   - Khi ấn gửi Intent chứa nội dung 
         "idCategory = xyz, idIngredient = null" đi đén Trang tìm kiếm.
+- Báo cáo (Ngát)
 
 ## Các công nghệ áp dụng
 - Công cụ: Android studio
