@@ -54,7 +54,7 @@ public class ChooseMeasurementFragment extends Fragment {
 
         binding.cardImperial.setOnClickListener(v -> {
             selectedUnit = "imperial";
-            highlightCard(binding.cardImperial, binding.txMetrics);
+            highlightCard(binding.cardImperial, binding.txImperial);
             unhighlightCard(binding.cardMetric, binding.txMetrics);
         });
 
@@ -83,13 +83,13 @@ public class ChooseMeasurementFragment extends Fragment {
     }
 
     private void highlightCard(CardView card, TextView textView) {
-        card.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.mintGreen));
-        textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+        card.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.button_primary));
+        textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_primary));
     }
 
     private void unhighlightCard(CardView card, TextView textView) {
-        card.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.textPrimary));
-        textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.textSecondary));
+        card.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary_dark));
+        textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_secondary));
     }
 
     private void saveSelectedUnit(String unit) {
