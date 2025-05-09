@@ -3,32 +3,32 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparentGrey">#80818181</color>
-    <color name="transparentWhite">#B3FFFFFF</color>
+<!--    <color name="transparentWhite">#B3FFFFFF</color>-->
 
     <color name="transparent">#00000000</color>
     <color name="grey">#2AFFFFFF</color>
 
-    <!-- Primary Cocktail Colors -->
-    <color name="colorPrimary">#FFC0D0</color> <!-- Raspberry Pink -->
-    <color name="colorPrimaryDark">#FFC0D0</color> <!-- Darker Raspberry -->
-    <color name="colorAccent">#EFDFBF</color> <!-- Citrus Orange -->
+<!--&lt;!&ndash;    &lt;!&ndash; Primary Cocktail Colors &ndash;&gt;&ndash;&gt;-->
+<!--    <color name="colorPrimary">#FFC0D0</color> &lt;!&ndash; Raspberry Pink &ndash;&gt;-->
+<!--    <color name="colorPrimaryDark">#FFC0D0</color> &lt;!&ndash; Darker Raspberry &ndash;&gt;-->
+<!--    <color name="colorAccent">#EFDFBF</color> &lt;!&ndash; Citrus Orange &ndash;&gt;-->
 
-    <!-- Secondary and Backgrounds -->
-    <color name="mintGreen">#FFC0D0</color>
-    <color name="backgroundCream">#FFFAFA</color>
-    <color name="cardBlush">#FFFAFA</color>
+<!--&lt;!&ndash;    &lt;!&ndash; Secondary and Backgrounds &ndash;&gt;&ndash;&gt;-->
+<!--    <color name="mintGreen">#FFC0D0</color>-->
+<!--    <color name="backgroundCream">#FFFAFA</color>-->
+<!--    <color name="cardBlush">#FFFAFA</color>-->
 
-    <!-- Text Colors -->
-    <color name="textPrimary">#2D2D2D</color>
-    <color name="textSecondary">#5E5E5E</color>
+<!--    &lt;!&ndash; Text Colors &ndash;&gt;-->
+<!--    <color name="textPrimary">#2D2D2D</color>-->
+<!--    <color name="textSecondary">#5E5E5E</color>-->
 
 
      <!-- Màu chính theo chức năng -->
     <color name="primary">#4ECCA3</color>                 <!-- Xanh mint - Màu chủ đạo -->
-    <color name="secondary">#FFD5E5</color>               <!-- Hồng nhạt - Màu phụ -->
+    <color name="secondary">#FFC0D0</color>               <!-- Hồng nhạt - Màu phụ -->
     
     <!-- Màu nền -->
-    <color name="background_main">#FFFFFF</color>         <!-- Nền chính -->
+    <color name="background_main">#FFF0F0</color>         <!-- Nền chính -->
     <color name="background_secondary">#F7F7F7</color>    <!-- Nền phụ -->
     <color name="card_background">#FFFFFF</color>         <!-- Nền card -->
     <color name="dialog_background">#FFFFFF</color>       <!-- Nền dialog -->

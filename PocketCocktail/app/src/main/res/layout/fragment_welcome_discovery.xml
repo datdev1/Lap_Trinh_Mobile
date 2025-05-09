@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundCream"
+    android:background="@color/background_main"
     tools:context=".view.Welcome.Fragment.DiscoveryFragment">
 
     <LinearLayout
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Discover your"
-        android:textColor="@color/textPrimary"
+        android:textColor="@color/text_primary"
         style="@style/AppTitle"
         android:fontFamily="@font/poppins_regular"
         android:includeFontPadding="false"
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/sakitu_baelah_clean"
         android:text="Favorite Flavor"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/secondary"
         android:textSize="70sp"
         android:textStyle="bold"
         android:letterSpacing="0.06"

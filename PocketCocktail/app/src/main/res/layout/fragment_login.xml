@@ -16,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:fontFamily="@font/poppins_bold"
         android:hint="Email"
         android:background="@drawable/bg_login_tf"
         />
@@ -31,19 +30,19 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_login_tf"
             android:padding="16dp"
-            android:fontFamily="@font/poppins_bold"
             android:hint="Password"
             />
-        <View
+        <ImageView
             android:id="@+id/showPassword"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignTop="@+id/edtPassword"
             android:layout_alignBottom="@+id/edtPassword"
             android:layout_alignEnd="@+id/edtPassword"
             android:layout_marginEnd="8dp"
             android:layout_marginVertical="8dp"
-            android:background="@drawable/baseline_remove_red_eye_24"
+            android:alpha="50"
+            android:src="@drawable/eye"
             />
     </RelativeLayout>
 
@@ -54,8 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Login"
-        android:textColor="@color/white"
-        android:fontFamily="@font/poppins_bold"
+        android:textColor="@color/text_on_secondary"
         android:background="@drawable/bg_btn_login"
         />
 

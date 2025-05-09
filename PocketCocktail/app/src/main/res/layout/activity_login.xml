@@ -6,7 +6,7 @@
     tools:context=".view.Login.LoginActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundCream"
+    android:background="@color/background_main"
     >
 
     <TextView
@@ -75,8 +75,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
-                app:tabIndicatorColor="@color/colorPrimaryDark"
-                app:tabSelectedTextColor="@color/colorPrimaryDark"
+                app:tabIndicatorColor="@color/secondary"
+                app:tabSelectedTextColor="@color/secondary"
                 app:tabTextColor="@android:color/darker_gray">
 
                 <com.google.android.material.tabs.TabItem

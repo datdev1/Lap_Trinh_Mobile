@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/backgroundCream"
+    android:background="@color/background_main"
     tools:context=".view.Welcome.Fragment.ItTimeForFragment">
 
 
@@ -14,13 +14,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="80dp"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="24dp"
         style="@style/AppTitle"
         android:fontFamily="@font/poppins_bold"
         android:includeFontPadding="false"
         android:text="It's time for a"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

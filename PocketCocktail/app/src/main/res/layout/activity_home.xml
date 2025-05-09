@@ -21,8 +21,8 @@
         android:layout_gravity="bottom"
         android:background="@color/white"
         app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/mintGreen"
-        app:itemTextColor="@color/colorPrimary"
+        app:itemIconTint="@color/primary"
+        app:itemTextColor="@color/secondary"
         app:labelVisibilityMode="labeled"
         app:itemBackground="@drawable/nav_item_background" />
 
@@ -33,7 +33,7 @@
         android:layout_height="64dp"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="32dp"
-        android:src="@drawable/ic_search"
+        android:src="@drawable/search"
         android:contentDescription="Search"
-        app:backgroundTint="@color/primaryColor" />
+        app:backgroundTint="@color/primary" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/backgroundCream"
+    android:background="@color/background_main"
     android:id="@+id/container"
     tools:context=".view.Welcome.Fragment.ChooseMeasurementFragment">
 
@@ -164,7 +164,7 @@
                     android:fontFamily="@font/poppins_bold"
                     android:text="ml, g, °C"
                     android:textSize="14sp"
-                    android:textColor="@color/textSecondary"/>
+                    android:textColor="@color/text_secondary"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -198,7 +198,7 @@
                     android:fontFamily="@font/poppins_bold"
                     android:text="oz, lbs, °F"
                     android:textSize="14sp"
-                    android:textColor="@color/textSecondary"/>
+                    android:textColor="@color/text_secondary"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
