@@ -1,15 +1,11 @@
 package com.b21dccn216.pocketcocktail.view.Login;
 
-import android.app.Activity;
-
 import androidx.fragment.app.Fragment;
 
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
 import com.b21dccn216.pocketcocktail.view.Login.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.concurrent.Executor;
 
 public class LoginPresenter extends BasePresenter<LoginContract.View>  implements LoginContract.Presenter{
 
@@ -33,11 +29,25 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>  implement
                 .addOnCompleteListener(((Fragment)view).getActivity(),task -> {
                     if(task.isSuccessful()){
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        view.loginSuccess();
+                        view.authSuccess();
                     }else{
-                        view.showError(" login failed " + task.getException().getMessage());
+                        view.authFail("Login failed: " + task.getException().getMessage());
                     }
                 });
         }
 
+
+    @Override
+    public void signUpWithEmailAndPassword(User user) {
+        mAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword())
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        // signup success
+                        // TODO:: Xử lý đối tượng user, lưu thông tin phone, fullname và firebase
+                        view.authSuccess();
+                    }else{
+                        view.authFail("Sign-up failed: " + task.getException().getMessage());
+                    }
+                });
+    }
 }

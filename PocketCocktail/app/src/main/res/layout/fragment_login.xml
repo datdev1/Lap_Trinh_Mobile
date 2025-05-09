@@ -41,8 +41,8 @@
             android:layout_alignEnd="@+id/edtPassword"
             android:layout_marginEnd="8dp"
             android:layout_marginVertical="8dp"
-            android:alpha="50"
-            android:src="@drawable/eye"
+            android:alpha="0.5"
+            android:src="@drawable/eye_crossed"
             />
     </RelativeLayout>
 

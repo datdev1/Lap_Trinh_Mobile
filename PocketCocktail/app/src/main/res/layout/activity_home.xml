@@ -21,19 +21,10 @@
         android:layout_gravity="bottom"
         android:background="@color/white"
         app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/primary"
-        app:itemTextColor="@color/secondary"
+        app:itemIconTint="@color/nav_item_icon_tint"
+        app:itemActiveIndicatorStyle="@color/transparent"
+        app:itemTextColor="@color/nav_item_icon_tint"
         app:labelVisibilityMode="labeled"
         app:itemBackground="@drawable/nav_item_background" />
 
-    <!-- Center Search Button -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabSearch"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="32dp"
-        android:src="@drawable/search"
-        android:contentDescription="Search"
-        app:backgroundTint="@color/primary" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

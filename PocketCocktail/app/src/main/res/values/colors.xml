@@ -25,7 +25,7 @@
 
 
      <!-- Màu chính theo chức năng -->
-    <color name="primary">#4ECCA3</color>                 <!-- Xanh mint - Màu chủ đạo -->
+    <color name="primary">#4ECCA3</color>                 <!--4ECCA3 Xanh mint 3DB992- Màu chủ đạo -->
     <color name="secondary">#FFC0D0</color>               <!-- Hồng nhạt - Màu phụ -->
     
     <!-- Màu nền -->

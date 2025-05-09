@@ -32,8 +32,8 @@ public class WelcomeActivity extends AppCompatActivity{
         sharedPreferences = getSharedPreferences("welcome", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-//        boolean isFirstTime = sharedPreferences.getBoolean("isFirstTime", true);
-        boolean isFirstTime = true;
+        boolean isFirstTime = sharedPreferences.getBoolean("isFirstTime", true);
+//        boolean isFirstTime = true;
 
         if(isFirstTime){
             editor.putBoolean("isFirstTime", false);
@@ -63,7 +63,7 @@ public class WelcomeActivity extends AppCompatActivity{
             int currentItem = binding.viewPager.getCurrentItem();
             if (currentItem == 2) {
                 // TODO: Navigate to next activity or fragment
-                Toast.makeText(this, "Navigate to next activity or fragment", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Navigate to next activity or fragment", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
             } else {
