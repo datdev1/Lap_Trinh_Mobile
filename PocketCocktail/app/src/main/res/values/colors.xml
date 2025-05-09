@@ -23,4 +23,63 @@
     <color name="textSecondary">#5E5E5E</color>
 
 
+     <!-- Màu chính theo chức năng -->
+    <color name="primary">#4ECCA3</color>                 <!-- Xanh mint - Màu chủ đạo -->
+    <color name="secondary">#FFD5E5</color>               <!-- Hồng nhạt - Màu phụ -->
+    
+    <!-- Màu nền -->
+    <color name="background_main">#FFFFFF</color>         <!-- Nền chính -->
+    <color name="background_secondary">#F7F7F7</color>    <!-- Nền phụ -->
+    <color name="card_background">#FFFFFF</color>         <!-- Nền card -->
+    <color name="dialog_background">#FFFFFF</color>       <!-- Nền dialog -->
+    
+    <!-- Màu nút bấm -->
+    <color name="button_primary">#4ECCA3</color>          <!-- Nút chính -->
+    <color name="button_secondary">#FFD5E5</color>        <!-- Nút phụ -->
+    <color name="button_disabled">#D3D3D3</color>         <!-- Nút bị vô hiệu hóa -->
+    <color name="button_text_light">#FFFFFF</color>       <!-- Chữ trên nút (nền tối) -->
+    <color name="button_text_dark">#232323</color>        <!-- Chữ trên nút (nền sáng) -->
+    
+    <!-- Màu chữ -->
+    <color name="text_primary">#232323</color>            <!-- Chữ chính -->
+    <color name="text_secondary">#4A4A4A</color>          <!-- Chữ phụ -->
+    <color name="text_tertiary">#9A9A9A</color>           <!-- Chữ ghi chú/phụ thích -->
+    <color name="text_on_primary">#FFFFFF</color>         <!-- Chữ trên nền màu chính -->
+    <color name="text_on_secondary">#232323</color>       <!-- Chữ trên nền màu phụ -->
+    <color name="text_link">#2E8B6F</color>               <!-- Chữ liên kết -->
+    
+    <!-- Màu các hiệu ứng -->
+    <color name="ripple_light">#33FFFFFF</color>          <!-- Hiệu ứng gợn sóng nhạt -->
+    <color name="ripple_dark">#33000000</color>           <!-- Hiệu ứng gợn sóng đậm -->
+    <color name="hover_light">#1A4ECCA3</color>           <!-- Hover nền sáng -->
+    <color name="hover_dark">#1AFFD5E5</color>            <!-- Hover nền tối -->
+    
+    <!-- Màu phân chia -->
+    <color name="divider">#E0E0E0</color>                 <!-- Đường phân cách -->
+    <color name="shadow">#20000000</color>                <!-- Bóng đổ -->
+    
+    <!-- Màu biến thể -->
+    <color name="primary_dark">#2E8B6F</color>            <!-- Xanh mint đậm -->
+    <color name="primary_light">#A8E6CF</color>           <!-- Xanh mint nhạt -->
+    <color name="secondary_dark">#FFACC7</color>          <!-- Hồng đậm -->
+    <color name="secondary_light">#FFF0F5</color>         <!-- Hồng nhạt hơn -->
+    
+    <!-- Màu thông báo -->
+    <color name="success">#2E8B6F</color>                 <!-- Thành công -->
+    <color name="info">#64B5F6</color>                    <!-- Thông tin -->
+    <color name="warning">#FFC107</color>                 <!-- Cảnh báo -->
+    <color name="error">#FF6B6B</color>                   <!-- Lỗi -->
+    
+    <!-- Màu thanh trạng thái và thanh công cụ -->
+    <color name="status_bar">#2E8B6F</color>              <!-- Thanh trạng thái -->
+    <color name="toolbar">#4ECCA3</color>                 <!-- Thanh công cụ -->
+    <color name="toolbar_text">#FFFFFF</color>            <!-- Chữ trên thanh công cụ -->
+    
+    <!-- Màu cho đồ thị và biểu đồ -->
+    <color name="chart_color_1">#4ECCA3</color>           <!-- Màu biểu đồ 1 -->
+    <color name="chart_color_2">#FFD5E5</color>           <!-- Màu biểu đồ 2 -->
+    <color name="chart_color_3">#FFC107</color>           <!-- Màu biểu đồ 3 -->
+    <color name="chart_color_4">#64B5F6</color>           <!-- Màu biểu đồ 4 -->
+    <color name="chart_color_5">#FF6B6B</color>           <!-- Màu biểu đồ 5 -->
+
 </resources>
