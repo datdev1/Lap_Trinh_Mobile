@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@android:color/white"
+    android:elevation="2dp"
+    android:layout_marginBottom="8dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/tvDrinkName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tên đồ uống"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvDrinkDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mô tả ngắn"
+        android:textSize="14sp"
+        android:textColor="#666"/>
+</LinearLayout>

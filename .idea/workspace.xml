@@ -5,29 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="798ecf19-ae34-4f86-b819-f79753d7e543" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/java/com/b21dccn216/shop/Model/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/java/com/b21dccn216/shop/Model/UserFirebase.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/java/com/b21dccn216/shop/login/LoginActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/java/com/b21dccn216/shop/login/LoginUiState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/java/com/b21dccn216/shop/login/LoginViewModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/java/com/b21dccn216/shop/repository/UserFirebaseRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/res/drawable-mdpi/eye.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/res/drawable-mdpi/eye_crossed.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/res/drawable-mdpi/google.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/res/drawable/bg_login_button.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/res/drawable/bg_login_edittext.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/res/drawable/divider_vertical_16dp.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/res/drawable/shop.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/app/src/main/res/layout/activity_login.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shop/key.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/shop/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/shop/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop/.idea/other.xml" beforeDir="false" afterPath="$PROJECT_DIR$/shop/.idea/other.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/shop/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop/app/google-services.json" beforeDir="false" afterPath="$PROJECT_DIR$/shop/app/google-services.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/shop/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/shop/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/shop/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,9 +15,24 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "MonHauVD"
+  }
 }]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/datdev1/Lap_Trinh_Mobile.git",
+    "accountId": "de587d14-d44a-477b-b498-42a5202f754d"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2vZTz6AHgafPzzhRkHzAEJ45ZfI" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -53,8 +46,9 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/ACER/Downloads/ky2_nam4/MOB/BTL",
+    "last_opened_file_path": "D:/Lap trinh/PhaCheAndroid/Lap_Trinh_Mobile/PocketCocktail",
     "project.structure.last.edited": "SDK Location",
     "project.structure.proportion": "0.17",
     "project.structure.side.proportion": "0.0",

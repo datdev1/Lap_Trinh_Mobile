@@ -70,6 +70,10 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
   - id đồ uống
   - comment
   - rate
+- Model Favorite
+  - id
+  - id user
+  - id đồ uống
 
 ## Các đầu mục công việc
 - Nghiên cứu kết nối dữ liệu AtlasMongo và Imagekit Dao + Model (Dũng) (Package data)
