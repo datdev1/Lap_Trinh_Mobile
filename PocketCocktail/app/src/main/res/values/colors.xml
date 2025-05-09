@@ -7,6 +7,7 @@
 
     <color name="transparent">#00000000</color>
     <color name="grey">#2AFFFFFF</color>
+    <color name="gray">#FF757575</color>
 
 <!--&lt;!&ndash;    &lt;!&ndash; Primary Cocktail Colors &ndash;&gt;&ndash;&gt;-->
 <!--    <color name="colorPrimary">#FFC0D0</color> &lt;!&ndash; Raspberry Pink &ndash;&gt;-->
