@@ -25,14 +25,6 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity{
     private ActivityHomeBinding  binding;
-    private CocktailHomeItemAdapter adapter;
-    private int column = 2;
-
-    // Firebase
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference drinkRef = database.getReference("Drinks");
-
-    private List<Drink> drinkList = new ArrayList<>();
 
 
     @Override
@@ -41,43 +33,6 @@ public class HomeActivity extends AppCompatActivity{
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        adapter = new CocktailHomeItemAdapter(getApplicationContext(), drinkList);
-
-        binding.recyclerView.setLayoutManager(
-                new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false)
-        );
-
-        //binding.recyclerView.setAdapter(adapter);
-        CarouselLayoutManager layoutManager = new CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true);
-        layoutManager.setPostLayoutListener(new CarouselZoomPostLayoutListener());
-
-
-        binding.recyclerView.setLayoutManager(layoutManager);
-        binding.recyclerView.setHasFixedSize(true);
-        binding.recyclerView.setAdapter(adapter);
-        binding.recyclerView.addOnScrollListener(new CenterScrollListener());
-//        binding.recyclerView.addOnScrollListener();
-
-
-        drinkRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                drinkList.clear();
-                for (DataSnapshot drinkSnapshot : snapshot.getChildren()) {
-                    Drink drink = drinkSnapshot.getValue(Drink.class);
-                    drinkList.add(drink);
-                }
-                adapter.notifyDataSetChanged();
-
-                // You can now use drinkList to populate RecyclerView or something else
-                Log.d("DRINKS", "Loaded " + drinkList.size() + " drinks.");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("DRINKS", "Failed to read drinks", error.toException());
-            }
-        });
             
     }
 }
