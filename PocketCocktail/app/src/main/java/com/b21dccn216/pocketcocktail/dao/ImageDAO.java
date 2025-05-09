@@ -24,6 +24,7 @@ public class ImageDAO {
     public static String ImageDaoFolderForDrink = "drink";
     public static String ImageDaoFolderForAvatar = "avatar";
     public static String ImageDaoFolderForIngredient = "ingredient";
+    public static String ImageDaoFolderForCategory = "ingredient";
 
     private static final String IMGUR_CLIENT_ID = "e9e6cd7ad4a937b"; // <-- Thay bằng của bạn
     private static final String IMGUR_UPLOAD_URL = "https://api.imgur.com/3/image";
