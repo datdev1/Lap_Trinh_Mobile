@@ -32,7 +32,9 @@ public class WelcomeActivity extends AppCompatActivity{
         sharedPreferences = getSharedPreferences("welcome", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        boolean isFirstTime = sharedPreferences.getBoolean("isFirstTime", true);
+//        boolean isFirstTime = sharedPreferences.getBoolean("isFirstTime", true);
+        boolean isFirstTime = true;
+
         if(isFirstTime){
             editor.putBoolean("isFirstTime", false);
             editor.apply();

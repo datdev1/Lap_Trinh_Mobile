@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.b21dccn216.pocketcocktail.R;
+import com.b21dccn216.pocketcocktail.databinding.FragmentWelcomeDiscoveryBinding;
 import com.b21dccn216.pocketcocktail.view.Welcome.Adapter.ImageRecyclerAdapter;
-import com.b21dccn216.pocketcocktail.databinding.FragmentDiscoveryBinding;
 
 
 public class DiscoveryFragment extends Fragment {
-    private FragmentDiscoveryBinding binding;
+    private FragmentWelcomeDiscoveryBinding binding;
     private ImageRecyclerAdapter adapter;
     private final int spanRow = 2;
     public DiscoveryFragment() {
@@ -34,7 +34,7 @@ public class DiscoveryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentDiscoveryBinding.inflate(getLayoutInflater());
+        binding = FragmentWelcomeDiscoveryBinding.inflate(getLayoutInflater());
 
         setUpRecyclerView();
         return binding.getRoot();
