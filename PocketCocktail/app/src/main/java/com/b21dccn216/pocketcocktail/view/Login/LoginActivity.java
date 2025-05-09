@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.view.Login;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,8 +8,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.view.Login.adapter.LoginViewPagerAdapter;
 import com.b21dccn216.pocketcocktail.databinding.ActivityLoginBinding;
+import com.b21dccn216.pocketcocktail.view.Main.HomeActivity;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity{
 
@@ -17,6 +20,13 @@ public class LoginActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            // User is logged in, go to MainActivity
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish(); // close LoginActivity
+            return;
+        }
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

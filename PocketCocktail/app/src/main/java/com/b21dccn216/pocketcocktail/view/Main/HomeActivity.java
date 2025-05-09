@@ -16,6 +16,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mig35.carousellayoutmanager.CarouselLayoutManager;
+import com.mig35.carousellayoutmanager.CarouselZoomPostLayoutListener;
+import com.mig35.carousellayoutmanager.CenterScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +47,16 @@ public class HomeActivity extends AppCompatActivity{
                 new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false)
         );
 
+        //binding.recyclerView.setAdapter(adapter);
+        CarouselLayoutManager layoutManager = new CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true);
+        layoutManager.setPostLayoutListener(new CarouselZoomPostLayoutListener());
+
+
+        binding.recyclerView.setLayoutManager(layoutManager);
+        binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setAdapter(adapter);
+        binding.recyclerView.addOnScrollListener(new CenterScrollListener());
+//        binding.recyclerView.addOnScrollListener();
 
 
         drinkRef.addValueEventListener(new ValueEventListener() {
