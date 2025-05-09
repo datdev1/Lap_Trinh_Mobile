@@ -20,7 +20,8 @@ public class LoginActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if(false){
+//        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             // User is logged in, go to MainActivity
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
