@@ -1,5 +1,8 @@
 package com.b21dccn216.pocketcocktail.dao;
 
+import android.content.Context;
+import android.net.Uri;
+
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -16,11 +19,14 @@ public class DrinkDAO {
     private final FirebaseFirestore db;
     private final CollectionReference drinkRef;
 
+    private final ImageDAO imageDAO;
+
     public static final String ERROR_USER_NOT_AUTH = "User not authenticated";
 
     public DrinkDAO() {
         db = FirebaseFirestore.getInstance();
         drinkRef = db.collection("drink");
+        imageDAO = new ImageDAO();
     }
     public interface DrinkCallback {
         void onDrinkLoaded(Drink drink);
@@ -91,6 +97,31 @@ public class DrinkDAO {
                 .delete()
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
+    }
+
+
+
+    public void addDrinkWithImage(Context context, Drink drink, Uri imageUri,
+                                  OnSuccessListener<Void> onSuccess,
+                                  OnFailureListener onFailure) {
+        String title = ImageDAO.ImageDaoFolderForDrink + "_" + drink.getName() + "_" + drink.getUuid();
+        new ImageDAO().uploadImageToImgur(context, imageUri, title,new ImageDAO.UploadCallback() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                drink.generateUUID();
+                drink.setImage(imageUrl);
+
+                drinkRef.document(drink.getUuid())
+                        .set(drink)
+                        .addOnSuccessListener(onSuccess)
+                        .addOnFailureListener(onFailure);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
     }
 
 }

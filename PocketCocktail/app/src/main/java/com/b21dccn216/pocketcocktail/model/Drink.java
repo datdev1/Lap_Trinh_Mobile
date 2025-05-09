@@ -31,10 +31,6 @@ public class Drink {
         return uuid;
     }
 
-//    public void setUuid(String uuid) {
-//        this.uuid = uuid;
-//    }
-
     public String generateUUID() {
         String newUuid = UUID.randomUUID().toString();
         this.uuid = newUuid;
