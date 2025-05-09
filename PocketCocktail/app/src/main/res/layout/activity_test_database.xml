@@ -61,12 +61,40 @@ android:padding="16dp">
         android:scaleType="centerCrop"
         android:layout_marginVertical="8dp" />
 
-    <!-- Nút tạo -->
-    <Button
-        android:id="@+id/btnCreateDrink"
+    <!-- Buttons Layout -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tạo đồ uống" />
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/btnCreateDrink"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tạo mới"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btnUpdateDrink"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cập nhật"
+            android:enabled="false"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btnDeleteDrink"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Xóa"
+            android:enabled="false"
+            android:layout_marginStart="4dp" />
+    </LinearLayout>
 
     <!-- Danh sách đồ uống -->
     <androidx.recyclerview.widget.RecyclerView

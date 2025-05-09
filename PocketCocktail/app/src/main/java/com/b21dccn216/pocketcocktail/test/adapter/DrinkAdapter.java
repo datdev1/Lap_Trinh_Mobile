@@ -20,10 +20,19 @@ public class DrinkAdapter extends RecyclerView.Adapter<DrinkAdapter.DrinkViewHol
 
     private List<Drink> drinkList;
     private final Context context;
+    private OnDrinkClickListener listener;
+
+    public interface OnDrinkClickListener {
+        void onDrinkClick(Drink drink);
+    }
 
     public DrinkAdapter(Context context, List<Drink> drinkList) {
         this.context = context;
         this.drinkList = drinkList;
+    }
+
+    public void setOnDrinkClickListener(OnDrinkClickListener listener) {
+        this.listener = listener;
     }
 
     public void setDrinkList(List<Drink> drinks) {
@@ -51,6 +60,12 @@ public class DrinkAdapter extends RecyclerView.Adapter<DrinkAdapter.DrinkViewHol
                 .placeholder(R.drawable.cocktail_logo) // ảnh tạm khi chưa load xong
                 .error(R.drawable.error_icon) // ảnh lỗi
                 .into(holder.imgDrink);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onDrinkClick(drink);
+            }
+        });
     }
 
     @Override

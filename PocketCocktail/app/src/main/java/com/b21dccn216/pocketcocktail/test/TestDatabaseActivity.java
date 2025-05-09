@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -23,6 +24,7 @@ import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.data.Dao.DrinksDao;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.test.adapter.DrinkAdapter;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,8 +39,10 @@ public class TestDatabaseActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private DrinkAdapter drinkAdapter;
     private List<Drink> drinkList = new ArrayList<>();
-    Button btnChooseImage, btnCreateDrink;
+    private Button btnChooseImage, btnCreateDrink, btnUpdateDrink, btnDeleteDrink;
     private DrinkDAO drinkDAO;
+    private Drink selectedDrink;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +64,8 @@ public class TestDatabaseActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         btnChooseImage = findViewById(R.id.btnChooseImage);
         btnCreateDrink = findViewById(R.id.btnCreateDrink);
+        btnUpdateDrink = findViewById(R.id.btnUpdateDrink);
+        btnDeleteDrink = findViewById(R.id.btnDeleteDrink);
 
         drinkDAO = new DrinkDAO();
 
@@ -68,11 +74,25 @@ public class TestDatabaseActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(drinkAdapter);
 
+        // Set click listener cho adapter
+        drinkAdapter.setOnDrinkClickListener(drink -> {
+            selectedDrink = drink;
+            displayDrinkInfo(drink);
+            btnUpdateDrink.setEnabled(true);
+            btnDeleteDrink.setEnabled(true);
+        });
+
         // Sự kiện chọn ảnh
         btnChooseImage.setOnClickListener(v -> openImagePicker());
 
         // Sự kiện tạo drink
         btnCreateDrink.setOnClickListener(v -> createDrink());
+
+        // Sự kiện cập nhật drink
+        btnUpdateDrink.setOnClickListener(v -> updateDrink());
+
+        // Sự kiện xóa drink
+        btnDeleteDrink.setOnClickListener(v -> showDeleteConfirmationDialog());
 
         // Tải danh sách ban đầu
         loadDrinksFromDatabase();
@@ -111,6 +131,95 @@ public class TestDatabaseActivity extends AppCompatActivity {
                 Toast.makeText(TestDatabaseActivity.this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void displayDrinkInfo(Drink drink) {
+        edtName.setText(drink.getName());
+        edtDescription.setText(drink.getDescription());
+        edtInstruction.setText(drink.getInstruction());
+        edtCategoryId.setText(drink.getCategoryId());
+        edtRate.setText(String.valueOf(drink.getRate()));
+        
+        // Load ảnh
+        Glide.with(this)
+                .load(drink.getImage())
+                .placeholder(R.drawable.cocktail_logo)
+                .error(R.drawable.error_icon)
+                .into(imgPreview);
+        
+        selectedImageUri = null; // Reset selected image
+    }
+
+    private void showDeleteConfirmationDialog() {
+        if (selectedDrink == null) return;
+
+        new AlertDialog.Builder(this)
+                .setTitle("Xác nhận xóa")
+                .setMessage("Bạn có chắc chắn muốn xóa đồ uống này?")
+                .setPositiveButton("Xóa", (dialog, which) -> deleteDrink())
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
+
+    private void deleteDrink() {
+        if (selectedDrink == null) return;
+
+        drinkDAO.deleteDrink(selectedDrink.getUuid(),
+                unused -> {
+                    Toast.makeText(this, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                    clearForm();
+                    loadDrinksFromDatabase();
+                },
+                e -> Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void updateDrink() {
+        if (selectedDrink == null) return;
+
+        String name = edtName.getText().toString().trim();
+        String description = edtDescription.getText().toString().trim();
+        String instruction = edtInstruction.getText().toString().trim();
+        String categoryId = edtCategoryId.getText().toString().trim();
+        String rateStr = edtRate.getText().toString().trim();
+
+        if (name.isEmpty() || description.isEmpty() || rateStr.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        double rate;
+        try {
+            rate = Double.parseDouble(rateStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Đánh giá không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        selectedDrink.setName(name);
+        selectedDrink.setDescription(description);
+        selectedDrink.setInstruction(instruction);
+        selectedDrink.setCategoryId(categoryId);
+        selectedDrink.setRate(rate);
+
+        if (selectedImageUri != null) {
+            // Cập nhật với ảnh mới
+            drinkDAO.updateDrinkWithImage(this, selectedDrink, selectedImageUri,
+                    unused -> {
+                        Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                        clearForm();
+                        loadDrinksFromDatabase();
+                    },
+                    e -> Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        } else {
+            // Cập nhật không có ảnh mới
+            drinkDAO.updateDrink(selectedDrink,
+                    unused -> {
+                        Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                        clearForm();
+                        loadDrinksFromDatabase();
+                    },
+                    e -> Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        }
     }
 
     private void openImagePicker() {
@@ -160,7 +269,7 @@ public class TestDatabaseActivity extends AppCompatActivity {
                 unused -> {
                     Toast.makeText(this, "Tạo đồ uống thành công", Toast.LENGTH_SHORT).show();
                     clearForm();
-                    loadDrinksFromDatabase(); // Reload danh sách
+                    loadDrinksFromDatabase();
                 },
                 e -> Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
@@ -172,7 +281,10 @@ public class TestDatabaseActivity extends AppCompatActivity {
         edtCategoryId.setText("");
         edtRate.setText("");
         selectedImageUri = null;
-        imgPreview.setImageResource(R.drawable.cocktail_logo); // placeholder của bạn
+        selectedDrink = null;
+        imgPreview.setImageResource(R.drawable.cocktail_logo);
+        btnUpdateDrink.setEnabled(false);
+        btnDeleteDrink.setEnabled(false);
     }
 
     private void loadDrinksFromDatabase() {
