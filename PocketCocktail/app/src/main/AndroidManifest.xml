@@ -16,12 +16,12 @@
         android:theme="@style/Theme.PocketCocktail"
         tools:targetApi="31" >
         <activity
-            android:name=".Login.LoginActivity"
+            android:name=".view.Login.LoginActivity"
             android:exported="true" >
         </activity>
 
         <activity
-            android:name=".Welcome.WelcomeActivity"
+            android:name=".view.Welcome.WelcomeActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +31,7 @@
         </activity>
 
         <activity
-            android:name=".Home.HomeActivity"
+            android:name=".view.Main.HomeActivity"
             android:exported="true" >
 
         </activity>

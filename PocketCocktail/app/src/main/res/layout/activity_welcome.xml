@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
     android:background="@color/backgroundCream"
-    tools:context=".Welcome.WelcomeActivity">
+    tools:context=".view.Welcome.WelcomeActivity">
 
 
     <androidx.viewpager2.widget.ViewPager2

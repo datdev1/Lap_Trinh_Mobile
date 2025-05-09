@@ -8,10 +8,11 @@
     android:showDividers="middle"
     android:padding="16dp"
     android:gravity="center"
-    tools:context=".Login.Fragment.LoginFragment">
+    tools:context=".view.Login.fragment.LoginFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <EditText
+        android:id="@+id/edtEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -20,14 +21,33 @@
         android:background="@drawable/bg_login_tf"
         />
 
-    <EditText
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_login_tf"
-        android:padding="16dp"
-        android:fontFamily="@font/poppins_bold"
-        android:hint="Password"
-        />
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/edtPassword"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_login_tf"
+            android:padding="16dp"
+            android:fontFamily="@font/poppins_bold"
+            android:hint="Password"
+            />
+        <View
+            android:id="@+id/showPassword"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignTop="@+id/edtPassword"
+            android:layout_alignBottom="@+id/edtPassword"
+            android:layout_alignEnd="@+id/edtPassword"
+            android:layout_marginEnd="8dp"
+            android:layout_marginVertical="8dp"
+            android:background="@drawable/baseline_remove_red_eye_24"
+            />
+    </RelativeLayout>
+
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnLogin"

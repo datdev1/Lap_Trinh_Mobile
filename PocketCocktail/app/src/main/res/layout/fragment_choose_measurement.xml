@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/backgroundCream"
     android:id="@+id/container"
-    tools:context=".Welcome.Fragment.ChooseMeasurementFragment">
+    tools:context=".view.Welcome.Fragment.ChooseMeasurementFragment">
 
     <com.ogaclejapan.arclayout.ArcLayout
         android:id="@+id/arcLayout"

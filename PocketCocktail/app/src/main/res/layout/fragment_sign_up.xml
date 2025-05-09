@@ -8,7 +8,7 @@
     android:showDividers="middle"
     android:padding="16dp"
     android:gravity="center"
-    tools:context=".Login.Fragment.SignUpFragment"
+    tools:context=".view.Login.fragment.SignUpFragment"
     >
 
     <!-- TODO: Update blank fragment layout -->

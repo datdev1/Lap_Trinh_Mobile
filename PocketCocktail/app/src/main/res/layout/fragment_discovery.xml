@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundCream"
-    tools:context=".Welcome.Fragment.DiscoveryFragment">
+    tools:context=".view.Welcome.Fragment.DiscoveryFragment">
 
     <LinearLayout
         android:id="@+id/nested"

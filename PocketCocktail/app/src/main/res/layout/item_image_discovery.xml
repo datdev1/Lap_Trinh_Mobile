@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.b21dccn216.pocketcocktail.View.HexagonImageView
+    <com.b21dccn216.pocketcocktail.customView.HexagonImageView
         android:id="@+id/imageFlavors"
         android:layout_width="200dp"
         android:layout_height="200dp"
