@@ -1,5 +1,8 @@
 # Bài tập lớn Android
 
+Nhóm 04
+Lượt thuyết trình 7 buổi 15/05
+3 14 15 7 5 9 4 (15/05) | 2 6 8 10 11 12 13 16 (23/05)
 ## Thành viên
 
 | Họ và tên          | Mã sinh viên | Phân công                                                     |
