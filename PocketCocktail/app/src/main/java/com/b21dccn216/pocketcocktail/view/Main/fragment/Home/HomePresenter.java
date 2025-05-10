@@ -1,6 +1,5 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Home;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
@@ -10,6 +9,7 @@ import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithCategoryDTO;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,15 +32,21 @@ public class HomePresenter
     public void onCreate() {
         super.onCreate();
 
-        getOneCategoryDrinkList();
-        getIbaDrinkList();
-        getLatestDrinkList();
+        getHighestRateDrinks();
+        getHighestRateDrinks();
         getRecommendDrinkList();
+
+        getLatestDrinkList();
+        getBannerDrink();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+    }
+
+    private void getBannerDrink(){
 
     }
 
@@ -61,18 +67,22 @@ public class HomePresenter
         });
     }
 
-    private void getIbaDrinkList(){
-        drinkDAO.getAllDrinks(new DrinkDAO.DrinkListCallback() {
-            @Override
-            public void onDrinkListLoaded(List<Drink> drinkList) {
-                view.showIbaDrinkList(drinkList);
-            }
+    private void getHighestRateDrinks(){
+        drinkDAO.getDrinksSortAndLimit(
+                DrinkDAO.DRINK_FIELD.RATE, Query.Direction.DESCENDING,10,
+                new DrinkDAO.DrinkListCallback(){
 
-            @Override
-            public void onError(Exception e) {
+                    @Override
+                    public void onDrinkListLoaded(List<Drink> drinks) {
+                        view.showHighestRateDrinkList(drinks);
+                    }
 
-            }
-        });
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                }
+                );
     }
 
     private void getLatestDrinkList(){

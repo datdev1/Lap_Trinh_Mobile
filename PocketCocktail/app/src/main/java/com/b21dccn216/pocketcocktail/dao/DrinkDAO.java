@@ -13,6 +13,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -151,4 +152,37 @@ public class DrinkDAO {
                 .addOnFailureListener(onFailure);
     }
 
+
+    public void getDrinksSortAndLimit(DRINK_FIELD sortTag, Query.Direction sortOrder, int limit,
+                                      DrinkListCallback callback) {
+        drinkRef
+                .orderBy(sortTag.getValue(), sortOrder)
+                .limit(limit)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Drink> drinkList = new ArrayList<>();
+                    for (DocumentSnapshot drinkSnapshot : queryDocumentSnapshots.getDocuments()) {
+                        Drink drink = drinkSnapshot.toObject(Drink.class);
+                        drinkList.add(drink);
+                    }
+                    callback.onDrinkListLoaded(drinkList);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
+
+    public enum DRINK_FIELD{
+        RATE("rate"),
+        NAME("name");
+
+        private final String value;
+
+        DRINK_FIELD(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 }

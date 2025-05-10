@@ -11,7 +11,7 @@ public interface HomeContract {
         // Define view methods
 
         void showOneCategoryDrinkList(String cateName, List<Drink> drinkList);
-        void showIbaDrinkList(List<Drink> drinkList);
+        void showHighestRateDrinkList(List<Drink> drinkList);
         void showLatestDrinkList(List<Drink> drinkList);
         void showRecommendDrinkList(List<DrinkWithCategoryDTO> drinkList);
 

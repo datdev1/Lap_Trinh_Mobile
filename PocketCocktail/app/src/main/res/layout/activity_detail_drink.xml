@@ -60,8 +60,8 @@
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:gravity="center_vertical"
-                    android:drawableStart="@drawable/dtd_ic_badge"
-                    android:drawablePadding="8dp" />
+                    android:drawablePadding="8dp"
+                    app:drawableStartCompat="@drawable/dtd_ic_badge" />
 
                 <!-- Title and actions -->
                 <LinearLayout
@@ -87,8 +87,8 @@
                     <!-- Favorite button -->
                     <ImageButton
                         android:id="@+id/favorite_button"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="Favorite"
                         android:src="@drawable/dtd_ic_favorite_outline"
@@ -97,8 +97,8 @@
                     <!-- Share button -->
                     <ImageButton
                         android:id="@+id/share_button"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="Share"
                         android:src="@drawable/dtd_ic_share"

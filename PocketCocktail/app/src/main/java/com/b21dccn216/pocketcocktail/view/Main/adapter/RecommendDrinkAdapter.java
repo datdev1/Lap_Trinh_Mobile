@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.b21dccn216.pocketcocktail.R;
@@ -34,8 +35,7 @@ public class RecommendDrinkAdapter  extends RecyclerView.Adapter<RecommendDrinkA
 
     @Override
     public void onBindViewHolder(@NonNull DrinkViewHolder holder, int position) {
-        DrinkWithCategoryDTO drink = drinkList.get(position);
-        holder.bind(drink);
+        holder.bind(position);
     }
 
     @Override
@@ -51,15 +51,24 @@ public class RecommendDrinkAdapter  extends RecyclerView.Adapter<RecommendDrinkA
             this.binding = binding;
         }
 
-        public void bind(DrinkWithCategoryDTO drink) {
+        public void bind(int pos) {
+            DrinkWithCategoryDTO drink = drinkList.get(pos);
             binding.title.setText(drink.getDrink().getName());
             binding.conent.setText(drink.getCategoryName());
+
+//            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) binding.image.getLayoutParams();
+//
+//            if((pos + 1) % 4 == 0 || (pos + 1) % 4 == 1){
+//                layoutParams.dimensionRatio = "2:1";
+//            }else{
+//                layoutParams.dimensionRatio = "1:1";
+//            }
 
             Glide.with(context)
                     .load(drink.getDrink().getImage())
                     .placeholder(R.drawable.baseline_downloading_24) // Replace with your placeholder
                     .error(R.drawable.baseline_error_outline_24)             // Replace with your error drawable
-                    .into(binding.playlistImage);
+                    .into(binding.image);
         }
     }
 }

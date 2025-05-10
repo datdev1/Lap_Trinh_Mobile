@@ -1,8 +1,9 @@
 package com.b21dccn216.pocketcocktail.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Drink {
+public class Drink implements Serializable {
     private String uuid;
     private String name;
     private String userId;
