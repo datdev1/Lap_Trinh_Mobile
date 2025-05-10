@@ -1,6 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Main.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemCocktailHomeBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -51,6 +53,13 @@ public class CocktailHomeItemAdapter extends RecyclerView.Adapter<CocktailHomeIt
 
         holder.binding.name.setText(drinks.get(position).getName());
 //        holder.binding.cate.setText(String.valueOf(images.get(position).rate));
+
+        holder.binding.layout.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailDrinkActivity.class);
+            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_ID, drinks.get(position).getUuid());
+            context.startActivity(intent);
+        });
+
     }
 
 

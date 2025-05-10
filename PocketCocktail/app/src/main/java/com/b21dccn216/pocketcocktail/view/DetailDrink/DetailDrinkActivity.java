@@ -35,6 +35,9 @@ public class DetailDrinkActivity extends AppCompatActivity {
     private RecipeDAO recipeDAO;
     private IngredientDAO ingredientDAO;
 
+    public static final String EXTRA_DRINK_ID = "drink_id";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +61,7 @@ public class DetailDrinkActivity extends AppCompatActivity {
         ingredientDAO = new IngredientDAO();
 
 
-        String drinkUuid = getIntent().getStringExtra("drink_id");
+        String drinkUuid = getIntent().getStringExtra(EXTRA_DRINK_ID);
         if (drinkUuid != null) {
             loadDrinkDetails(drinkUuid);
         }
