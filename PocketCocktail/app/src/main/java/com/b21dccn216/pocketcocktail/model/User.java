@@ -3,10 +3,13 @@ package com.b21dccn216.pocketcocktail.model;
 import java.util.UUID;
 
 public class User {
+    private static final String RoleUser = "User";
+    private static final String RoleAdmin = "Admin";
     private String uuid;
     private String saveUuidFromAuthen;
     private String name;
     private String email;
+    private String role;
     private String password;
     private String image;
 
@@ -18,6 +21,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.image = image;
+        this.role = User.RoleUser;
     }
 
     public String generateUUID() {
@@ -64,6 +68,14 @@ public class User {
 
     public String getImage() {
         return image;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public void setImage(String image) {
