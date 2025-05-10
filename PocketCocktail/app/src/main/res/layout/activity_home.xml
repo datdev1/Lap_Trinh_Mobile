@@ -4,8 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.Main.HomeActivity"
+    android:fitsSystemWindows="true"
+    app:statusBarBackground="@color/secondary"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:background="@color/button_secondary"
+        android:titleTextColor="@color/text_on_secondary"/>
 
     <!-- Fragment Container -->
     <androidx.fragment.app.FragmentContainerView
