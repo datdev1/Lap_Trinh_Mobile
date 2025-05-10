@@ -125,7 +125,7 @@ public class DetailDrinkActivity extends AppCompatActivity {
         textView.setTextColor(ContextCompat.getColor(this, R.color.black));
         textView.setTextSize(16);
         textView.setPadding(4, 4, 4, 4);
-        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_bullet, 0, 0, 0);
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dtd_ic_bullet, 0, 0, 0);
         textView.setCompoundDrawablePadding(8);
         return textView;
     }
