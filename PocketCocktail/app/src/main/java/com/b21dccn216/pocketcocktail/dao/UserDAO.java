@@ -87,6 +87,13 @@ public class UserDAO {
                 .addOnFailureListener(onFailure);
     }
 
+    public void getUserByUuidAuthen(String uuidAuthen, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+        userRef.whereEqualTo("saveUuidFromAuthen", uuidAuthen)
+                .get()
+                .addOnSuccessListener(onSuccess)
+                .addOnFailureListener(onFailure);
+    }
+
     public void getAllUsers(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
         userRef.get()
                 .addOnSuccessListener(onSuccess)

@@ -16,6 +16,14 @@ public class User {
     public User() {
     }
 
+    // Dành riêng cho Authen
+    public User(String saveUuidFromAuthen, String email, String password) {
+        this.saveUuidFromAuthen = saveUuidFromAuthen;
+        this.email = email;
+        this.password = password;
+        this.role = User.RoleUser;
+    }
+
     public User(String name, String email, String password, String image) {
         this.name = name;
         this.email = email;
