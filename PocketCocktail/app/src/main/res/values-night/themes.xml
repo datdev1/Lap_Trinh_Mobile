@@ -3,5 +3,8 @@
     <style name="Base.Theme.PocketCocktail" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+
+        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:titleTextColor">@color/text_on_primary</item>
     </style>
 </resources>

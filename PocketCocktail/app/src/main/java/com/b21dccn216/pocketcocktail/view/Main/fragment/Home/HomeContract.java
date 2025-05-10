@@ -1,8 +1,6 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Home;
 
 import com.b21dccn216.pocketcocktail.base.BaseContract;
-import com.b21dccn216.pocketcocktail.view.Login.LoginContract;
-import com.b21dccn216.pocketcocktail.view.Login.model.User;
 import com.b21dccn216.pocketcocktail.view.Main.Drink;
 
 import java.util.List;

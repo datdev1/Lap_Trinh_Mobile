@@ -1,10 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Login.fragment;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
 
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -14,9 +11,9 @@ import android.view.ViewGroup;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
 import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.view.Login.LoginContract;
 import com.b21dccn216.pocketcocktail.view.Login.LoginPresenter;
-import com.b21dccn216.pocketcocktail.view.Login.model.User;
 import com.b21dccn216.pocketcocktail.view.Main.HomeActivity;
 import com.b21dccn216.pocketcocktail.databinding.FragmentLoginBinding;
 
@@ -62,9 +59,6 @@ public class LoginFragment extends BaseFragment<LoginContract.View, LoginContrac
             User user = new User();
             user.setEmail(binding.edtEmail.getText().toString());
             user.setPassword(binding.edtPassword.getText().toString());
-            if(!validateLoginInput(user)){
-                return;
-            }
             presenter.loginByEmailAndPassword(user);
         });
 
@@ -85,33 +79,6 @@ public class LoginFragment extends BaseFragment<LoginContract.View, LoginContrac
         });
 
     }
-
-
-    private boolean validateLoginInput(User user) {
-        if(user == null) {
-            DialogHelper.showAlertDialog(getActivity(),
-                    "User is invalid", "User is invalid");
-            return false;
-        }
-        String email = user.getEmail(),
-                password = user.getPassword();
-
-        if(email == null || email.trim().isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            DialogHelper.showAlertDialog(getActivity(),
-                    "Email is invalid",
-                    "Ensure email is in correct format");
-            return false;
-        }
-
-        if (password == null || password.trim().isEmpty() || password.length() < 6) {
-            DialogHelper.showAlertDialog(getActivity(),
-                    "Password is invalid",
-                    "Ensure password is more than 6 digit");
-            return false;
-        }
-        return true;
-    }
-
 
     @Override
     public void onResume() {
