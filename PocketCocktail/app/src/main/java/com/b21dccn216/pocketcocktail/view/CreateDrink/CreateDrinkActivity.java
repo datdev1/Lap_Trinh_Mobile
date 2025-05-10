@@ -57,7 +57,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
     private DrinkDAO drinkDAO;
     private IngredientDAO ingredientDAO;
     private List<Ingredient> ingredients;
-
+ 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
