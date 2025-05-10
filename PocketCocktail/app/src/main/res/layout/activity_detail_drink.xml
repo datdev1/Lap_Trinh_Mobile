@@ -126,6 +126,7 @@
                     android:textStyle="bold" />
 
                 <LinearLayout
+                    android:id="@+id/ingredients_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -193,6 +194,7 @@
                     android:textStyle="bold" />
 
                 <LinearLayout
+                    android:id="@+id/instructions_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -249,15 +251,15 @@
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/similar_drinks_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:clipToPadding="false"
-                    android:orientation="horizontal"
-                    android:paddingStart="0dp"
-                    android:paddingEnd="16dp" />
+<!--                <androidx.recyclerview.widget.RecyclerView-->
+<!--                    android:id="@+id/similar_drinks_recycler_view"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:clipToPadding="false"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:paddingStart="0dp"-->
+<!--                    android:paddingEnd="16dp" />-->
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
