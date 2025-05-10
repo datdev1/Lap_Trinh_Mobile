@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
 import com.b21dccn216.pocketcocktail.databinding.FragmentHomeBinding;
+import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.CocktailHomeItemAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.RecommendDrinkAdapter;
@@ -121,8 +122,8 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void showOneCategoryDrinkList(String cateName, List<Drink> drinkList) {
-        binding.titleMocktails.setText(cateName);
+    public void showOneCategoryDrinkList(Category category, List<Drink> drinkList) {
+        binding.titleMocktails.setText(category.getName());
         categoryDrinkList.clear();
         categoryDrinkList.addAll(drinkList);
         categoryCocktailAdapter.notifyDataSetChanged();

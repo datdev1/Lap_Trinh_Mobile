@@ -73,6 +73,15 @@ public class CategoryDAO {
                 .addOnFailureListener(onFailure);
     }
 
+    public void getCategory(String categoryUuid, CategoryCallback callback) {
+        categoryRef.document(categoryUuid).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Category category = documentSnapshot.toObject(Category.class);
+                    callback.onCategoryLoaded(category);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
     public void getCategory(Category category, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
         categoryRef.document(category.getUuid()).get()
                 .addOnSuccessListener(onSuccess)

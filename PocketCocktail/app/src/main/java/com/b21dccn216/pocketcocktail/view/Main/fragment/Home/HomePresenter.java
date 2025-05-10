@@ -33,10 +33,10 @@ public class HomePresenter
         super.onCreate();
 
         getHighestRateDrinks();
-        getHighestRateDrinks();
-        getRecommendDrinkList();
+        getOneCategoryDrinkList();
 
         getLatestDrinkList();
+        getRecommendDrinkList();
         getBannerDrink();
     }
 
@@ -86,7 +86,9 @@ public class HomePresenter
     }
 
     private void getLatestDrinkList(){
-        drinkDAO.getAllDrinks(new DrinkDAO.DrinkListCallback() {
+        drinkDAO.getDrinksSortAndLimit(
+                DrinkDAO.DRINK_FIELD.NAME, Query.Direction.ASCENDING,10,
+                new DrinkDAO.DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinkList) {
                 view.showLatestDrinkList(drinkList);
@@ -110,7 +112,7 @@ public class HomePresenter
                         if(drinkList.size() == 10) break;
                     }
                     Log.d("datdev1", "loadOneCategoryDrinkList: " + drinkList.size());
-                    view.showOneCategoryDrinkList(category.getName(), drinkList);
+                    view.showOneCategoryDrinkList(category, drinkList);
                 },
                 e -> {
 
@@ -125,19 +127,23 @@ public class HomePresenter
 
                 for (Drink drink : drinkList) {
                     categoryDAO.getCategory(drink.getCategoryId(),
-                            documentSnapshot -> {
-                                Category category = documentSnapshot.toObject(Category.class);
-                                if(category == null){
-                                    Log.d("datdev1", "category == null-> drinkName: " + drink.getName() + " --- CateName: " + drink.getCategoryId());
-                                    recommendDrinkList.add(new DrinkWithCategoryDTO(drink.getCategoryId(), drink));
-                                }else{
-                                    Log.d("datdev1", "onDrinkListLoaded: " + drink.getName() + " " + category.getName());
-                                    recommendDrinkList.add(new DrinkWithCategoryDTO(category.getName(), drink));
+                            new CategoryDAO.CategoryCallback() {
+                                @Override
+                                public void onCategoryLoaded(Category category) {
+                                    if (category == null) {
+                                        Log.d("datdev1", "category == null-> drinkName: " + drink.getName() + " --- CateName: " + drink.getCategoryId());
+                                        recommendDrinkList.add(new DrinkWithCategoryDTO(drink.getCategoryId(), drink));
+                                    } else {
+                                        Log.d("datdev1", "onDrinkListLoaded: " + drink.getName() + " " + category.getName());
+                                        recommendDrinkList.add(new DrinkWithCategoryDTO(category.getName(), drink));
+                                    }
+                                    view.showRecommendDrinkList(recommendDrinkList);
                                 }
-                                view.showRecommendDrinkList(recommendDrinkList);
-                            },
-                            e -> {
-                                Log.d("datdev1", "categoryDAO.getCategory(drink.getCategoryId() error : " + e.getMessage());
+
+                                @Override
+                                public void onError(Exception e) {
+
+                                }
                             });
                 }
             }
@@ -148,8 +154,4 @@ public class HomePresenter
             }
         });
     }
-
-
-
-
 }
