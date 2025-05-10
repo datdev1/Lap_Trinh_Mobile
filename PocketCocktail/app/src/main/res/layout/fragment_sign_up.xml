@@ -22,15 +22,6 @@
         android:background="@drawable/bg_login_tf"
         />
     <EditText
-        android:id="@+id/phone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:fontFamily="@font/poppins_bold"
-        android:hint="Phone"
-        android:background="@drawable/bg_login_tf"
-        />
-    <EditText
         android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,6 +39,15 @@
         android:padding="16dp"
         android:fontFamily="@font/poppins_bold"
         android:hint="Password"
+        />
+    <EditText
+        android:id="@+id/confirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:fontFamily="@font/poppins_bold"
+        android:hint="Confirm password"
+        android:background="@drawable/bg_login_tf"
         />
 
     <androidx.appcompat.widget.AppCompatButton
