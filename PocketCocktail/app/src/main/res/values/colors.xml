@@ -45,7 +45,7 @@
     <color name="text_secondary">#4A4A4A</color>          <!-- Chữ phụ -->
     <color name="text_tertiary">#9A9A9A</color>           <!-- Chữ ghi chú/phụ thích -->
     <color name="text_on_primary">#FFFFFF</color>         <!-- Chữ trên nền màu chính -->
-    <color name="text_on_secondary">#232323</color>       <!-- Chữ trên nền màu phụ -->
+    <color name="text_on_secondary">#644A07</color>       <!-- Chữ trên nền màu phụ -->
     <color name="text_link">#2E8B6F</color>               <!-- Chữ liên kết -->
     
     <!-- Màu các hiệu ứng -->
