@@ -5,11 +5,13 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.InputType;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
 import com.b21dccn216.pocketcocktail.databinding.FragmentSignUpBinding;
 import com.b21dccn216.pocketcocktail.helper.DialogHelper;
@@ -58,6 +60,37 @@ public class SignUpFragment extends BaseFragment<LoginContract.View, LoginContra
                     ""
             );
             presenter.signUpWithEmailAndPassword(signUpUser, binding.confirmPassword.getText().toString());
+        });
+
+        binding.showPassword.setOnClickListener(v -> {
+            int inputType = binding.password.getInputType();
+            if ((inputType & InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+                // Hide password
+                binding.showPassword.setImageResource(R.drawable.eye_crossed);
+                binding.password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            } else {
+                // Show password
+                binding.showPassword.setImageResource(R.drawable.eye);
+                binding.password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            }
+            // Move cursor to the end
+            binding.password.setSelection(binding.password.getText().length());
+        });
+
+        binding.showConfirmPassword.setOnClickListener(v -> {
+            int inputType = binding.confirmPassword.getInputType();
+
+            if ((inputType & InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+                // Hide password
+                binding.showConfirmPassword.setImageResource(R.drawable.eye_crossed);
+                binding.confirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            } else {
+                // Show password
+                binding.showConfirmPassword.setImageResource(R.drawable.eye);
+                binding.confirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            }
+            // Move cursor to the end
+            binding.confirmPassword.setSelection(binding.confirmPassword.getText().length());
         });
 
         return binding.getRoot();

@@ -17,7 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:fontFamily="@font/poppins_bold"
         android:hint="Full name"
         android:background="@drawable/bg_login_tf"
         />
@@ -26,29 +25,61 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:fontFamily="@font/poppins_bold"
         android:hint="Email"
         android:background="@drawable/bg_login_tf"
         />
 
-    <EditText
-        android:id="@+id/password"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_login_tf"
-        android:padding="16dp"
-        android:fontFamily="@font/poppins_bold"
-        android:hint="Password"
-        />
-    <EditText
-        android:id="@+id/confirmPassword"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/password"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_login_tf"
+            android:padding="16dp"
+            android:hint="Password"
+            />
+        <ImageView
+            android:id="@+id/showPassword"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignTop="@+id/password"
+            android:layout_alignBottom="@+id/password"
+            android:layout_alignEnd="@+id/password"
+            android:layout_marginEnd="8dp"
+            android:layout_marginVertical="8dp"
+            android:alpha="0.5"
+            android:src="@drawable/eye_crossed"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:fontFamily="@font/poppins_bold"
-        android:hint="Confirm password"
-        android:background="@drawable/bg_login_tf"
-        />
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/confirmPassword"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_login_tf"
+            android:padding="16dp"
+            android:hint="Password"
+            />
+        <ImageView
+            android:id="@+id/showConfirmPassword"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignTop="@+id/confirmPassword"
+            android:layout_alignBottom="@+id/confirmPassword"
+            android:layout_alignEnd="@+id/confirmPassword"
+            android:layout_marginEnd="8dp"
+            android:layout_marginVertical="8dp"
+            android:alpha="0.5"
+            android:src="@drawable/eye_crossed"
+            />
+    </RelativeLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/signup"
@@ -56,7 +87,6 @@
         android:layout_height="wrap_content"
         android:text="Signup"
         android:textColor="@color/white"
-        android:fontFamily="@font/poppins_bold"
         android:background="@drawable/bg_btn_login"
         />
 
