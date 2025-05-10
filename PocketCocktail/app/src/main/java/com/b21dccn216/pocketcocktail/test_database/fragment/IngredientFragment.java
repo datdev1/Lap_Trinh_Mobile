@@ -138,6 +138,7 @@ public class IngredientFragment extends BaseModelFragment {
         }
     }
 
+
     @Override
     protected void saveItem() {
         String name = etName.getText().toString();

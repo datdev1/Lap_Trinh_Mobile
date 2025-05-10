@@ -5,16 +5,25 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.b21dccn216.pocketcocktail.R;
 
+import com.b21dccn216.pocketcocktail.model.Recipe;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
+import com.b21dccn216.pocketcocktail.dao.RecipeDAO;
 import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.dao.IngredientDAO;
+import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DetailDrinkActivity extends AppCompatActivity {
@@ -23,6 +32,7 @@ public class DetailDrinkActivity extends AppCompatActivity {
     private TextView badge, drinkTitle, drinkDescription;
     private LinearLayout ingredientsLayout, instructionsLayout;
     private DrinkDAO drinkDAO;
+    private RecipeDAO recipeDAO;
     private IngredientDAO ingredientDAO;
 
     @Override
@@ -44,8 +54,79 @@ public class DetailDrinkActivity extends AppCompatActivity {
 
         // DAO
         drinkDAO = new DrinkDAO();
+        recipeDAO = new RecipeDAO();
         ingredientDAO = new IngredientDAO();
 
-        
+
+        String drinkUuid = getIntent().getStringExtra("drink_id");
+        if (drinkUuid != null) {
+            loadDrinkDetails(drinkUuid);
+        }
+
+        backButton.setOnClickListener(v -> finish());
+    }
+    private void loadDrinkDetails(String drinkUuid) {
+        drinkDAO.getDrink(drinkUuid, documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Drink drink = documentSnapshot.toObject(Drink.class);
+                if (drink != null) {
+
+                    // Load drink info
+                    Glide.with(this).load(drink.getImage()).into(drinkImage);
+                    drinkTitle.setText(drink.getName());
+                    drinkDescription.setText(drink.getDescription());
+
+                    // Load ingredient
+                    recipeDAO.getRecipesByDrinkId(drinkUuid, recipeSnapshots -> {
+                        List<Recipe> recipes = new ArrayList<>();
+                        for (DocumentSnapshot doc : recipeSnapshots.getDocuments()) {
+                            Recipe recipe = doc.toObject(Recipe.class);
+                            if (recipe != null) {
+                                recipes.add(recipe);
+                            }
+                        }
+
+                        ingredientsLayout.removeAllViews();
+                        for (Recipe recipe : recipes) {
+                            ingredientDAO.getIngredient(recipe.getIngredientId(), ingredientSnapshot -> {
+                                if (ingredientSnapshot.exists()) {
+                                    Ingredient ingredient = ingredientSnapshot.toObject(Ingredient.class);
+                                    if (ingredient != null) {
+                                        String line = ingredient.getName() + " (" + recipe.getAmount() + " " +  ingredient.getUnit() + ")";
+                                        TextView textView = createBulletTextView(line);
+                                        ingredientsLayout.addView(textView);
+                                    }
+                                }
+                            }, e -> {
+                                Toast.makeText(this, "Failed to load ingredient: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    }, e -> {
+                        Toast.makeText(this, "Failed to load recipes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+
+                    // Load instruction
+                    instructionsLayout.removeAllViews();
+                    for (String instruction : drink.getInstruction().split("\n")) {
+                        TextView textView = createBulletTextView(instruction);
+                        instructionsLayout.addView(textView);
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Drink not found.", Toast.LENGTH_SHORT).show();
+            }
+        }, e -> {
+            Toast.makeText(this, "Failed to load drink: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
+    }
+    private TextView createBulletTextView(String text) {
+        TextView textView = new TextView(this);
+        textView.setText(text);
+        textView.setTextColor(ContextCompat.getColor(this, R.color.black));
+        textView.setTextSize(16);
+        textView.setPadding(4, 4, 4, 4);
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_bullet, 0, 0, 0);
+        textView.setCompoundDrawablePadding(8);
+        return textView;
     }
 }
