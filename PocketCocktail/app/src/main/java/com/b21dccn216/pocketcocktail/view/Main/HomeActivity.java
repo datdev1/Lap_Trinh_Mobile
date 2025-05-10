@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
+import com.b21dccn216.pocketcocktail.base.BaseContract;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.test_database.TestDatabaseActivity;
@@ -26,6 +27,7 @@ import com.b21dccn216.pocketcocktail.view.Login.LoginActivity;
 import com.b21dccn216.pocketcocktail.view.Login.LoginContract;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.CocktailHomeItemAdapter;
 import com.b21dccn216.pocketcocktail.databinding.ActivityHomeBinding;
+import com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,9 +40,56 @@ import com.mig35.carousellayoutmanager.CenterScrollListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity{
-    private ActivityHomeBinding  binding;
+public class HomeActivity extends BaseAppCompatActivity<BaseContract.View, BaseContract.Presenter> {
+    private ActivityHomeBinding binding;
+    private NavController navController;
+    private AppBarConfiguration appBarConfiguration;
 
+    @Override
+    protected BaseContract.Presenter createPresenter() {
+        return new BaseContract.Presenter<BaseContract.View>() {
+            private BaseContract.View view;
+
+            @Override
+            public void attachView(BaseContract.View view) {
+                this.view = view;
+            }
+
+            @Override
+            public void detachView() {
+                this.view = null;
+            }
+
+            @Override
+            public void onCreate() {
+            }
+
+            @Override
+            public void onStart() {
+            }
+
+            @Override
+            public void onResume() {
+            }
+
+            @Override
+            public void onPause() {
+            }
+
+            @Override
+            public void onStop() {
+            }
+
+            @Override
+            public void onDestroy() {
+            }
+        };
+    }
+
+    @Override
+    protected BaseContract.View getView() {
+        return this;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +116,11 @@ public class HomeActivity extends AppCompatActivity{
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_container);
 
-        NavController navCo = navHostFragment.getNavController();
+        navController = navHostFragment.getNavController();
 
         // Bind toolbar & bottomNav with NavController
-        NavigationUI.setupWithNavController(binding.bottomNavigationView, navCo);
-        NavigationUI.setupWithNavController(binding.toolbar, navCo, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
+        NavigationUI.setupWithNavController(binding.toolbar, navController, appBarConfiguration);
 
         // Handle admin tab
         binding.bottomNavigationView.setOnItemSelectedListener(item ->{
@@ -80,16 +129,26 @@ public class HomeActivity extends AppCompatActivity{
                 startActivity(intent);
                 return false;
             }else{
-                NavigationUI.onNavDestinationSelected(item, navCo);
+                NavigationUI.onNavDestinationSelected(item, navController);
                 return true;
             }
         });
 
+        // Set up FAB click listener
+        binding.fabCreateDrink.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CreateDrinkActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 //        binding.bottomNavigationView.setSelectedItemId(R.id.nav_home);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return navController.navigateUp() || super.onSupportNavigateUp();
     }
 }
