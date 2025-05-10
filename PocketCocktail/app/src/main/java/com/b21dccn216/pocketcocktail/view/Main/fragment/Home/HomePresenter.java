@@ -120,11 +120,12 @@ public class HomePresenter
     }
 
     private void getRecommendDrinkList(){
-        drinkDAO.getAllDrinks(new DrinkDAO.DrinkListCallback() {
+        drinkDAO.getDrinksSortAndLimit(
+                DrinkDAO.DRINK_FIELD.NAME, Query.Direction.DESCENDING, 13,
+                new DrinkDAO.DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinkList) {
                 List<DrinkWithCategoryDTO> recommendDrinkList = new ArrayList<>();
-
                 for (Drink drink : drinkList) {
                     categoryDAO.getCategory(drink.getCategoryId(),
                             new CategoryDAO.CategoryCallback() {

@@ -109,7 +109,7 @@ public class HomeActivity extends BaseAppCompatActivity<BaseContract.View, BaseC
 
         //toolbar
         setSupportActionBar(binding.toolbar);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+        appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_discover, R.id.nav_favorite, R.id.nav_profile
         ).build();
         //bottom navigation

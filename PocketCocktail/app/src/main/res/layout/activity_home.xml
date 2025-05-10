@@ -16,7 +16,7 @@
         android:layout_height="?attr/actionBarSize"
         android:elevation="4dp"
         android:background="@color/button_secondary"
-        android:titleTextColor="@color/text_on_secondary"/>
+        app:titleTextColor="@color/text_on_secondary"/>
 
     <!-- Fragment Container -->
     <androidx.fragment.app.FragmentContainerView
@@ -51,7 +51,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="80dp"
-        android:src="@drawable/ic_add"
+        android:src="@drawable/plus"
         app:fabSize="normal"
         app:tint="@color/white"
         app:backgroundTint="@color/secondary"/>

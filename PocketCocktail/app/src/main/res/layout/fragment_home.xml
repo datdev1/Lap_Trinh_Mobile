@@ -22,9 +22,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <ImageView
+                    android:id="@+id/featureImage"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="300dp"
                     android:src="@drawable/sample_cocktail_5"
+                    android:background="@drawable/bg_round_bottom"
+                    android:clipToOutline="true"
                     android:scaleType="centerCrop"/>
             </LinearLayout>
         
@@ -60,7 +63,7 @@
                         android:minWidth="0dp"
                         android:padding="8dp"
                         android:textAllCaps="false"
-                        android:textColor="@color/text_on_primary"
+                        android:textColor="@color/text_on_secondary"
                         android:text="See all"
                         android:background="@drawable/bg_btn_see_all"
                         />
