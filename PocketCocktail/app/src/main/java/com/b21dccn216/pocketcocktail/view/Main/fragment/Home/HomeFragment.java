@@ -5,10 +5,13 @@ import android.os.Bundle;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
 import com.b21dccn216.pocketcocktail.databinding.FragmentHomeBinding;
@@ -25,14 +28,14 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     private FragmentHomeBinding binding;
 
     private CocktailHomeItemAdapter latestCocktailAdapter;
-    private CocktailHomeItemAdapter ibaCocktailAdapter;
+    private CocktailHomeItemAdapter highestRateDrinkAdapter;
     private CocktailHomeItemAdapter categoryCocktailAdapter;
     private RecommendDrinkAdapter recommendDrinkAdapter;
 
-    private final int column = 2;
+    private final int column = 3;
 
     private List<Drink> latestDrinkList = new ArrayList<>();
-    private List<Drink> ibaDrinkList = new ArrayList<>();
+    private List<Drink> highestRateDrinkList = new ArrayList<>();
     private List<Drink> categoryDrinkList = new ArrayList<>();
     private List<DrinkWithCategoryDTO> recommendDrinkList = new ArrayList<>();
 
@@ -62,7 +65,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
         latestCocktailAdapter = new CocktailHomeItemAdapter(getActivity(), latestDrinkList);
-        ibaCocktailAdapter = new CocktailHomeItemAdapter(getActivity(), ibaDrinkList);
+        highestRateDrinkAdapter = new CocktailHomeItemAdapter(getActivity(), highestRateDrinkList);
         categoryCocktailAdapter = new CocktailHomeItemAdapter(getActivity(), categoryDrinkList);
         recommendDrinkAdapter = new RecommendDrinkAdapter(getActivity(), recommendDrinkList);
 
@@ -71,10 +74,10 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
         );
         binding.recyclerLatest.setAdapter(latestCocktailAdapter);
 
-        binding.recyclerIBA.setLayoutManager(
+        binding.recyclerHighestRate.setLayoutManager(
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false)
         );
-        binding.recyclerIBA.setAdapter(ibaCocktailAdapter);
+        binding.recyclerHighestRate.setAdapter(highestRateDrinkAdapter);
 
         binding.recyclerMocktail.setLayoutManager(
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false)
@@ -84,6 +87,32 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), column, LinearLayoutManager.VERTICAL, false);
         binding.recyclerRecommend.setLayoutManager(gridLayoutManager);
         binding.recyclerRecommend.setAdapter(recommendDrinkAdapter);
+
+//        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//            @Override
+//            public int getSpanSize(int pos) {
+//                if((pos + 1) % 4 == 0 || (pos + 1) % 4 == 1){
+//                    return 2;
+//                }else{
+//                    return 1;
+//                }
+//            }
+//        });
+
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_SHORT).show();
+                // TODO:: RELOAD DRINK LIST
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        binding.swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 2000);
+            }
+        });
+
 
         return binding.getRoot();
     }
@@ -101,10 +130,10 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void showIbaDrinkList(List<Drink> drinkList) {
-        ibaDrinkList.clear();
-        ibaDrinkList.addAll(drinkList);
-        ibaCocktailAdapter.notifyDataSetChanged();
+    public void showHighestRateDrinkList(List<Drink> drinkList) {
+        highestRateDrinkList.clear();
+        highestRateDrinkList.addAll(drinkList);
+        highestRateDrinkAdapter.notifyDataSetChanged();
     }
 
     @SuppressLint("NotifyDataSetChanged")

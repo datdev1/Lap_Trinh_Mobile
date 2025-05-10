@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CocktailHomeItemAdapter extends RecyclerView.Adapter<CocktailHomeItemAdapter.ImageViewHolder>{
-    private List<Drink> drinks = new ArrayList<>(
-    );
+    private List<Drink> drinks;
     private Context context;
 
     public CocktailHomeItemAdapter(Context context, List<Drink> drinks) {
@@ -45,18 +44,20 @@ public class CocktailHomeItemAdapter extends RecyclerView.Adapter<CocktailHomeIt
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
+        Drink drink = drinks.get(position);
         Glide.with(context)
-            .load(drinks.get(position).getImage())
+            .load(drink.getImage())
             .centerCrop()
             .error(R.drawable.baseline_downloading_24)
             .into(holder.binding.image);
 
-        holder.binding.name.setText(drinks.get(position).getName());
+        holder.binding.name.setText(drink.getName());
 //        holder.binding.cate.setText(String.valueOf(images.get(position).rate));
 
         holder.binding.layout.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailDrinkActivity.class);
-            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_ID, drinks.get(position).getUuid());
+            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_ID, drink);
+//            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_ID, drinks.get(position).getUuid());
             context.startActivity(intent);
         });
 

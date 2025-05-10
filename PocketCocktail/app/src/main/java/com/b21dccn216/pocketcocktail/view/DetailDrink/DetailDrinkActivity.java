@@ -61,10 +61,11 @@ public class DetailDrinkActivity extends AppCompatActivity {
         ingredientDAO = new IngredientDAO();
 
 
-        String drinkUuid = getIntent().getStringExtra(EXTRA_DRINK_ID);
-        if (drinkUuid != null) {
-            loadDrinkDetails(drinkUuid);
-        }
+//        String drinkUuid = getIntent().getStringExtra(EXTRA_DRINK_ID);
+//        if (drinkUuid != null) {
+//            loadDrinkDetails(drinkUuid);
+//        }
+        Drink drink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_ID);
 
         backButton.setOnClickListener(v -> finish());
     }

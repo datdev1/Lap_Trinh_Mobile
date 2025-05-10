@@ -60,8 +60,8 @@
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:gravity="center_vertical"
-                    android:drawableStart="@drawable/dtd_ic_badge"
-                    android:drawablePadding="8dp" />
+                    android:drawablePadding="8dp"
+                    app:drawableStartCompat="@drawable/dtd_ic_badge" />
 
                 <!-- Title and actions -->
                 <LinearLayout
