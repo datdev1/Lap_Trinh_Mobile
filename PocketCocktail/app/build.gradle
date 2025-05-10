@@ -93,6 +93,8 @@ dependencies {
     // Swipe to refresh layout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01"
 
+    // Firebase Storage
+    implementation 'com.google.firebase:firebase-storage:20.3.0'
 
 }
 
