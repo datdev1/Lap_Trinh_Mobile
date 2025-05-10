@@ -66,63 +66,63 @@ public class DetailDrinkActivity extends AppCompatActivity {
 //            loadDrinkDetails(drinkUuid);
 //        }
         Drink drink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_ID);
+        if (drink != null) {
+            loadDrinkDetails(drink);
+        } else {
+            Toast.makeText(this, "Drink data not found", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         backButton.setOnClickListener(v -> finish());
     }
-    private void loadDrinkDetails(String drinkUuid) {
-        drinkDAO.getDrink(drinkUuid, documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                Drink drink = documentSnapshot.toObject(Drink.class);
-                if (drink != null) {
+    private void loadDrinkDetails(Drink drink) {
+        // Load drink info
+        Glide.with(this).load(drink.getImage()).into(drinkImage);
+        drinkTitle.setText(drink.getName());
+        drinkDescription.setText(drink.getDescription());
 
-                    // Load drink info
-                    Glide.with(this).load(drink.getImage()).into(drinkImage);
-                    drinkTitle.setText(drink.getName());
-                    drinkDescription.setText(drink.getDescription());
-
-                    // Load ingredient
-                    recipeDAO.getRecipesByDrinkId(drinkUuid, recipeSnapshots -> {
-                        List<Recipe> recipes = new ArrayList<>();
-                        for (DocumentSnapshot doc : recipeSnapshots.getDocuments()) {
-                            Recipe recipe = doc.toObject(Recipe.class);
-                            if (recipe != null) {
-                                recipes.add(recipe);
-                            }
-                        }
-
-                        ingredientsLayout.removeAllViews();
-                        for (Recipe recipe : recipes) {
-                            ingredientDAO.getIngredient(recipe.getIngredientId(), ingredientSnapshot -> {
-                                if (ingredientSnapshot.exists()) {
-                                    Ingredient ingredient = ingredientSnapshot.toObject(Ingredient.class);
-                                    if (ingredient != null) {
-                                        String line = ingredient.getName() + " (" + recipe.getAmount() + " " +  ingredient.getUnit() + ")";
-                                        TextView textView = createBulletTextView(line);
-                                        ingredientsLayout.addView(textView);
-                                    }
-                                }
-                            }, e -> {
-                                Toast.makeText(this, "Failed to load ingredient: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            });
-                        }
-                    }, e -> {
-                        Toast.makeText(this, "Failed to load recipes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-
-                    // Load instruction
-                    instructionsLayout.removeAllViews();
-                    for (String instruction : drink.getInstruction().split("\n")) {
-                        TextView textView = createBulletTextView(instruction);
-                        instructionsLayout.addView(textView);
-                    }
+        // Load Ingredient
+        recipeDAO.getRecipesByDrinkId(drink.getUuid(), recipeSnapshots -> {
+            List<Recipe> recipes = new ArrayList<>();
+            for (DocumentSnapshot doc : recipeSnapshots.getDocuments()) {
+                Recipe recipe = doc.toObject(Recipe.class);
+                if (recipe != null) {
+                    recipes.add(recipe);
                 }
-            } else {
-                Toast.makeText(this, "Drink not found.", Toast.LENGTH_SHORT).show();
+            }
+
+            ingredientsLayout.removeAllViews();
+            for (Recipe recipe : recipes) {
+                ingredientDAO.getIngredient(recipe.getIngredientId(), ingredientSnapshot -> {
+                    if (ingredientSnapshot.exists()) {
+                        Ingredient ingredient = ingredientSnapshot.toObject(Ingredient.class);
+                        if (ingredient != null) {
+                            String line = ingredient.getName() + " (" + recipe.getAmount() + " " + ingredient.getUnit() + ")";
+                            TextView textView = createBulletTextView(line);
+                            ingredientsLayout.addView(textView);
+                        }
+                    }
+                }, e -> {
+                    Toast.makeText(this, "Failed to load ingredient: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
             }
         }, e -> {
-            Toast.makeText(this, "Failed to load drink: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Failed to load recipes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
+
+        // Load instruction
+        instructionsLayout.removeAllViews();
+        String instructions = drink.getInstruction();
+        if (instructions != null && !instructions.trim().isEmpty()) {
+            for (String instruction : instructions.split("\n")) {
+                if (!instruction.trim().isEmpty()) {
+                    TextView textView = createBulletTextView(instruction.trim());
+                    instructionsLayout.addView(textView);
+                }
+            }
+        }
     }
+
     private TextView createBulletTextView(String text) {
         TextView textView = new TextView(this);
         textView.setText(text);
