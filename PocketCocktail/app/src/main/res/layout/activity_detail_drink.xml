@@ -53,7 +53,7 @@
                     android:id="@+id/badge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/badge_background"
+                    android:background="@drawable/bg_badge_iba"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
                     android:text="IBA Official"

@@ -1,16 +1,15 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Home;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
-import com.b21dccn216.pocketcocktail.view.Main.Drink;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.b21dccn216.pocketcocktail.dao.CategoryDAO;
+import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
+import com.b21dccn216.pocketcocktail.model.Category;
+import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithCategoryDTO;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,42 +18,128 @@ public class HomePresenter
     extends BasePresenter<HomeContract.View>
     implements HomeContract.Presenter
 {
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference drinkRef = database.getReference("Drinks");
+
+    private DrinkDAO drinkDAO = new DrinkDAO();
+    private CategoryDAO categoryDAO = new CategoryDAO();
 
 
     public HomePresenter() {
         super();
+
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        getOneCategoryDrinkList();
+        getIbaDrinkList();
+        getLatestDrinkList();
+        getRecommendDrinkList();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getDrinks();
+
     }
 
-    public void getDrinks() {
-        drinkRef.addValueEventListener(new ValueEventListener() {
+    private void getOneCategoryDrinkList(){
+        categoryDAO.getAllCategorys(new CategoryDAO.CategoryListCallback() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Drink> drinkList = new ArrayList<>();
-                for (DataSnapshot drinkSnapshot : snapshot.getChildren()) {
-                    Drink drink = drinkSnapshot.getValue(Drink.class);
-                    drinkList.add(drink);
+            public void onCategoryListLoaded(List<Category> categoryList) {
+                if(categoryList != null && !categoryList.isEmpty()){
+                    Category category = categoryList.get(0);
+                    loadOneCategoryDrinkList(category);
+                    Log.d("datdev1", "onCategoryListLoaded: " + category.getUuid());
                 }
-
-                view.showDrinks(drinkList);
-
-                // You can now use drinkList to populate RecyclerView or something else
-                Log.d("DRINKS", "Loaded " + drinkList.size() + " drinks.");
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("DRINKS", "Failed to read drinks", error.toException());
+            public void onError(Exception e) {
+
             }
         });
     }
+
+    private void getIbaDrinkList(){
+        drinkDAO.getAllDrinks(new DrinkDAO.DrinkListCallback() {
+            @Override
+            public void onDrinkListLoaded(List<Drink> drinkList) {
+                view.showIbaDrinkList(drinkList);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+    private void getLatestDrinkList(){
+        drinkDAO.getAllDrinks(new DrinkDAO.DrinkListCallback() {
+            @Override
+            public void onDrinkListLoaded(List<Drink> drinkList) {
+                view.showLatestDrinkList(drinkList);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+
+    private void loadOneCategoryDrinkList(Category category){
+        drinkDAO.getDrinksByCategoryId(category.getUuid(),
+                queryDocumentSnapshots -> {
+                    List<Drink> drinkList = new ArrayList<>();
+                    for (DocumentSnapshot drinkSnapshot : queryDocumentSnapshots.getDocuments()) {
+                        Drink drink = drinkSnapshot.toObject(Drink.class);
+                        drinkList.add(drink);
+                        if(drinkList.size() == 10) break;
+                    }
+                    Log.d("datdev1", "loadOneCategoryDrinkList: " + drinkList.size());
+                    view.showOneCategoryDrinkList(category.getName(), drinkList);
+                },
+                e -> {
+
+                });
+    }
+
+    private void getRecommendDrinkList(){
+        drinkDAO.getAllDrinks(new DrinkDAO.DrinkListCallback() {
+            @Override
+            public void onDrinkListLoaded(List<Drink> drinkList) {
+                List<DrinkWithCategoryDTO> recommendDrinkList = new ArrayList<>();
+
+                for (Drink drink : drinkList) {
+                    categoryDAO.getCategory(drink.getCategoryId(),
+                            documentSnapshot -> {
+                                Category category = documentSnapshot.toObject(Category.class);
+                                if(category == null){
+                                    Log.d("datdev1", "category == null-> drinkName: " + drink.getName() + " --- CateName: " + drink.getCategoryId());
+                                    recommendDrinkList.add(new DrinkWithCategoryDTO(drink.getCategoryId(), drink));
+                                }else{
+                                    Log.d("datdev1", "onDrinkListLoaded: " + drink.getName() + " " + category.getName());
+                                    recommendDrinkList.add(new DrinkWithCategoryDTO(category.getName(), drink));
+                                }
+                                view.showRecommendDrinkList(recommendDrinkList);
+                            },
+                            e -> {
+                                Log.d("datdev1", "categoryDAO.getCategory(drink.getCategoryId() error : " + e.getMessage());
+                            });
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+
 
 
 }

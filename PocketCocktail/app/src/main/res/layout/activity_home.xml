@@ -9,6 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -24,13 +25,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:navGraph="@navigation/nav_graph"
-        app:defaultNavHost="true"/>
+        app:defaultNavHost="true"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="?attr/actionBarSize"
+        />
 
     <!-- Bottom Navigation View -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/white"
         app:menu="@menu/bottom_nav_menu"
@@ -38,6 +42,6 @@
         app:itemActiveIndicatorStyle="@color/transparent"
         app:itemTextColor="@color/nav_item_icon_tint"
         app:labelVisibilityMode="labeled"
-        app:itemBackground="@drawable/nav_item_background" />
+        app:itemBackground="@drawable/nav_item_background"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

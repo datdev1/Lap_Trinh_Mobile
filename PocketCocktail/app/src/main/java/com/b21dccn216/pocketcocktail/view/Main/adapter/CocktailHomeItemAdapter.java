@@ -7,21 +7,21 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.b21dccn216.pocketcocktail.view.Main.Drink;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemCocktailHomeBinding;
+import com.b21dccn216.pocketcocktail.model.Drink;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CocktailHomeItemAdapter extends RecyclerView.Adapter<CocktailHomeItemAdapter.ImageViewHolder>{
-    private ArrayList<Drink> images = new ArrayList<>(
+    private List<Drink> drinks = new ArrayList<>(
     );
     private Context context;
 
     public CocktailHomeItemAdapter(Context context, List<Drink> drinks) {
-        this.images = (ArrayList<Drink>) drinks;
+        this.drinks =  drinks;
         this.context = context;
 //        images.add("https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2Fdadd692253081d2d253706f4773e7187f284f121158f4a5a409b76e94fd85866%3F&w=1920&q=75");
 //        images.add("https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F66934ec018b44b213232b826d50fa90068b815df98294d6927ebfc35427b0701%3F&w=3840&q=75");
@@ -44,12 +44,12 @@ public class CocktailHomeItemAdapter extends RecyclerView.Adapter<CocktailHomeIt
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Glide.with(context)
-            .load(images.get(position).img)
+            .load(drinks.get(position).getImage())
             .centerCrop()
             .error(R.drawable.baseline_downloading_24)
             .into(holder.binding.image);
 
-        holder.binding.name.setText(images.get(position).name);
+        holder.binding.name.setText(drinks.get(position).getName());
 //        holder.binding.cate.setText(String.valueOf(images.get(position).rate));
     }
 
@@ -57,7 +57,7 @@ public class CocktailHomeItemAdapter extends RecyclerView.Adapter<CocktailHomeIt
 
     @Override
     public int getItemCount() {
-        return images.size();
+        return drinks.size();
     }
 
     public static class ImageViewHolder extends RecyclerView.ViewHolder{

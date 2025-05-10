@@ -46,7 +46,8 @@ public class HomeActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
-
+        setContentView(binding.getRoot());
+        // Check is admin to show/hide admin tab
         User user = SessionManager.getInstance().getUser();
         if(user == null) {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -57,29 +58,31 @@ public class HomeActivity extends AppCompatActivity{
         boolean isAdmin = user.getRole().equals("Admin");
         binding.bottomNavigationView.getMenu().findItem(R.id.nav_admin).setVisible(isAdmin);
 
-        setContentView(binding.getRoot());
-
+        //toolbar
         setSupportActionBar(binding.toolbar);
-
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_container);
-        NavController navCo = navHostFragment.getNavController();
-
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_discover, R.id.nav_favorite, R.id.nav_profile
         ).build();
+        //bottom navigation
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_container);
 
+        NavController navCo = navHostFragment.getNavController();
+
+        // Bind toolbar & bottomNav with NavController
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navCo);
         NavigationUI.setupWithNavController(binding.toolbar, navCo, appBarConfiguration);
 
+        // Handle admin tab
         binding.bottomNavigationView.setOnItemSelectedListener(item ->{
             if(item.getItemId() == R.id.nav_admin){
                 Intent intent = new Intent(this, TestDatabaseActivity.class);
                 startActivity(intent);
                 return false;
+            }else{
+                NavigationUI.onNavDestinationSelected(item, navCo);
+                return true;
             }
-
-            return true;
         });
 
     }

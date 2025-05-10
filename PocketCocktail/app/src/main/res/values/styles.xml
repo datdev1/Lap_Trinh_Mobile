@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="NormalString">
+    <style name="BaseString">
+        <item name="fontFamily">@font/poppins_regular</item>
+    </style>
+
+    <style name="NormalString" parent="BaseString">
         <item name="android:textColor">@color/text_secondary</item>
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="AppTitle">
+    <style name="AppTitle" parent="BaseString">
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">34sp</item>
         <item name="android:letterSpacing">0.08</item>
     </style>
 
-    <style name="AppSecondaryTitle">
+    <style name="AppSecondaryTitle" parent="BaseString">
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">26sp</item>
         <item name="android:letterSpacing">0.08</item>
@@ -23,6 +27,30 @@
         <item name="android:textSize">100sp</item>
         <item name="android:textStyle">italic</item>
         <item name="android:letterSpacing">0.08</item>
+    </style>
+
+    <style name="homeTitle" parent="BaseString">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+
+    <style name="ItemTitle" parent="BaseString">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ItemContent" parent="BaseString">
+        <item name="android:textColor">@color/button_text_dark</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
 

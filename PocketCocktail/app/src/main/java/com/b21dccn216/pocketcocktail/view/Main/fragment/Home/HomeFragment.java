@@ -1,31 +1,21 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Home;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 
-import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
 import com.b21dccn216.pocketcocktail.databinding.FragmentHomeBinding;
-import com.b21dccn216.pocketcocktail.view.Main.Drink;
+import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.CocktailHomeItemAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-import com.mig35.carousellayoutmanager.CarouselLayoutManager;
-import com.mig35.carousellayoutmanager.CarouselZoomPostLayoutListener;
-import com.mig35.carousellayoutmanager.CenterScrollListener;
+import com.b21dccn216.pocketcocktail.view.Main.adapter.RecommendDrinkAdapter;
+import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithCategoryDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +24,17 @@ import java.util.List;
 public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.Presenter> implements HomeContract.View {
     private FragmentHomeBinding binding;
 
-    private CocktailHomeItemAdapter adapter;
-    private int column = 2;
+    private CocktailHomeItemAdapter latestCocktailAdapter;
+    private CocktailHomeItemAdapter ibaCocktailAdapter;
+    private CocktailHomeItemAdapter categoryCocktailAdapter;
+    private RecommendDrinkAdapter recommendDrinkAdapter;
 
-    private List<Drink> drinkList = new ArrayList<>();
+    private final int column = 2;
+
+    private List<Drink> latestDrinkList = new ArrayList<>();
+    private List<Drink> ibaDrinkList = new ArrayList<>();
+    private List<Drink> categoryDrinkList = new ArrayList<>();
+    private List<DrinkWithCategoryDTO> recommendDrinkList = new ArrayList<>();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -64,30 +61,67 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
-        adapter = new CocktailHomeItemAdapter(getActivity(), drinkList);
-//      Linear layout test
-//        binding.recyclerView.setLayoutManager(
-//                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false)
-//        );
-        //binding.recyclerView.setAdapter(adapter);
+        latestCocktailAdapter = new CocktailHomeItemAdapter(getActivity(), latestDrinkList);
+        ibaCocktailAdapter = new CocktailHomeItemAdapter(getActivity(), ibaDrinkList);
+        categoryCocktailAdapter = new CocktailHomeItemAdapter(getActivity(), categoryDrinkList);
+        recommendDrinkAdapter = new RecommendDrinkAdapter(getActivity(), recommendDrinkList);
 
-        // Carousel layout test
-        CarouselLayoutManager layoutManager = new CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true);
-        layoutManager.setPostLayoutListener(new CarouselZoomPostLayoutListener());
+        binding.recyclerLatest.setLayoutManager(
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false)
+        );
+        binding.recyclerLatest.setAdapter(latestCocktailAdapter);
 
-        binding.recyclerView.setLayoutManager(layoutManager);
-        binding.recyclerView.setHasFixedSize(true);
-        binding.recyclerView.setAdapter(adapter);
-        binding.recyclerView.addOnScrollListener(new CenterScrollListener());
+        binding.recyclerIBA.setLayoutManager(
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false)
+        );
+        binding.recyclerIBA.setAdapter(ibaCocktailAdapter);
+
+        binding.recyclerMocktail.setLayoutManager(
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false)
+        );
+        binding.recyclerMocktail.setAdapter(categoryCocktailAdapter);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), column, LinearLayoutManager.VERTICAL, false);
+        binding.recyclerRecommend.setLayoutManager(gridLayoutManager);
+        binding.recyclerRecommend.setAdapter(recommendDrinkAdapter);
 
         return binding.getRoot();
     }
 
+
+
     @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void showDrinks(List<Drink> drinks) {
-        this.drinkList.clear();
-        this.drinkList.addAll(drinks);
-        adapter.notifyDataSetChanged();
+    public void showOneCategoryDrinkList(String cateName, List<Drink> drinkList) {
+        binding.titleMocktails.setText(cateName);
+        categoryDrinkList.clear();
+        categoryDrinkList.addAll(drinkList);
+        categoryCocktailAdapter.notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void showIbaDrinkList(List<Drink> drinkList) {
+        ibaDrinkList.clear();
+        ibaDrinkList.addAll(drinkList);
+        ibaCocktailAdapter.notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void showLatestDrinkList(List<Drink> drinkList) {
+        latestDrinkList.clear();
+        latestDrinkList.addAll(drinkList);
+        latestCocktailAdapter.notifyDataSetChanged();
+    }
+
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void showRecommendDrinkList(List<DrinkWithCategoryDTO> drinkList) {
+        recommendDrinkList.clear();
+        recommendDrinkList.addAll(drinkList);
+        recommendDrinkAdapter.notifyDataSetChanged();
     }
 }
+
