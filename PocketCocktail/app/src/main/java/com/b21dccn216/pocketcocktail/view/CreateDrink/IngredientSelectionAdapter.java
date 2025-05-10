@@ -14,7 +14,7 @@ import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
-
+ 
 public class IngredientSelectionAdapter extends RecyclerView.Adapter<IngredientSelectionAdapter.IngredientViewHolder> {
     private List<Ingredient> ingredients;
     private OnIngredientSelectedListener listener;
