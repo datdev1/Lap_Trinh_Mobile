@@ -9,13 +9,27 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Spinner for model selection -->
-    <Spinner
-        android:id="@+id/spinnerModelSelect"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:minHeight="48dp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <Spinner
+            android:id="@+id/spinnerModelSelect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btnImport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Import"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
 
     <!-- Fragment container -->
     <FrameLayout

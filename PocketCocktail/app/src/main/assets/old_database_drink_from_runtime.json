@@ -1,0 +1,209 @@
+{
+  "Drinks": [
+    {
+      "description": "Originally served in a copper mug with a kicking mule imprinted on it, perfectly illustrating the fieriness of this vodka and ginger beer mix.",
+      "id": 0,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F33d3abfa161f184d362be864111282c342d25077c78cad249a3ceda88d693240%3F&w=3840&q=75",
+      "ingredient": [
+        {
+          "id": 1,
+          "unit": 20
+        },
+        {
+          "id": 2,
+          "unit": 100
+        }
+      ],
+      "name": "Moscow Mule",
+      "rate": 5,
+      "spiritId": 0,
+      "tip": "If you like this cocktail, its worth investing in your own Copper Mug, it not only keeps the drink colder it looks cool too!"
+    },
+    {
+      "description": "The Bloody Mary just celebrated it's 100th Birthday...100 years of being the go to cocktail for brunches, on airplanes and for hangovers!! A unique Savoury cocktail with a true multi-flavour mix of sweet, sour, salt, umami and spicy! ",
+      "id": 1,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F22b39199e1cee35cc3eed6a0f9cb778a318d79d1fc7cafae9d18ea4c2d8c66ad%3F&w=1920&q=75",
+      "name": "Bloody Mary",
+      "rate": 4.2,
+      "spiritId": 0,
+      "tip": "A fantastic cocktail to personalise. Find your own twist or spice for that unique serve. Perhaps try a splash of port/sherry/red-wine into the mix for a bit of depth."
+    },
+    {
+      "description": "Arguably the most popular cocktail World Wide! So simple, yet so refreshingly tasty. Ensure lots of ice and fresh fruit to compliment your gin your choice for a winning combination.",
+      "id": 2,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F66934ec018b44b213232b826d50fa90068b815df98294d6927ebfc35427b0701%3F&w=3840&q=75",
+      "name": "Gin and Tonic",
+      "rate": 4.7,
+      "spiritId": 1,
+      "tip": "There are so many great Gins and premium tonics out there, find your perfect combo and get creative with the garnish!"
+    },
+    {
+      "description": "Sophisticated and simple at the same time with a complex flavor that makes the perfect aperitif. Popular all over the world and de rigeur during aperitivo hour in Milan",
+      "id": 3,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2Fdadd692253081d2d253706f4773e7187f284f121158f4a5a409b76e94fd85866%3F&w=1920&q=75",
+      "name": "Negroni",
+      "rate": 5,
+      "spiritId": 1,
+      "tip": "Serve with an orange peel twist."
+    },
+    {
+      "description": "It may be Old by name, but this particular recipe and method is relatively modern and has become one of the most ordered cocktails in top bars Globally!",
+      "id": 4,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2Ffe0d45c48a54ff33aaa469e6129049284a38158ff5b32fddc108f8260fabfcf3%3F&w=1920&q=75",
+      "name": "Old Fashioned",
+      "rate": 4.8,
+      "spiritId": 2,
+      "tip": "An Old Fashioned can be made with pretty much any dark spirit. Choose your favourite to twist this classic."
+    },
+    {
+      "description": "Coffee, almond, bourbon, and lemon, a new perfect match from your bar selection. Each distinct flavor combined to give you a smooth, sour, and great tasting new drink",
+      "id": 5,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F3a449e0618148a7d5bb611024f4fcc8b696a199e5f536193faa0dbadbf067e05%3F&w=1920&q=75",
+      "name": "Whiscoffee Sourr",
+      "rate": 4.6,
+      "spiritId": 2,
+      "tip": "If you like more foam on your sour, try to dry shake before the hard shake with ice."
+    },
+    {
+      "description": "The Mojito epitomises the long refreshing cocktail category, with its fresh minty flavours, Cuban roots and balanced flavours you can see why its popular from Havana to Tokyo.",
+      "id": 6,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F2e0572b8e04ab80e07234a9e4b101e93040de7b158cb81ebcc1a15fac8e35df0%3F&w=1920&q=75",
+      "name": "Mojito",
+      "rate": 4.5,
+      "spiritId": 3,
+      "tip": "Switch out the soda for a different mixer such as ginger ale or Champagne for a Mojito Royale!"
+    },
+    {
+      "description": "An absolute classic, stemming from the small mining town of Daiquiri in Cuba. The simple mix of the Rum, lime and sugar has sublime balance, hence its popularity Worldwide. ",
+      "id": 7,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2Fa9ce5bb8de7a88167825a099e175545284739050bae77c1a19fe6ab71293e350%3F&w=1920&q=75",
+      "name": "Daiquiri",
+      "rate": 4.4,
+      "spiritId": 3,
+      "tip": "Try different styles of Rums (Aged/Spiced/Golden) for great variants on this amazing classic. Another twist is to add 3 raspberries in the shaker before shaking for a fruity and beautiful pink cocktail."
+    },
+    {
+      "description": "A Mexican classic that’s hard to beat on a hot sunny day! Whether you like them served straight up, on the rocks, blended, with fresh fruit, or with a touch of salt, the combination is a true winner.",
+      "id": 8,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F111bbf3b9514eac66c695511342996dd253d50c30256b2cb7cef32e42d1fb4d1%3F&w=1920&q=75",
+      "name": "Margarita",
+      "rate": 4.7,
+      "spiritId": 4,
+      "tip": "Good tequila is required. Salt is optional. Ice is totally your preference. A touch of fresh fruit or chili is a winner."
+    },
+    {
+      "description": "Another cocktail that has survived from the disco era, long and colourful with the agave flavours of the tequila, the fresh citrus and the sweet syrup. ",
+      "id": 9,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F721b5a91b48b2ee08d560b5b77b00eb69f782567d71f953d7efeb5c6f93f6e50%3F&w=1920&q=75",
+      "name": "Tequila Sunrise",
+      "rate": 4.3,
+      "spiritId": 4,
+      "tip": "Some like to layer the grenadine at the bottom whilst others drizzle from the top. Create your own 'sunrise' effect."
+    },
+    {
+      "description": "A Classic cocktail stemming from the early 1900's with origins in Paris & London. Named apparently after the motorcycle sidecar of a guest. 3 ingredients, short & sharp with a smooth tang.",
+      "id": 10,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2Fbb5f8ba641481aaefeb84726512bd9f46126d059d4c28390b9485f124fad5c15%3F&w=1920&q=75",
+      "name": "Sidecar",
+      "rate": 4.5,
+      "spiritId": 5,
+      "tip": "Different lemons have a different acidity, tailor the ratio to your style and preference."
+    },
+    {
+      "description": "A classic 'dessert' cocktail from the 1930's that brings together the unique flavours of the decadent brandy, rich chocolate and sweet cream. ",
+      "id": 11,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F06ab2f07a6cbe5c5ae50383c6d9d92bcb13e78e20b512f22c8d2fdfb763f04fd%3F&w=1920&q=75",
+      "name": "Brandy Alexander",
+      "rate": 4.2,
+      "spiritId": 5,
+      "tip": "Make sure you give this cocktail that extra hard shake to give that light foamy texture to tickle your tastebuds."
+    },
+    {
+      "description": "The Amaretto Sour is a popular twist on the classic whisky sour. The nutty and marzipan flavours of the amaretto add an extra dimension to this great tasting and balanced cocktail. ",
+      "id": 12,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F5083fd7e0fcd763e9ee3b90bb93e4bc6e2b5d0a02dd9557ff52bc7929e4c85d5%3F&w=1920&q=75",
+      "name": "Amaretto Sour",
+      "rate": 4.4,
+      "spiritId": 6,
+      "tip": "The Sour is a very versatile cocktail for twisting. Works with pretty much every dark spirit. Why not experiment with different types of sugars or different bitters."
+    },
+    {
+      "description": "A great looking shot that needs to be made by those with a steady hand. Creamy, coffee with a orange kick ! ",
+      "id": 13,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2Fad0082832bc32138a7c4a8ab89c5221f6a71f4973a6ba2f6806d0159f17be78b%3F&w=1920&q=75",
+      "name": "B-52",
+      "rate": 4.1,
+      "spiritId": 6,
+      "tip": "Shots always taste better Cold! Get the bottles in the fridge if you can."
+    },
+    {
+      "description": "Bloody red – fresh, and delicious! Rumbullion Rum with its hints of vanilla and orange takes this new and simple cocktail to the next level. Bitter and sour in perfect balance.",
+      "id": 14,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2Ff1f2f6ec9a6891c914273fd17db522810eedcbcbd94aa36b0862136094841568%3F&w=1920&q=75",
+      "name": "RedRum",
+      "rate": 4.1,
+      "spiritId": 3
+    },
+    {
+      "description": "Fresh and delicious, this vodka cocktail blended with the one and only Koskenkorva Vodka is perfect for a sunny day.",
+      "id": 15,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2Fafcaba7a9b04834f11bf2654d1191260f80baad4f0ed20ca8469753e77776884%3F&w=3840&q=75",
+      "name": "Red River Punch",
+      "rate": 4.1,
+      "spiritId": 3
+    },
+    {
+      "description": "Created by Jorg Meyer in 2008 in Germany, this cocktail has quickly become a smash WorldWide with the basil adding great herbaceous flavours to the libation. ",
+      "id": 16,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F0999fc432589a0ece7e2f78c7c073f5dab7c01d953a6bd9d289a44654336f0a3%3F&w=1920&q=75",
+      "name": "Gin Basil Smash",
+      "rate": 4.1,
+      "spiritId": 6,
+      "tip": "If you can get hold of Red basil instead of Green, it creates a fantastic twist to the cocktail"
+    }
+  ],
+  "Spirits": [
+    {
+      "description": "Clean, neutral flavor, made from grains or potatoes.",
+      "id": 0,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2Ff23a195eacfab2f6b0eafd1e564ab4bc6a26abec7661e39bc5ae833f2b435b8b%3F&w=1920&q=75",
+      "name": "Vodka"
+    },
+    {
+      "description": "Flavored with juniper berries and botanicals.",
+      "id": 1,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F7374c89cfbb3d8c62e579fd1f2b4221369f8caeebcd05780370a215bf092208b%3F&w=1920&q=75",
+      "name": "Gin"
+    },
+    {
+      "description": "Made from grains, aged in barrels (e.g., bourbon, rye, scotch).",
+      "id": 2,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F7ad5d4b5e3b009bbadc83e58556e5c6c79e292c37a5aed34e1c8d4ea6375267c%3F&w=1920&q=75",
+      "name": "Whiskey"
+    },
+    {
+      "description": "Made from sugarcane or molasses, often sweet.",
+      "id": 3,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F70251d63c459616acc73ca10e79a3bfe1cd14dcf380efbc81d759387523f624b%3F&w=1920&q=75",
+      "name": "Rum"
+    },
+    {
+      "description": "Made from blue agave, mostly in Mexico.",
+      "id": 4,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2Fee28c00b0705d702fbb32107be8a78ed6ab1a1bdddbcb268aaadbdb3d311915a%3F&w=1920&q=75",
+      "name": "Tequila"
+    },
+    {
+      "description": "Distilled from wine or fruit juice.",
+      "id": 5,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F590f35e961566d7c54c0d8ec6fc0bb41c5cb26765704422a9b8e82504eadec1e%3F&w=1920&q=75",
+      "name": "Brandy"
+    },
+    {
+      "description": "Spirits with added sugar and flavors (e.g., Triple Sec, Amaretto).",
+      "id": 6,
+      "img": "https://cocktailclub.com/_next/image?url=https%3A%2F%2Fcocktailclub.fra1.digitaloceanspaces.com%2F5e3b9a3042efccc383a92591416b4a9af044963a81b938a1e96dd432945b8d7a%3F&w=1920&q=75",
+      "name": "Liqueurs"
+    }
+  ]
+}
