@@ -76,9 +76,17 @@ public class HomeActivity extends AppCompatActivity{
             if(item.getItemId() == R.id.nav_admin){
                 Intent intent = new Intent(this, TestDatabaseActivity.class);
                 startActivity(intent);
+                return false;
             }
+
             return true;
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        binding.bottomNavigationView.setSelectedItemId(R.id.nav_home);
     }
 }

@@ -39,7 +39,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>  implement
             .addOnCompleteListener(((Fragment)view).getActivity(),task -> {
                 if(task.isSuccessful()){
                     FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                    userDAO.getUserByEmail(firebaseUser.getEmail(),
+                    userDAO.getUserByUuidAuthen(firebaseUser.getUid(),
                             querySnapshot -> {
                                 if(querySnapshot.getDocuments().isEmpty()){
                                     view.authFail("User not found");

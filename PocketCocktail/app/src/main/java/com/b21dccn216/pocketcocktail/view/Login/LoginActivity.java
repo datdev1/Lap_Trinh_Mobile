@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.view.Login;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -19,14 +20,14 @@ import com.google.firebase.auth.FirebaseAuth;
 public class LoginActivity extends AppCompatActivity{
 
     private ActivityLoginBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 //        if(false){      //this line for debug only
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             UserDAO userDAO = new UserDAO();
-            userDAO.getUserByEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+            userDAO.getUserByUuidAuthen(FirebaseAuth.getInstance().getCurrentUser().getUid(),
                     querySnapshot -> {
                         if(querySnapshot.getDocuments().isEmpty()){
                             return;
@@ -46,6 +47,7 @@ public class LoginActivity extends AppCompatActivity{
                         return;
                     });
         }
+
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
