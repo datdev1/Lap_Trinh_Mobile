@@ -31,7 +31,7 @@
                 android:layout_margin="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Back"
-                android:src="@drawable/ic_back" />
+                android:src="@drawable/dtd_ic_back" />
         </FrameLayout>
 
         <!-- Drink details card -->
@@ -60,7 +60,7 @@
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:gravity="center_vertical"
-                    android:drawableStart="@drawable/ic_badge"
+                    android:drawableStart="@drawable/dtd_ic_badge"
                     android:drawablePadding="8dp" />
 
                 <!-- Title and actions -->
@@ -91,7 +91,7 @@
                         android:layout_height="40dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="Favorite"
-                        android:src="@drawable/ic_favorite_outline"
+                        android:src="@drawable/dtd_ic_favorite_outline"
                         app:tint="@color/secondary" />
 
                     <!-- Share button -->
@@ -101,7 +101,7 @@
                         android:layout_height="40dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="Share"
-                        android:src="@drawable/ic_share"
+                        android:src="@drawable/dtd_ic_share"
                         app:tint="@color/ripple_dark" />
                 </LinearLayout>
 
@@ -126,6 +126,7 @@
                     android:textStyle="bold" />
 
                 <LinearLayout
+                    android:id="@+id/ingredients_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -134,7 +135,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_bullet"
+                        android:drawableStart="@drawable/dtd_ic_bullet"
                         android:drawablePadding="8dp"
                         android:padding="4dp"
                         android:text="Soda water"
@@ -144,7 +145,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_bullet"
+                        android:drawableStart="@drawable/dtd_ic_bullet"
                         android:drawablePadding="8dp"
                         android:padding="4dp"
                         android:text="Light/white rum (45 ml)"
@@ -154,7 +155,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_bullet"
+                        android:drawableStart="@drawable/dtd_ic_bullet"
                         android:drawablePadding="8dp"
                         android:padding="4dp"
                         android:text="Fresh lime juice (20 ml)"
@@ -164,7 +165,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_bullet"
+                        android:drawableStart="@drawable/dtd_ic_bullet"
                         android:drawablePadding="8dp"
                         android:padding="4dp"
                         android:text="Sugar (2 tsp)"
@@ -174,7 +175,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_bullet"
+                        android:drawableStart="@drawable/dtd_ic_bullet"
                         android:drawablePadding="8dp"
                         android:padding="4dp"
                         android:text="Mint (6 pcs)"
@@ -193,6 +194,7 @@
                     android:textStyle="bold" />
 
                 <LinearLayout
+                    android:id="@+id/instructions_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -201,7 +203,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_bullet"
+                        android:drawableStart="@drawable/dtd_ic_bullet"
                         android:drawablePadding="8dp"
                         android:padding="4dp"
                         android:text="Muddle mint leaves with sugar and lime juice"
@@ -211,7 +213,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_bullet"
+                        android:drawableStart="@drawable/dtd_ic_bullet"
                         android:drawablePadding="8dp"
                         android:padding="4dp"
                         android:text="Add a splash of soda water and fill the glass with ice"
@@ -221,7 +223,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_bullet"
+                        android:drawableStart="@drawable/dtd_ic_bullet"
                         android:drawablePadding="8dp"
                         android:padding="4dp"
                         android:text="Pour the rum and top with soda water"
@@ -231,7 +233,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_bullet"
+                        android:drawableStart="@drawable/dtd_ic_bullet"
                         android:drawablePadding="8dp"
                         android:padding="4dp"
                         android:text="Garnish with mint leaves and lime wedge"
@@ -249,15 +251,65 @@
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/similar_drinks_recycler_view"
+<!--                <androidx.recyclerview.widget.RecyclerView-->
+<!--                    android:id="@+id/similar_drinks_recycler_view"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:clipToPadding="false"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:paddingStart="0dp"-->
+<!--                    android:paddingEnd="16dp" />-->
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:clipToPadding="false"
+                    android:layout_height="130dp"
                     android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:paddingStart="0dp"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:paddingVertical="12dp"
+                    android:background="#FFFFFF">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Comments"
+                        android:textColor="#000000"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.02"
+                        android:paddingTop="4dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/addCommentButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:minWidth="100dp"
+                        android:background="@drawable/dtd_btn_add_cmt"
+                        android:drawableStart="@drawable/dtd_ic_add_comment"
+                        android:drawablePadding="8dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:text="Add"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        android:textAllCaps="false"
+                        android:stateListAnimator="@null"
+                        android:elevation="1dp"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+
+
+
+<!--                <androidx.recyclerview.widget.RecyclerView-->
+<!--                    android:id="@+id/commentsRecyclerView"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:nestedScrollingEnabled="false"-->
+<!--                    android:visibility="visible"-->
+<!--                    android:paddingBottom="16dp" />-->
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

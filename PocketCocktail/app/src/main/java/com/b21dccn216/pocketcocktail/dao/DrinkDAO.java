@@ -23,7 +23,6 @@ public class DrinkDAO {
     private final CollectionReference drinkRef;
 
     private final ImageDAO imageDAO;
-
     public static final String ERROR_USER_NOT_AUTH = "User not authenticated";
 
     public DrinkDAO() {
