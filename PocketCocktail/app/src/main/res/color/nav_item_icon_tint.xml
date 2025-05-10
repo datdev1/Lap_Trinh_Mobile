@@ -2,4 +2,5 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_checked="true" android:color="@color/text_on_secondary" />
     <item android:color="@color/secondary" />
+    <color name="your_hint_color">#808080</color>
 </selector>

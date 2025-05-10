@@ -1,6 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Home;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -10,9 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
 import com.b21dccn216.pocketcocktail.databinding.FragmentHomeBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.CocktailHomeItemAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.RecommendDrinkAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithCategoryDTO;
@@ -84,6 +87,12 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), column, LinearLayoutManager.VERTICAL, false);
         binding.recyclerRecommend.setLayoutManager(gridLayoutManager);
         binding.recyclerRecommend.setAdapter(recommendDrinkAdapter);
+
+        // Handle FloatingActionButton click
+        binding.fabCreateDrink.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), CreateDrinkActivity.class);
+            startActivity(intent);
+        });
 
         return binding.getRoot();
     }
