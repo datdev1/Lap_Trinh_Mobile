@@ -22,7 +22,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.List;
 
 public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder> {
-
+ 
     private List<Recipe> recipeList;
     private OnIngredientRemoveListener listener;
     private IngredientDAO ingredientDAO;
