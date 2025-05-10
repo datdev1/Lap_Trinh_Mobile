@@ -2,15 +2,14 @@
 <selector
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <corners android:radius="25dp"/>
             <solid
-                android:color="@color/button_secondary"/>
+                android:color="@color/button_disabled"/>  <!-- Lighter pastel pink for pressed state -->
             <stroke
                 android:width="3dp"
-                android:color="@color/text_on_primary"/>
+                android:color="#DBB3C0"/>  <!-- White border for contrast -->
         </shape>
     </item>
 
@@ -18,10 +17,10 @@
         <shape android:shape="rectangle">
             <corners android:radius="25dp"/>
             <solid
-                android:color="@color/secondary"/>
+                android:color="#FFB6C1"/>  <!-- Standard pastel pink for normal state -->
             <stroke
                 android:width="3dp"
-                android:color="@color/text_on_secondary"/>
+                android:color="#F8BBD0"/>  <!-- Slightly darker pink for the border -->
         </shape>
     </item>
 

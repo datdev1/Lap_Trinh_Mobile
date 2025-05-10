@@ -18,6 +18,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:paddingBottom="2dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -29,8 +30,49 @@
                     android:background="@drawable/bg_round_bottom"
                     android:clipToOutline="true"
                     android:scaleType="centerCrop"/>
+                <TextView
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Featured Cocktail"/>
+                <TextView
+                    android:id="@+id/featureTitle"
+                    android:layout_marginStart="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/homeTitle"
+                    android:includeFontPadding="false"
+                    android:text="Canada's National Drink"/>
+                <TextView
+                    android:id="@+id/featureContent"
+                    android:layout_marginStart="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This drink is from the 1960s was inspired by Spaghetti alle vongole, a seafood pasta dish."/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnFindMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:padding="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_on_primary"
+                    android:text="See all"
+                    android:background="@drawable/bg_btn_see_all"
+                    />
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    app:dividerColor="@color/button_disabled"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginBottom="8dp"/>
             </LinearLayout>
-        
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,6 +95,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/btnHighestRateSeeAll"
                         app:layout_constraintBottom_toBottomOf="@+id/btnHighestRateSeeAll"/>
+
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btnHighestRateSeeAll"
                         android:layout_width="wrap_content"
@@ -63,7 +106,7 @@
                         android:minWidth="0dp"
                         android:padding="8dp"
                         android:textAllCaps="false"
-                        android:textColor="@color/text_on_secondary"
+                        android:textColor="@color/text_on_primary"
                         android:text="See all"
                         android:background="@drawable/bg_btn_see_all"
                         />

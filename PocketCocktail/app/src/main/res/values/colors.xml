@@ -36,7 +36,7 @@
     <!-- Màu nút bấm -->
     <color name="button_primary">#4ECCA3</color>          <!-- Nút chính -->
     <color name="button_secondary">#FFD5E5</color>        <!-- Nút phụ -->
-    <color name="button_disabled">#D3D3D3</color>         <!-- Nút bị vô hiệu hóa -->
+    <color name="button_disabled">#D1AFB3</color>         <!-- Nút bị vô hiệu hóa -->
     <color name="button_text_light">#FFFFFF</color>       <!-- Chữ trên nút (nền tối) -->
     <color name="button_text_dark">#232323</color>        <!-- Chữ trên nút (nền sáng) -->
     

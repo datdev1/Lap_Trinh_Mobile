@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
@@ -129,6 +130,11 @@ public class HomeActivity extends BaseAppCompatActivity<BaseContract.View, BaseC
                 startActivity(intent);
                 return false;
             }else{
+                if(item.getItemId() != R.id.nav_home){
+                    binding.fabCreateDrink.setVisibility(View.GONE);
+                }else{
+                    binding.fabCreateDrink.setVisibility(View.VISIBLE);
+                }
                 NavigationUI.onNavDestinationSelected(item, navController);
                 return true;
             }

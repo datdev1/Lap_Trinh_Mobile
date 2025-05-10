@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="96dp"
         android:src="@drawable/plus"
         app:fabSize="normal"
         app:tint="@color/white"

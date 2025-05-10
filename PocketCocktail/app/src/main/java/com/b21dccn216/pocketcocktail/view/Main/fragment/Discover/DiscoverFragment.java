@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiscoverFragment extends BaseFragment<DiscoverContract.View, DiscoverContract.Presenter>
-    implements DiscoverContract.View{
+        implements DiscoverContract.View{
 
     private FragmentDiscoverBinding binding;
 
