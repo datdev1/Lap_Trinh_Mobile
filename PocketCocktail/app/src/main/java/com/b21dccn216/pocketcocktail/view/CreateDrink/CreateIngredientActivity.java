@@ -24,7 +24,7 @@ public class CreateIngredientActivity extends AppCompatActivity {
     private Button btnAddImage, btnSave;
     private Uri selectedImageUri;
     private IngredientDAO ingredientDAO;
-
+ 
     private final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
