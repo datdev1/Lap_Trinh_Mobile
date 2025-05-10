@@ -20,7 +20,8 @@ import com.b21dccn216.pocketcocktail.test_database.adapter.IngredientAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DiscoverFragment extends Fragment {
+public class DiscoverFragment extends BaseFragment<DiscoverContract.View, DiscoverContract.Presenter>
+    implements DiscoverContract.View{
 
     private FragmentDiscoverBinding binding;
 
@@ -31,11 +32,6 @@ public class DiscoverFragment extends Fragment {
     private List<Ingredient> ingredientList = new ArrayList<>();
 
     public DiscoverFragment(){}
-
-    @Override
-    protected DiscoverContract.Presenter createPresenter(){
-        return new DiscoverPresenter();
-    }
 
 
     @Override
@@ -50,13 +46,26 @@ public class DiscoverFragment extends Fragment {
     }
 
     private void loadDrinkTypes() {
-        drinkTypes.clear();
-        drinkTypes.add(new DrinkType("Cocktails", R.drawable.ic_cocktail));
-        drinkTypes.add(new DrinkType("Mocktails", R.drawable.ic_mocktail));
-        drinkTypes.add(new DrinkType("Smoothies", R.drawable.ic_smoothies));
-        drinkTypes.add(new DrinkType("Milkshakes", R.drawable.ic_milkshake));
-        drinkTypes.add(new DrinkType("Boba", R.drawable.ic_boba));
-        drinkTypes.add(new DrinkType("Punch", R.drawable.ic_punch));
-        adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    protected DiscoverContract.Presenter createPresenter() {
+        return new DiscoverPresenter();
+    }
+
+    @Override
+    protected DiscoverContract.View getViewImpl() {
+        return null;
+    }
+
+    @Override
+    public void showCategoryList(List<Category> categoryList) {
+
+    }
+
+    @Override
+    public void showIngredientList(List<Ingredient> ingredientList) {
+
     }
 }
