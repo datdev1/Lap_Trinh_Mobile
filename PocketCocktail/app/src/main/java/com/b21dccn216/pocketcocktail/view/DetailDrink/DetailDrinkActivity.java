@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,13 +36,19 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         setContentView(binding.getRoot());
 
 
+        binding.instructionsLayout.removeAllViews();
+        binding.ingredientsLayout.removeAllViews();
         Drink drink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_OBJECT);
         if (drink != null) {
             presenter.loadDrinkDetails(drink);
+            presenter.checkFavorite(drink.getUuid());
         } else {
             Toast.makeText(this, "Drink data not found", Toast.LENGTH_SHORT).show();
             finish();
         }
+        binding.favoriteButton.setOnClickListener(v -> presenter.toggleFavorite(drink));
+        binding.shareButton.setOnClickListener(v -> presenter.shareDrink(drink));
+
 
         binding.backButton.setOnClickListener(v -> finish());
     }
@@ -74,5 +81,19 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     public void showInstruction(String instructionText) {
         TextView textView = createBulletTextView(instructionText);
         binding.instructionsLayout.addView(textView);
+    }
+
+    @Override
+    public void updateFavoriteIcon(boolean isFavorite) {
+        int icon = isFavorite ? R.drawable.dtd_ic_favorite_filled : R.drawable.dtd_ic_favorite_outline;
+        binding.favoriteButton.setImageResource(icon);
+    }
+
+    @Override
+    public void showShareIntent(String text) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        startActivity(Intent.createChooser(intent, "Share via"));
     }
 }

@@ -7,9 +7,14 @@ public interface DetailDrinkContract {
         void showDrinkDetail(Drink drink);
         void showIngredient(String ingredientText);
         void showInstruction(String instructionText);
+        void updateFavoriteIcon(boolean isFavorite);
+        void showShareIntent(String text);
     }
 
     interface Presenter extends BaseContract.Presenter<View> {
         void loadDrinkDetails(Drink drink);
+        void checkFavorite(String drinkId);
+        void toggleFavorite(Drink drink);
+        void shareDrink(Drink drink);
     }
 }
