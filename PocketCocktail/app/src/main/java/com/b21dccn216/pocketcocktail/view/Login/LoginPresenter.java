@@ -62,6 +62,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>  implement
     }
         
         private void showAlertDialog(String title, String message){
+
             DialogHelper.showAlertDialog(((Fragment)view).getActivity(),
                     title,
                     message);

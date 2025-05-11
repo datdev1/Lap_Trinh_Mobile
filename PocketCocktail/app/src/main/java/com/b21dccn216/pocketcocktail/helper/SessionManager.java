@@ -24,4 +24,9 @@ public class SessionManager {
         return user;
     }
 
+    public void clearSession(){
+        user = null;
+        instance = null;
+    }
+
 }

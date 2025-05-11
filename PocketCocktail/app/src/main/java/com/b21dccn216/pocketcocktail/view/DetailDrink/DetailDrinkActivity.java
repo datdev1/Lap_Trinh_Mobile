@@ -1,20 +1,27 @@
 package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.b21dccn216.pocketcocktail.R;
 
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.databinding.ActivityDetailDrinkBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.SimilarDrinkAdapter;
 import com.bumptech.glide.Glide;
+
+import java.util.List;
 
 
 public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContract.View, DetailDrinkContract.Presenter> implements DetailDrinkContract.View{
     private ActivityDetailDrinkBinding binding;
+    private SimilarDrinkAdapter similarDrinkAdapter;
     public static final String EXTRA_DRINK_OBJECT = "drink_id";
 
     @Override
@@ -35,13 +42,19 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         setContentView(binding.getRoot());
 
 
+        binding.instructionsLayout.removeAllViews();
+        binding.ingredientsLayout.removeAllViews();
         Drink drink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_OBJECT);
         if (drink != null) {
             presenter.loadDrinkDetails(drink);
+            presenter.checkFavorite(drink.getUuid());
         } else {
             Toast.makeText(this, "Drink data not found", Toast.LENGTH_SHORT).show();
             finish();
         }
+        binding.favoriteButton.setOnClickListener(v -> presenter.toggleFavorite(drink));
+        binding.shareButton.setOnClickListener(v -> presenter.shareDrink(drink));
+
 
         binding.backButton.setOnClickListener(v -> finish());
     }
@@ -74,5 +87,30 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     public void showInstruction(String instructionText) {
         TextView textView = createBulletTextView(instructionText);
         binding.instructionsLayout.addView(textView);
+    }
+
+    @Override
+    public void updateFavoriteIcon(boolean isFavorite) {
+        int icon = isFavorite ? R.drawable.dtd_ic_favorite_filled : R.drawable.dtd_ic_favorite_outline;
+        binding.favoriteButton.setImageResource(icon);
+    }
+
+    @Override
+    public void showShareIntent(String text) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        startActivity(Intent.createChooser(intent, "Share via"));
+    }
+
+    @Override
+    public void showSimilarDrinks(List<Drink> drinks) {
+        similarDrinkAdapter = new SimilarDrinkAdapter(drinks, drink -> {
+            Intent intent = new Intent(this, DetailDrinkActivity.class);
+            intent.putExtra(EXTRA_DRINK_OBJECT, drink);
+            startActivity(intent);
+        });
+        binding.similarDrinksRecyclerView.setAdapter(similarDrinkAdapter);
+        binding.similarDrinksRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 }

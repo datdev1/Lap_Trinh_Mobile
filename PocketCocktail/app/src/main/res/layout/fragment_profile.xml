@@ -1,14 +1,317 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.Main.fragment.Profile.ProfileFragment">
+    android:background="@color/background_main"
+    android:orientation="vertical"
+    tools:context=".view.Main.fragment.Profile.ProfileFragment"
+    >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            tools:context=".view.ui.profile.ProfileFragment">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout7"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingVertical="24dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/profile_image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/user"
+                        app:shapeAppearanceOverlay="@style/CircleImageView" />
+                    <LinearLayout
+                        android:id="@+id/btnEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/userFullName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="16dp"
+                            android:text="User full name"
+                            style="@style/homeTitle"
+                            android:layout_gravity="center"
+                            android:textStyle="bold" />
 
-</FrameLayout>
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="16dp"
+                            android:contentDescription="TODO1"
+                            android:src="@drawable/pencil"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="16dp"
+                        android:clipToPadding="true"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Full name"
+                                style="@style/ItemTitle"/>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp">
+                                <EditText
+                                    android:enabled="false"
+                                    android:id="@+id/edtFullName"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginEnd="0dp"
+                                    android:layout_marginBottom="0dp"
+                                    android:background="@drawable/bg_login_tf"
+                                    android:inputType="text"
+                                    android:minHeight="48dp"
+                                    android:padding="16dp"
+                                    android:textSize="14sp"
+                                    tools:ignore="SpeakableTextPresentCheck" />
+
+                                <ImageView
+                                    android:id="@+id/pencilFullname"
+                                    android:layout_width="24dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginEnd="16dp"
+                                    android:contentDescription="TODO1"
+                                    android:src="@drawable/user"/>
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Email"
+                                style="@style/ItemTitle"/>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp">
+                                <EditText
+                                    android:enabled="false"
+                                    android:id="@+id/edtEmail"
+                                    android:background="@drawable/bg_login_tf"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginEnd="0dp"
+                                    android:layout_marginBottom="0dp"
+                                    android:inputType="text"
+                                    android:minHeight="48dp"
+                                    android:padding="16dp"
+                                    android:textSize="14sp"/>
+
+                                <ImageView
+                                    android:id="@+id/pencilEmail"
+                                    android:layout_width="24dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_marginEnd="16dp"
+                                    android:contentDescription="TODO1"
+                                    android:src="@drawable/envelope"
+                                    />
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnChangePassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/ButtonOutlinePastel"
+                            android:layout_marginTop="32dp"
+                            android:text="Change password"/>
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnLogout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/ButtonPastel"
+                            android:layout_marginTop="16dp"
+                            android:text="Log out"/>
+
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:orientation="vertical"-->
+<!--                            android:layout_marginTop="16dp">-->
+
+<!--                            <TextView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:text="Password"-->
+<!--                                style="@style/ItemTitle"/>-->
+
+<!--                            <RelativeLayout-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="48dp">-->
+<!--                                <EditText-->
+<!--                                    android:id="@+id/edtPassword"-->
+<!--                                    android:background="@drawable/bg_login_tf"-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_alignParentEnd="true"-->
+<!--                                    android:layout_alignParentBottom="true"-->
+<!--                                    android:layout_marginEnd="0dp"-->
+<!--                                    android:layout_marginBottom="0dp"-->
+<!--                                    android:inputType="text"-->
+<!--                                    android:minHeight="48dp"-->
+<!--                                    android:padding="16dp"-->
+<!--                                    android:textSize="14sp"/>-->
+
+<!--                                <ImageView-->
+<!--                                    android:layout_width="24dp"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_alignParentTop="true"-->
+<!--                                    android:layout_alignParentEnd="true"-->
+<!--                                    android:layout_alignParentBottom="true"-->
+<!--                                    android:layout_marginEnd="16dp"-->
+<!--                                    android:contentDescription="TODO1"-->
+<!--                                    android:src="@drawable/eye_crossed"-->
+<!--                                    />-->
+<!--                            </RelativeLayout>-->
+<!--                        </LinearLayout>-->
+<!--                        -->
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/confirmPasswordField"-->
+<!--                            android:visibility=""-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:orientation="vertical"-->
+<!--                            android:layout_marginTop="16dp">-->
+
+<!--                            <TextView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:text="Confirm password"-->
+<!--                                style="@style/ItemTitle"/>-->
+
+<!--                            <RelativeLayout-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="48dp">-->
+<!--                                <EditText-->
+<!--                                    android:id="@+id/edtConfirmPassword"-->
+<!--                                    android:background="@drawable/bg_login_tf"-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_alignParentEnd="true"-->
+<!--                                    android:layout_alignParentBottom="true"-->
+<!--                                    android:layout_marginEnd="0dp"-->
+<!--                                    android:layout_marginBottom="0dp"-->
+<!--                                    android:inputType="text"-->
+<!--                                    android:minHeight="48dp"-->
+<!--                                    android:padding="16dp"-->
+<!--                                    android:textSize="14sp"/>-->
+
+<!--                                <ImageView-->
+<!--                                    android:layout_width="24dp"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_alignParentTop="true"-->
+<!--                                    android:layout_alignParentEnd="true"-->
+<!--                                    android:layout_alignParentBottom="true"-->
+<!--                                    android:layout_marginEnd="16dp"-->
+<!--                                    android:contentDescription="TODO1"-->
+<!--                                    android:src="@drawable/eye_crossed"-->
+<!--                                    />-->
+<!--                            </RelativeLayout>-->
+<!--                        </LinearLayout>-->
+
+
+
+                    </LinearLayout>
+                </ScrollView>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linearLayout7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+
+                <LinearLayout
+                    android:id="@+id/confirmField"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="1dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_horizontal">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnCancel"
+                        android:text="Cancle"
+                        style="@style/ButtonOutlinePastel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:minHeight="0dp"
+                        android:padding="8dp"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnSave"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        style="@style/ButtonPastel"
+                        android:text="Save"
+                        android:minHeight="0dp"
+                        android:padding="8dp"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
