@@ -45,6 +45,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     private List<Drink> highestRateDrinkList = new ArrayList<>();
     private List<Drink> categoryDrinkList = new ArrayList<>();
     private List<DrinkWithCategoryDTO> recommendDrinkList = new ArrayList<>();
+    private Drink bannerDrink;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -160,17 +161,18 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
 
     @Override
     public void showBannerDrink(Drink drink) {
+        bannerDrink = drink;
         Glide
                 .with(requireActivity())
-                .load(drink.getImage())
+                .load(bannerDrink.getImage())
                 .placeholder(R.drawable.bouncing_circles) // Replace with your placeholder
                 .error(R.drawable.baseline_error_outline_24)
                 .into(binding.featureImage);
-        binding.featureTitle.setText(drink.getName());
-        binding.featureContent.setText(drink.getDescription());
+        binding.featureTitle.setText(bannerDrink.getName());
+        binding.featureContent.setText(bannerDrink.getDescription());
         binding.btnSeeMore.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DetailDrinkActivity.class);
-            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, drink);
+            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, bannerDrink);
             startActivity(intent);
         });
 

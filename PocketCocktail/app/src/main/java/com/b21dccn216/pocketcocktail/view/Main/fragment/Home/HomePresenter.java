@@ -35,7 +35,6 @@ public class HomePresenter
         getHighestRateDrinks();
         getOneCategoryDrinkList();
 
-        getLatestDrinkList();
         getRecommendDrinkList();
         getBannerDrink();
     }
@@ -43,6 +42,8 @@ public class HomePresenter
     @Override
     public void onResume() {
         super.onResume();
+        getBannerDrink();
+        Log.d("datdev1", "onResume:");
 
     }
 
