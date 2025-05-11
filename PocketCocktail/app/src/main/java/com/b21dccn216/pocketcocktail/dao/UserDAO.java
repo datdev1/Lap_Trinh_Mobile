@@ -94,6 +94,23 @@ public class UserDAO {
                 .addOnFailureListener(onFailure);
     }
 
+    public void getUserByUuidAuthen(String uuidAuthen, UserCallback callback) {
+        userRef.whereEqualTo("saveUuidFromAuthen", uuidAuthen)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
+                        User user = doc.toObject(User.class);
+                        if (user != null) {
+                            callback.onUserLoaded(user);
+                            return;
+                        }
+                    }
+                    callback.onError(new Exception(ERROR_USER_NOT_AUTH));
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
     public void getAllUsers(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
         userRef.get()
                 .addOnSuccessListener(onSuccess)
@@ -116,6 +133,8 @@ public class UserDAO {
     }
 
     public void updateUser(User updatedUser, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+
+
         userRef.document(updatedUser.getUuid())
                 .set(updatedUser)
                 .addOnSuccessListener(onSuccess)

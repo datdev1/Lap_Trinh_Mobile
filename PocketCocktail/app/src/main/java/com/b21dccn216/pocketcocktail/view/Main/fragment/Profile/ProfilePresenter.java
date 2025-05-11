@@ -1,5 +1,11 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Profile;
 
+import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
@@ -7,7 +13,15 @@ import com.b21dccn216.pocketcocktail.dao.UserDAO;
 import com.b21dccn216.pocketcocktail.helper.DialogHelper;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Objects;
 
 public class ProfilePresenter extends BasePresenter<ProfileContract.View>
         implements ProfileContract.Presenter
@@ -37,20 +51,7 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
         SessionManager.getInstance().clearSession();
     }
 
-    @Override
-    public void saveUserInformation(User currentUser) {
-        if(validateUserInformation(currentUser)){
-            userDAO.updateUser(currentUser,
-                    avoid -> {
-                        SessionManager.getInstance().setUser(currentUser);
-                        view.updateInfoSuccess();
-                    },
-                    e -> {
 
-                        view.updateInfoFail(e.getMessage());
-                    });
-        }
-    }
 
     private boolean validateUserInformation(User user) {
         if(user == null) {
@@ -78,5 +79,65 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
         DialogHelper.showAlertDialog(((Fragment)view).getActivity(),
                 title,
                 message);
+    }
+
+    private void changeEmailFirebase(String email, String password){
+        FirebaseUser user = mAuth.getCurrentUser();
+        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), password);
+
+        user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d("datdev1", "User re-authenticated.");
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                user.verifyBeforeUpdateEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText((Context) view, "Email Changed" + " Current Email is " + email, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void saveUserWithImage(User editingUser, Uri selectedImageUri) {
+        userDAO.updateUserWithImage(((Fragment)view).requireActivity(), editingUser, selectedImageUri,
+                avoid -> {
+                    userDAO.getUserByUuidAuthen(mAuth.getCurrentUser().getUid(),
+                            new UserDAO.UserCallback() {
+                                @Override
+                                public void onUserLoaded(User user) {
+                                    SessionManager.getInstance().setUser(user);
+                                    view.updateInfoSuccess();
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    view.updateInfoFail(e.getMessage());
+                                }
+                            }
+                    );
+                },
+                e -> {
+                    view.updateInfoFail(e.getMessage());
+                });
+    }
+
+    @Override
+    public void saveUserInformation(User currentUser) {
+        if(validateUserInformation(currentUser)){
+            userDAO.updateUser(currentUser,
+                    avoid -> {
+                        SessionManager.getInstance().setUser(currentUser);
+                        view.updateInfoSuccess();
+                    },
+                    e -> {
+
+                        view.updateInfoFail(e.getMessage());
+                    });
+        }
     }
 }
