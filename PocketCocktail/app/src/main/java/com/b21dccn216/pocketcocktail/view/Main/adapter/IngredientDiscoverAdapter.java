@@ -35,18 +35,7 @@ public class IngredientDiscoverAdapter extends RecyclerView.Adapter<IngredientDi
 
     @Override
     public void onBindViewHolder(@NonNull IngredientsViewHolder holder, int position) {
-        Ingredient ingredient = ingredientsList.get(position);
-        Glide.with(context)
-                .load(ingredient.getImage())
-                .centerCrop()
-                .error(R.drawable.baseline_error_outline_24)
-                .into(holder.binding.imageDiscover);
-        holder.binding.titleDiscover.setText(ingredient.getName());
-        holder.binding.layout.setOnClickListener(v -> {
-            Intent intent = new Intent(context, SearchActivity.class);
-            intent.putExtra(SearchActivity.EXTRA_INGREDIENT_OBJECT, ingredient);
-            context.startActivity(intent);
-        });
+        holder.bind(position);
     }
 
     @Override
@@ -63,7 +52,14 @@ public class IngredientDiscoverAdapter extends RecyclerView.Adapter<IngredientDi
 
         public void bind(int pos){
             Ingredient ingredient = ingredientsList.get(pos);
+
+
             binding.titleDiscover.setText(ingredient.getName());
+            binding.layout.setOnClickListener(v -> {
+                Intent intent = new Intent(context, SearchActivity.class);
+                intent.putExtra(SearchActivity.EXTRA_INGREDIENT_OBJECT, ingredient);
+                context.startActivity(intent);
+            });
 
             Glide.with(context)
                     .load(ingredient.getImage())

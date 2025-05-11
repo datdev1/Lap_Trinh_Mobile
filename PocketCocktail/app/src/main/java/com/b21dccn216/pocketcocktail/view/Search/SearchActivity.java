@@ -15,6 +15,10 @@ import com.b21dccn216.pocketcocktail.databinding.ActivitySearchBinding;
 
 public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, SearchContract.Presenter>
     implements SearchContract.View{
+
+    public static final String EXTRA_CATEGORY_OBJECT = "category_id";
+    public static final String EXTRA_INGREDIENT_OBJECT = "ingredient_id";
+
     private ActivitySearchBinding binding;
 
     @Override
@@ -26,9 +30,6 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     protected SearchContract.View getView() {
         return this;
     }
-
-    public static final String EXTRA_CATEGORY_OBJECT = "category_id";
-    public static final String EXTRA_INGREDIENT_OBJECT = "ingredient_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
