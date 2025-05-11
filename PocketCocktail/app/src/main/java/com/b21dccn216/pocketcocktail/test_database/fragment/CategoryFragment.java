@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -25,6 +26,7 @@ public class CategoryFragment extends BaseModelFragment {
     private ImageView ivImage;
     private Button btnSelectImage, btnSave, btnUpdate, btnDelete;
     private ListView lvCategories;
+    private TextView tvUuid, tvCreatedAt, tvUpdatedAt;
     private CategoryAdapter adapter;
     private List<Category> categories;
     private Category selectedCategory;
@@ -55,6 +57,9 @@ public class CategoryFragment extends BaseModelFragment {
         btnUpdate = rootView.findViewById(R.id.btnUpdate);
         btnDelete = rootView.findViewById(R.id.btnDelete);
         lvCategories = rootView.findViewById(R.id.lvCategories);
+        tvUuid = rootView.findViewById(R.id.tvUuid);
+        tvCreatedAt = rootView.findViewById(R.id.tvCreatedAt);
+        tvUpdatedAt = rootView.findViewById(R.id.tvUpdatedAt);
 
         categories = new ArrayList<>();
         adapter = new CategoryAdapter(getContext(), categories);
@@ -105,7 +110,10 @@ public class CategoryFragment extends BaseModelFragment {
     protected void clearInputs() {
         etName.setText("");
         etDescription.setText("");
-        ivImage.setImageResource(0);
+        tvUuid.setText("UUID: ");
+        tvCreatedAt.setText("Created At: ");
+        tvUpdatedAt.setText("Updated At: ");
+        ivImage.setImageResource(R.drawable.ic_launcher_background);
         selectedImageUri = null;
         selectedCategory = null;
         btnUpdate.setEnabled(false);
@@ -118,6 +126,9 @@ public class CategoryFragment extends BaseModelFragment {
             Category category = (Category) item;
             etName.setText(category.getName());
             etDescription.setText(category.getDescription());
+            tvUuid.setText("UUID: " + category.getUuid());
+            tvCreatedAt.setText("Created At: " + category.getCreatedAt());
+            tvUpdatedAt.setText("Updated At: " + category.getUpdatedAt());
             
             if (category.getImage() != null && !category.getImage().isEmpty()) {
                 Glide.with(this)
@@ -126,7 +137,7 @@ public class CategoryFragment extends BaseModelFragment {
                     .error(R.drawable.error_icon)
                     .into(ivImage);
             } else {
-                ivImage.setImageResource(0);
+                ivImage.setImageResource(R.drawable.ic_launcher_background);
             }
         }
     }

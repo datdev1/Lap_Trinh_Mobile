@@ -26,6 +26,56 @@
             android:padding="16dp">
 
             <EditText
+                android:id="@+id/etUuid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="UUID"
+                android:inputType="text"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/etCreatedAt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Created At"
+                android:inputType="text"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/etUpdatedAt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Updated At"
+                android:inputType="text"
+                android:enabled="false" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="User"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Category"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"/>
+
+            <EditText
                 android:id="@+id/etName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,13 +97,6 @@
                 android:hint="Instruction"
                 android:inputType="textMultiLine"
                 android:minLines="1" />
-
-            <EditText
-                android:id="@+id/etCategoryId"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Category ID"
-                android:inputType="text" />
 
             <EditText
                 android:id="@+id/etRate"
