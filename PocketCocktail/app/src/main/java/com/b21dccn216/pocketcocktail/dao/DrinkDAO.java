@@ -152,6 +152,22 @@ public class DrinkDAO {
                 .addOnFailureListener(onFailure);
     }
 
+    public void getFeatureDrink(DrinkCallback callback){
+        drinkRef
+                .orderBy(DRINK_FIELD.DESCRIPTION.getValue(), Query.Direction.ASCENDING)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(snapShot -> {
+                    if(snapShot.isEmpty()){
+                        callback.onError(new Exception("Drink not found"));
+                        return;
+                    }
+                    Drink drink = snapShot.getDocuments().get(0).toObject(Drink.class);
+                    callback.onDrinkLoaded(drink);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
 
     public void getDrinksSortAndLimit(DRINK_FIELD sortTag, Query.Direction sortOrder, int limit,
                                       DrinkListCallback callback) {
@@ -172,6 +188,7 @@ public class DrinkDAO {
 
 
     public enum DRINK_FIELD{
+        DESCRIPTION("description"),
         RATE("rate"),
         NAME("name");
 

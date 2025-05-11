@@ -14,7 +14,6 @@ import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CocktailHomeItemAdapter extends RecyclerView.Adapter<CocktailHomeItemAdapter.ImageViewHolder>{
@@ -56,7 +55,7 @@ public class CocktailHomeItemAdapter extends RecyclerView.Adapter<CocktailHomeIt
 
         holder.binding.layout.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailDrinkActivity.class);
-            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_ID, drink);
+            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, drink);
 //            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_ID, drinks.get(position).getUuid());
             context.startActivity(intent);
         });

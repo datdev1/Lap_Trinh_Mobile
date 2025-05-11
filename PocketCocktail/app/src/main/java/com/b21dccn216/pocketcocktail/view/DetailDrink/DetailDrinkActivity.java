@@ -35,7 +35,7 @@ public class DetailDrinkActivity extends AppCompatActivity {
     private RecipeDAO recipeDAO;
     private IngredientDAO ingredientDAO;
 
-    public static final String EXTRA_DRINK_ID = "drink_id";
+    public static final String EXTRA_DRINK_OBJECT = "drink_id";
 
 
     @Override
@@ -65,7 +65,7 @@ public class DetailDrinkActivity extends AppCompatActivity {
 //        if (drinkUuid != null) {
 //            loadDrinkDetails(drinkUuid);
 //        }
-        Drink drink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_ID);
+        Drink drink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_OBJECT);
         if (drink != null) {
             loadDrinkDetails(drink);
         } else {

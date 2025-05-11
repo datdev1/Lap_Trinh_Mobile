@@ -1,6 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Home;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -13,13 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
 import com.b21dccn216.pocketcocktail.databinding.FragmentHomeBinding;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.CocktailHomeItemAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.RecommendDrinkAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithCategoryDTO;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,6 +156,23 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
         recommendDrinkList.clear();
         recommendDrinkList.addAll(drinkList);
         recommendDrinkAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showBannerDrink(Drink drink) {
+        Glide
+                .with(getActivity())
+                .load(drink.getImage())
+                .placeholder(R.drawable.baseline_downloading_24) // Replace with your placeholder
+                .error(R.drawable.baseline_error_outline_24)
+                .into(binding.featureImage);
+        binding.featureTitle.setText(drink.getName());
+        binding.featureContent.setText(drink.getDescription());
+        binding.btnSeeMore.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DetailDrinkActivity.class);
+            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, drink);
+            startActivity(intent);
+        });
     }
 }
 

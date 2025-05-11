@@ -47,7 +47,16 @@ public class HomePresenter
     }
 
     private void getBannerDrink(){
-
+        drinkDAO.getFeatureDrink(new DrinkDAO.DrinkCallback() {
+            @Override
+            public void onDrinkLoaded(Drink drink) {
+                view.showBannerDrink(drink);
+            }
+            @Override
+            public void onError(Exception e) {
+                Log.e("datdev1", "getBannerDrink-onError: " + e.getMessage());
+            }
+        });
     }
 
     private void getOneCategoryDrinkList(){
@@ -132,10 +141,10 @@ public class HomePresenter
                                 @Override
                                 public void onCategoryLoaded(Category category) {
                                     if (category == null) {
-                                        Log.d("datdev1", "category == null-> drinkName: " + drink.getName() + " --- CateName: " + drink.getCategoryId());
+                                        //Log.d("datdev1", "category == null-> drinkName: " + drink.getName() + " --- CateName: " + drink.getCategoryId());
                                         recommendDrinkList.add(new DrinkWithCategoryDTO(drink.getCategoryId(), drink));
                                     } else {
-                                        Log.d("datdev1", "onDrinkListLoaded: " + drink.getName() + " " + category.getName());
+                                        //Log.d("datdev1", "onDrinkListLoaded: " + drink.getName() + " " + category.getName());
                                         recommendDrinkList.add(new DrinkWithCategoryDTO(category.getName(), drink));
                                     }
                                     view.showRecommendDrinkList(recommendDrinkList);
