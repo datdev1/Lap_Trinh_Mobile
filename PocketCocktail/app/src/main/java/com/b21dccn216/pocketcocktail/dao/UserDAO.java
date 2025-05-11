@@ -161,6 +161,29 @@ public class UserDAO {
                 .addOnFailureListener(callback::onError);
     }
 
+    public void getUserByUuidAuthen(String uuidAuthen, UserCallback callback) {
+        userRef.whereEqualTo("saveUuidFromAuthen", uuidAuthen)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
+                        User user = doc.toObject(User.class);
+                        if (user != null) {
+                            callback.onUserLoaded(user);
+                            return;
+                        }
+                    }
+                    callback.onError(new Exception(ERROR_USER_NOT_AUTH));
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
+    public void getAllUsers(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+        userRef.get()
+                .addOnSuccessListener(onSuccess)
+                .addOnFailureListener(onFailure);
+    }
+
     public void getAllUsers(UserListCallback callback) {
         userRef.get()
                 .addOnSuccessListener(querySnapshot -> {

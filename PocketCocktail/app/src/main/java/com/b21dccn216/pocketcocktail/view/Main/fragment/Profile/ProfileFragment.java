@@ -1,10 +1,16 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Profile;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
@@ -17,12 +23,25 @@ import com.bumptech.glide.Glide;
 public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileContract.Presenter>
     implements ProfileContract.View {
     private FragmentProfileBinding binding;
-    private User currentUser;
+    private User editingUser;
     private boolean isEditting = false;
+    private Uri selectedImageUri;
 
     public ProfileFragment() {
         // Required empty public constructor
     }
+
+    private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == android.app.Activity.RESULT_OK && result.getData() != null) {
+                    selectedImageUri = result.getData().getData();
+                    Glide.with(this)
+                            .load(selectedImageUri)
+                            .into(binding.profileImage);
+                }
+            });
+
     @Override
     protected ProfileContract.Presenter createPresenter() {
         return new ProfilePresenter();
@@ -42,7 +61,7 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentProfileBinding.inflate(getLayoutInflater(), container, false);
-        currentUser = SessionManager.getInstance().getUser();
+        editingUser = SessionManager.getInstance().getUser();
 
         setViewCurrentUser();
 
@@ -67,7 +86,7 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
             public void onClick(View view) {
                 isEditting = false;
                 setVisibilityEditing(isEditting);
-                currentUser = SessionManager.getInstance().getUser();
+                editingUser = SessionManager.getInstance().getUser();
                 setViewCurrentUser();
             }
         });
@@ -75,46 +94,73 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
         binding.btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.saveUserInformation(currentUser);
+                // TODO:: SET DIALOG LOADING
+                //editingUser.setEmail(binding.edtEmail.getText().toString());
+                editingUser.setName(binding.edtFullName.getText().toString());
+                if(selectedImageUri != null){
+                    presenter.saveUserWithImage(editingUser, selectedImageUri);
+                }else{
+                    presenter.saveUserInformation(editingUser);
+                }
+
+            }
+        });
+
+        binding.profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openImagePicker();
+                isEditting = true;
+                setVisibilityEditing(isEditting);
             }
         });
 
         return binding.getRoot();
     }
 
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        imagePickerLauncher.launch(intent);
+    }
 
     public void setVisibilityEditing(Boolean isEditting){
-        binding.edtEmail.setEnabled(isEditting);
+//        binding.edtEmail.setEnabled(isEditting);
         binding.edtFullName.setEnabled(isEditting);
         binding.confirmField.setVisibility(isEditting ? View.VISIBLE : View.GONE);
     }
 
     public void setViewCurrentUser(){
-        binding.userFullName.setText(currentUser.getName());
-        binding.edtFullName.setText(currentUser.getName());
-        binding.edtEmail.setText(currentUser.getEmail());
+        binding.userFullName.setText(editingUser.getName());
+        binding.edtFullName.setText(editingUser.getName());
+        binding.edtEmail.setText(editingUser.getEmail());
         Glide
                 .with(requireActivity())
-                .load(currentUser.getImage())
+                .load(editingUser.getImage())
                 .placeholder(R.drawable.user)
-                .error(R.drawable.baseline_error_outline_24)
+                .error(R.drawable.user)
                 .into(binding.profileImage);
 
     }
 
     @Override
     public void updateInfoSuccess() {
+        // TODO:: SET DIALOG FINISH LOADING
+        editingUser = SessionManager.getInstance().getUser();
         setViewCurrentUser();
         isEditting = false;
         setVisibilityEditing(isEditting);
+        Toast.makeText(requireActivity(), "Update success", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void updateInfoFail(String message) {
-        currentUser = SessionManager.getInstance().getUser();
+        // TODO:: SET DIALOG FINISH LOADING
+        editingUser = SessionManager.getInstance().getUser();
         setViewCurrentUser();
         isEditting = false;
         setVisibilityEditing(isEditting);
+        Toast.makeText(requireActivity(), "Update Fail", Toast.LENGTH_SHORT).show();
 
     }
 }

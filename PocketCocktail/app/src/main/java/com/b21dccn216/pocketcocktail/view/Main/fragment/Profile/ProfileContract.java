@@ -1,5 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Profile;
 
+import android.net.Uri;
+
 import com.b21dccn216.pocketcocktail.base.BaseContract;
 import com.b21dccn216.pocketcocktail.model.User;
 
@@ -20,5 +22,7 @@ public interface ProfileContract {
         void signOut();
 
         void saveUserInformation(User currentUser);
+
+        void saveUserWithImage(User editingUser, Uri selectedImageUri);
     }
 }

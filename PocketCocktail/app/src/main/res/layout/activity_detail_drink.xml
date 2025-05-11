@@ -259,8 +259,7 @@
                     android:paddingEnd="16dp"
                     android:paddingBottom="16dp"
                     android:orientation="horizontal"
-                    android:overScrollMode="never"
-                    tools:listitem="@layout/item_similar_drink" />
+                    android:overScrollMode="never" />
 
 
                 <!--Comment-->
@@ -304,16 +303,13 @@
                         android:layout_marginStart="8dp" />
                 </LinearLayout>
 
-
-
-
-<!--                <androidx.recyclerview.widget.RecyclerView-->
-<!--                    android:id="@+id/commentsRecyclerView"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:nestedScrollingEnabled="false"-->
-<!--                    android:visibility="visible"-->
-<!--                    android:paddingBottom="16dp" />-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/commentsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="visible"
+                    android:paddingBottom="16dp" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

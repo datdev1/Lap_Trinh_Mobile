@@ -2,6 +2,8 @@ package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.base.BaseContract;
+import com.b21dccn216.pocketcocktail.model.Review;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
 
 import java.util.List;
 
@@ -13,6 +15,9 @@ public interface DetailDrinkContract {
         void updateFavoriteIcon(boolean isFavorite);
         void showShareIntent(String text);
         void showSimilarDrinks(List<Drink> drinks);
+        void showReviews(List<ReviewWithUserDTO> reviews);
+        void showAddReviewSuccess();
+        void showAddReviewError(String message);
     }
 
     interface Presenter extends BaseContract.Presenter<View> {
@@ -20,5 +25,8 @@ public interface DetailDrinkContract {
         void checkFavorite(String drinkId);
         void toggleFavorite(Drink drink);
         void shareDrink(Drink drink);
+        void addReview(Review review);
+        void loadReviews(String drinkId);
+        void loadSimilarDrinks(Drink drink);
     }
 }
