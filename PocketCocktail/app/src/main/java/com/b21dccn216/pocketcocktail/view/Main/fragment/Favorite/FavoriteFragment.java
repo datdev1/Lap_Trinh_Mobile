@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
 
     private FragmentFavoriteBinding binding;
     private int column = 2;
-   // private ItemFavoriteAdapter itemFavoriteAdapter;
+    private ItemFavoriteAdapter itemFavoriteAdapter;
     private List<Favorite> favoriteList = new ArrayList<>();
     @Override
     protected FavoriteContract.Presenter createPresenter() {
@@ -42,12 +43,22 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
     }
 
     @Override
-    public View onCreatView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState){
         binding = FragmentFavoriteBinding.inflate(inflater, container, false);
-        //itemFavoriteAdapter = new ItemFavoriteAdapter(favoriteList);
-   // }
+        itemFavoriteAdapter = new ItemFavoriteAdapter(getActivity(), favoriteList);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), column);
+        binding.recyclerFavorites.setLayoutManager(gridLayoutManager);
+        binding.recyclerFavorites.setAdapter(itemFavoriteAdapter);
+
+        return binding.getRoot();
+    }
+
     @Override
     public void showFavoriteList(List<Favorite> favoriteList) {
-
+        favoriteList.clear();
+        favoriteList.addAll(favoriteList);
+        itemFavoriteAdapter.notifyDataSetChanged();
     }
 }
