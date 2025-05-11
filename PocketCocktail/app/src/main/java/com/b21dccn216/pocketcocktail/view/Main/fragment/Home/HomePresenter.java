@@ -164,4 +164,15 @@ public class HomePresenter
             }
         });
     }
+
+
+    @Override
+    public void refreshScreen() {
+        getBannerDrink();
+        getOneCategoryDrinkList();
+        getHighestRateDrinks();
+        getLatestDrinkList();
+        getRecommendDrinkList();
+    }
+
 }

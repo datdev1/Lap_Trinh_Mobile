@@ -22,6 +22,7 @@ public interface HomeContract {
 
     interface Presenter extends BaseContract.Presenter<View> {
         // Define presenter methods
+        void refreshScreen();
 
     }
 }

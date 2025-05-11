@@ -18,6 +18,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class DrinkDAO {
     private final FirebaseFirestore db;
@@ -154,15 +155,16 @@ public class DrinkDAO {
 
     public void getFeatureDrink(DrinkCallback callback){
         drinkRef
-                .orderBy(DRINK_FIELD.DESCRIPTION.getValue(), Query.Direction.ASCENDING)
-                .limit(1)
+//                .orderBy(DRINK_FIELD.DESCRIPTION.getValue(), Query.Direction.ASCENDING)
+//                .limit(1)
                 .get()
                 .addOnSuccessListener(snapShot -> {
                     if(snapShot.isEmpty()){
                         callback.onError(new Exception("Drink not found"));
                         return;
                     }
-                    Drink drink = snapShot.getDocuments().get(0).toObject(Drink.class);
+                    int index = new Random().nextInt(snapShot.size());
+                    Drink drink = snapShot.getDocuments().get(index).toObject(Drink.class);
                     callback.onDrinkLoaded(drink);
                 })
                 .addOnFailureListener(callback::onError);

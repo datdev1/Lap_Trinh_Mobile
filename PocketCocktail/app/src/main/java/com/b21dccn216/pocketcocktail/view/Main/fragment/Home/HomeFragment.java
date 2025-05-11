@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.Presenter> implements HomeContract.View {
@@ -93,22 +95,20 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
         binding.recyclerRecommend.setLayoutManager(gridLayoutManager);
         binding.recyclerRecommend.setAdapter(recommendDrinkAdapter);
 
-//        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//            @Override
-//            public int getSpanSize(int pos) {
-//                if((pos + 1) % 4 == 0 || (pos + 1) % 4 == 1){
-//                    return 2;
-//                }else{
-//                    return 1;
-//                }
-//            }
-//        });
+        binding.featureContent.setOnClickListener(v -> {
+            if(binding.featureContent.getMaxLines() == 2) {
+                binding.featureContent.setMaxLines(Integer.MAX_VALUE);
+            } else {
+                binding.featureContent.setMaxLines(2);
+            }
+        });
 
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_SHORT).show();
                 // TODO:: RELOAD DRINK LIST
+
+                presenter.refreshScreen();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -161,9 +161,9 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     @Override
     public void showBannerDrink(Drink drink) {
         Glide
-                .with(getActivity())
+                .with(requireActivity())
                 .load(drink.getImage())
-                .placeholder(R.drawable.baseline_downloading_24) // Replace with your placeholder
+                .placeholder(R.drawable.bouncing_circles) // Replace with your placeholder
                 .error(R.drawable.baseline_error_outline_24)
                 .into(binding.featureImage);
         binding.featureTitle.setText(drink.getName());
@@ -173,6 +173,8 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
             intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, drink);
             startActivity(intent);
         });
+
+        binding.swipeRefreshLayout.setRefreshing(false);
     }
 }
 

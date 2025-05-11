@@ -37,6 +37,14 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <style name="homeContent" parent="BaseString">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_on_secondary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
     <style name="ItemTitle" parent="BaseString">
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">14sp</item>
