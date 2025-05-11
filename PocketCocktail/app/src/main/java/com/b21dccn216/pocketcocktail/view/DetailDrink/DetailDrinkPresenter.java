@@ -257,12 +257,13 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
                 }
 
                 final int[] remaining = {reviewList.size()};
-                for (Review review : reviewList) {
-
+                for (int i = 0; i < reviewList.size(); i++) {
+                    final Review review = reviewList.get(i);
                     userDAO.getUser(review.getUserId(), new UserDAO.UserCallback() {
 
                         @Override
                         public void onUserLoaded(User user) {
+                            Log.e("Review", "Loaded user for review: " + review.getUuid() + " -> " + user.getName());
                             reviewWithUsers.add(new ReviewWithUserDTO(review, user));
                             if (--remaining[0] == 0 && view != null) {
                                 // sort by timestamp if needed
