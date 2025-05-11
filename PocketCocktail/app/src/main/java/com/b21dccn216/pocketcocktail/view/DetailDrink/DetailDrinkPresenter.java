@@ -209,43 +209,85 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
 
     @Override
     public void loadReviews(String drinkId) {
-        reviewDAO.getReviewsByDrinkId(drinkId, snapshot -> {
-            List<Review> reviewList = new ArrayList<>();
-            List<ReviewWithUserDTO> reviewWithUsers = new ArrayList<>();
+//        reviewDAO.getReviewsByDrinkId(drinkId, snapshot -> {
+//            List<Review> reviewList = new ArrayList<>();
+//            List<ReviewWithUserDTO> reviewWithUsers = new ArrayList<>();
+//
+//            for (DocumentSnapshot doc : snapshot.getDocuments()) {
+//                Review review = doc.toObject(Review.class);
+//                if (review != null) {
+//                    reviewList.add(review);
+//                }
+//            }
+//
+//            if (reviewList.isEmpty()) {
+//                if (view != null) view.showReviews(reviewWithUsers);
+//                return;
+//            }
+//
+//            final int[] remaining = {reviewList.size()};
+//            for (Review review : reviewList) {
+//                userDAO.getUser(review.getUserId(), userSnapshot -> {
+//                    User user = userSnapshot.toObject(User.class);
+//                    reviewWithUsers.add(new ReviewWithUserDTO(review, user));
+//                    if (--remaining[0] == 0 && view != null) {
+//                        // sort by timestamp if needed
+//                        view.showReviews(reviewWithUsers);
+//                    }
+//                }, e -> {
+//                    if (--remaining[0] == 0 && view != null) {
+//                        view.showReviews(reviewWithUsers);
+//                    }
+//                });
+//            }
+//
+//        }, e -> {
+//            if (view != null) {
+//                view.showError("Failed to load reviews: " + e.getMessage());
+//            }
+//        });
+        reviewDAO.getReviewsByDrinkId(drinkId, new ReviewDAO.ReviewListCallback() {
+            @Override
+            public void onReviewListLoaded(List<Review> reviewList) {
+                List<ReviewWithUserDTO> reviewWithUsers = new ArrayList<>();
 
-            for (DocumentSnapshot doc : snapshot.getDocuments()) {
-                Review review = doc.toObject(Review.class);
-                if (review != null) {
-                    reviewList.add(review);
+                if (reviewList.isEmpty()) {
+                    if (view != null) view.showReviews(reviewWithUsers);
+                    return;
+                }
+
+                final int[] remaining = {reviewList.size()};
+                for (Review review : reviewList) {
+
+                    userDAO.getUser(review.getUserId(), new UserDAO.UserCallback() {
+
+                        @Override
+                        public void onUserLoaded(User user) {
+                            reviewWithUsers.add(new ReviewWithUserDTO(review, user));
+                            if (--remaining[0] == 0 && view != null) {
+                                // sort by timestamp if needed
+                                view.showReviews(reviewWithUsers);
+                            }
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            if (--remaining[0] == 0 && view != null) {
+                                view.showReviews(reviewWithUsers);
+                            }
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onError(Exception e) {
+                if (view != null) {
+                    view.showError("Failed to load reviews: " + e.getMessage());
                 }
             }
 
-            if (reviewList.isEmpty()) {
-                if (view != null) view.showReviews(reviewWithUsers);
-                return;
-            }
-
-            final int[] remaining = {reviewList.size()};
-            for (Review review : reviewList) {
-                userDAO.getUser(review.getUserId(), userSnapshot -> {
-                    User user = userSnapshot.toObject(User.class);
-                    reviewWithUsers.add(new ReviewWithUserDTO(review, user));
-                    if (--remaining[0] == 0 && view != null) {
-                        // sort by timestamp if needed
-                        view.showReviews(reviewWithUsers);
-                    }
-                }, e -> {
-                    if (--remaining[0] == 0 && view != null) {
-                        view.showReviews(reviewWithUsers);
-                    }
-                });
-            }
-
-        }, e -> {
-            if (view != null) {
-                view.showError("Failed to load reviews: " + e.getMessage());
-            }
         });
+
     }
 
     @Override
