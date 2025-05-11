@@ -1,6 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Main.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemDiscoverBinding;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
+import com.b21dccn216.pocketcocktail.view.Search.SearchActivity;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -33,7 +35,18 @@ public class IngredientDiscoverAdapter extends RecyclerView.Adapter<IngredientDi
 
     @Override
     public void onBindViewHolder(@NonNull IngredientsViewHolder holder, int position) {
-        holder.bind(position);
+        Ingredient ingredient = ingredientsList.get(position);
+        Glide.with(context)
+                .load(ingredient.getImage())
+                .centerCrop()
+                .error(R.drawable.baseline_error_outline_24)
+                .into(holder.binding.imageDiscover);
+        holder.binding.titleDiscover.setText(ingredient.getName());
+        holder.binding.layout.setOnClickListener(v -> {
+            Intent intent = new Intent(context, SearchActivity.class);
+            intent.putExtra(SearchActivity.EXTRA_INGREDIENT_OBJECT, ingredient);
+            context.startActivity(intent);
+        });
     }
 
     @Override
