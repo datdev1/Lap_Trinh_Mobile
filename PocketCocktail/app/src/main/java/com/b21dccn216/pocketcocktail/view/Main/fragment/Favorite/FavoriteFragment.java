@@ -2,65 +2,67 @@ package com.b21dccn216.pocketcocktail.view.Main.fragment.Favorite;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.b21dccn216.pocketcocktail.R;
+import com.b21dccn216.pocketcocktail.base.BaseFragment;
+import com.b21dccn216.pocketcocktail.databinding.FragmentFavoriteBinding;
+import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.model.Favorite;
+import com.b21dccn216.pocketcocktail.test_database.adapter.FavoriteAdapter;
+import com.b21dccn216.pocketcocktail.view.Main.adapter.ItemFavoriteAdapter;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FavoriteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class FavoriteFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class FavoriteFragment extends BaseFragment<FavoriteContract.View, FavoriteContract.Presenter>
+    implements FavoriteContract.View{
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public FavoriteFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FavoriteFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FavoriteFragment newInstance(String param1, String param2) {
-        FavoriteFragment fragment = new FavoriteFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    private FragmentFavoriteBinding binding;
+    private int column = 2;
+    private ItemFavoriteAdapter itemFavoriteAdapter;
+    private List<Drink> favoriteList = new ArrayList<>();
+    @Override
+    protected FavoriteContract.Presenter createPresenter() {
+        return new FavoritePresenter();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected FavoriteContract.View getViewImpl() {
+        return this;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favorite, container, false);
+                             Bundle savedInstanceState){
+        binding = FragmentFavoriteBinding.inflate(inflater, container, false);
+        itemFavoriteAdapter = new ItemFavoriteAdapter(getActivity(), favoriteList);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), column);
+        binding.recyclerFavorites.setLayoutManager(gridLayoutManager);
+        binding.recyclerFavorites.setAdapter(itemFavoriteAdapter);
+
+        return binding.getRoot();
     }
+
+    @Override
+    public void showFavoriteDrinkList(List<Drink> list) {
+        favoriteList.clear();
+        favoriteList.addAll(list);
+        itemFavoriteAdapter.notifyDataSetChanged();
+    }
+
+
+
 }
