@@ -66,8 +66,9 @@ public class FavoriteDAO {
     }
 
     public void addFavorite(Favorite favorite, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        favorite.generateUUID();
         Map<String, Object> data = convertFavoriteToMap(favorite);
-        favoriteRef.document(favorite.generateUUID())
+        favoriteRef.document(favorite.getUuid())
                 .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);

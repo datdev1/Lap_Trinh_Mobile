@@ -80,8 +80,9 @@ public class UserDAO {
     }
 
     public void addUser(User user, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        user.generateUUID();
         Map<String, Object> data = convertUserToMap(user);
-        userRef.document(user.generateUUID())
+        userRef.document(user.getUuid())
                 .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);

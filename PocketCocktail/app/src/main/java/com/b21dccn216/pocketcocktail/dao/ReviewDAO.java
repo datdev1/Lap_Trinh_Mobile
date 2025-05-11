@@ -70,8 +70,9 @@ public class ReviewDAO {
     }
 
     public void addReview(Review review, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        review.generateUUID();
         Map<String, Object> data = convertReviewToMap(review);
-        reviewRef.document(review.generateUUID())
+        reviewRef.document(review.getUuid())
                 .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
