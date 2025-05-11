@@ -2,7 +2,7 @@ package com.b21dccn216.pocketcocktail.dao;
 
 import android.content.Context;
 import android.net.Uri;
-
+import com.google.firebase.Timestamp;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -12,6 +12,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,6 +119,29 @@ public class CategoryDAO {
                 .set(updatedCategory)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
+    }
+
+    public void updateCategoryWithImage(Context context, Category updatedCategory, @Nullable Uri newImageUri,
+                                     OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        if (newImageUri != null) {
+            // Nếu có ảnh mới → upload lên Imgur
+            String title = ImageDAO.ImageDaoFolderForCategory + "_" + updatedCategory.getName() + "_" + updatedCategory.getUuid();
+            new ImageDAO().uploadImageToImgur(context, newImageUri, title, new ImageDAO.UploadCallback() {
+                @Override
+                public void onSuccess(String imageUrl) {
+                    updatedCategory.setImage(imageUrl); // Cập nhật ảnh mới
+                    updateCategory(updatedCategory, onSuccess, onFailure); // Lưu vào Firestore
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    onFailure.onFailure(e);
+                }
+            });
+        } else {
+            // Không có ảnh mới → chỉ cập nhật thông tin
+            updateCategory(updatedCategory, onSuccess, onFailure);
+        }
     }
 
     // 5. Delete a category by ID

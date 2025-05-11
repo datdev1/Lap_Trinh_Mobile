@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 public class DrinkDAO {
+    private static final String COLLECTION_NAME = "drink";
     private final FirebaseFirestore db;
     private final CollectionReference drinkRef;
 
@@ -29,7 +30,8 @@ public class DrinkDAO {
 
     public DrinkDAO() {
         db = FirebaseFirestore.getInstance();
-        drinkRef = db.collection("drink");
+        drinkRef = db.collection(COLLECTION_NAME);
+        Log.d("DrinkDAO", "Initialized with collection: " + COLLECTION_NAME);
         imageDAO = new ImageDAO();
     }
     public interface DrinkCallback {
@@ -39,6 +41,11 @@ public class DrinkDAO {
 
     public interface DrinkListCallback {
         void onDrinkListLoaded(List<Drink> drinks);
+        void onError(Exception e);
+    }
+
+    public interface DrinkListWithLastDocCallback {
+        void onDrinkListLoaded(List<Drink> drinks, DocumentSnapshot lastVisible);
         void onError(Exception e);
     }
 
@@ -188,11 +195,195 @@ public class DrinkDAO {
                 .addOnFailureListener(callback::onError);
     }
 
+    public void getAllDrinksWithLimitAndSort(DRINK_FIELD sortField, Query.Direction sortOrder, int limit,
+                                           @Nullable DocumentSnapshot startAfter,
+                                           DrinkListWithLastDocCallback callback) {
+        Log.d("DrinkDAO", "Getting all drinks with sort field: " + sortField.getValue() + ", order: " + sortOrder);
+        
+        // First, let's try a simple query without sorting to test collection access
+        drinkRef.limit(limit).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    Log.d("DrinkDAO", "Simple query returned " + queryDocumentSnapshots.size() + " documents");
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
+                        Log.d("DrinkDAO", "First document data: " + doc.getData());
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("DrinkDAO", "Error in simple query", e);
+                });
 
-    public enum DRINK_FIELD{
+        // Now try the actual sorted query
+        Query query;
+        try {
+            // For fields that might not exist in all documents, we need to check their existence
+            if (sortField == DRINK_FIELD.CREATED_AT || sortField == DRINK_FIELD.UPDATED_AT) {
+                query = drinkRef
+                        .whereNotEqualTo(sortField.getValue(), null)  // Only get documents where the field exists
+                        .orderBy(sortField.getValue(), sortOrder)
+                        .limit(limit);
+                Log.d("DrinkDAO", "Query built with existence check for field: " + sortField.getValue());
+            } else {
+                // For required fields like name, we can sort directly
+                query = drinkRef
+                        .orderBy(sortField.getValue(), sortOrder)
+                        .limit(limit);
+                Log.d("DrinkDAO", "Query built with direct sort for field: " + sortField.getValue());
+            }
+        } catch (Exception e) {
+            Log.e("DrinkDAO", "Error building query with sort field: " + sortField.getValue(), e);
+            // Fallback to name sorting if the requested field is not available
+            query = drinkRef
+                    .orderBy(DRINK_FIELD.NAME.getValue(), Query.Direction.ASCENDING)
+                    .limit(limit);
+            Log.d("DrinkDAO", "Using fallback sort field: " + DRINK_FIELD.NAME.getValue());
+        }
+
+        if (startAfter != null) {
+            query = query.startAfter(startAfter);
+        }
+
+        query.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Drink> drinkList = new ArrayList<>();
+                    DocumentSnapshot lastVisible = null;
+
+                    Log.d("DrinkDAO", "Query returned " + queryDocumentSnapshots.size() + " documents");
+
+                    for (DocumentSnapshot drinkSnapshot : queryDocumentSnapshots.getDocuments()) {
+                        Log.d("DrinkDAO", "Document data: " + drinkSnapshot.getData());
+                        Drink drink = drinkSnapshot.toObject(Drink.class);
+                        if (drink != null) {
+                            drinkList.add(drink);
+                            lastVisible = drinkSnapshot;
+                            Log.d("DrinkDAO", "Added drink: " + drink.getName());
+                        } else {
+                            Log.e("DrinkDAO", "Failed to convert document to Drink object");
+                        }
+                    }
+                    
+                    Log.d("DrinkDAO", "Final list size: " + drinkList.size());
+                    callback.onDrinkListLoaded(drinkList, lastVisible);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("DrinkDAO", "Error executing query", e);
+                    callback.onError(e);
+                });
+    }
+
+    public void searchDrinks(String query, int limit, DrinkListWithLastDocCallback callback) {
+        searchDrinksWithSort(query, limit, null, DRINK_FIELD.CREATED_AT, Query.Direction.DESCENDING, callback);
+    }
+
+    public void searchDrinksWithSort(String query, int limit, DocumentSnapshot startAfter, 
+                                   DRINK_FIELD sortField, Query.Direction sortOrder,
+                                   DrinkListWithLastDocCallback callback) {
+        String searchQuery = query.toLowerCase();
+        Log.d("DrinkDAO", "Searching with query: " + searchQuery);
+        
+        // Get all drinks first
+        drinkRef.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Drink> allDrinks = new ArrayList<>();
+                    List<Drink> filteredDrinks = new ArrayList<>();
+                    DocumentSnapshot lastVisible = null;
+
+                    Log.d("DrinkDAO", "Total documents: " + queryDocumentSnapshots.size());
+
+                    // Convert all documents to Drink objects
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        Drink drink = document.toObject(Drink.class);
+                        if (drink != null) {
+                            allDrinks.add(drink);
+                        }
+                    }
+
+                    // Filter drinks based on search query
+                    if (searchQuery.isEmpty()) {
+                        filteredDrinks.addAll(allDrinks);
+                    } else {
+                        for (Drink drink : allDrinks) {
+                            if (matchesSearchQuery(drink, searchQuery)) {
+                                filteredDrinks.add(drink);
+                            }
+                        }
+                    }
+
+                    // Sort the filtered list
+                    sortDrinks(filteredDrinks, sortField, sortOrder);
+
+                    // Apply pagination
+                    int endIndex = Math.min(limit, filteredDrinks.size());
+                    List<Drink> paginatedDrinks = filteredDrinks.subList(0, endIndex);
+
+                    Log.d("DrinkDAO", "Filtered list size: " + filteredDrinks.size());
+                    Log.d("DrinkDAO", "Paginated list size: " + paginatedDrinks.size());
+
+                    callback.onDrinkListLoaded(paginatedDrinks, lastVisible);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("DrinkDAO", "Error searching drinks", e);
+                    callback.onError(e);
+                });
+    }
+
+    private void sortDrinks(List<Drink> drinks, DRINK_FIELD sortField, Query.Direction sortOrder) {
+        drinks.sort((d1, d2) -> {
+            int comparison = 0;
+            switch (sortField) {
+                case NAME:
+                    comparison = d1.getName().compareTo(d2.getName());
+                    break;
+                case DESCRIPTION:
+                    comparison = d1.getDescription().compareTo(d2.getDescription());
+                    break;
+                case RATE:
+                    comparison = Double.compare(d1.getRate(), d2.getRate());
+                    break;
+                case CREATED_AT:
+                    comparison = d1.getCreatedAt().compareTo(d2.getCreatedAt());
+                    break;
+                case UPDATED_AT:
+                    comparison = d1.getUpdatedAt().compareTo(d2.getUpdatedAt());
+                    break;
+                case CATEGORY_ID:
+                    comparison = d1.getCategoryId().compareTo(d2.getCategoryId());
+                    break;
+                case USER_ID:
+                    comparison = d1.getUserId().compareTo(d2.getUserId());
+                    break;
+            }
+            return sortOrder == Query.Direction.ASCENDING ? comparison : -comparison;
+        });
+    }
+
+    private boolean matchesSearchQuery(Drink drink, String searchQuery) {
+        if (searchQuery.isEmpty()) {
+            return true;
+        }
+
+        boolean matches = (drink.getUuid() != null && drink.getUuid().toLowerCase().contains(searchQuery)) ||
+                (drink.getName() != null && drink.getName().toLowerCase().contains(searchQuery)) ||
+                (drink.getDescription() != null && drink.getDescription().toLowerCase().contains(searchQuery)) ||
+                (drink.getInstruction() != null && drink.getInstruction().toLowerCase().contains(searchQuery)) ||
+                (drink.getCategoryId() != null && drink.getCategoryId().toLowerCase().contains(searchQuery)) ||
+                (drink.getUserId() != null && drink.getUserId().toLowerCase().contains(searchQuery));
+
+        if (matches) {
+            Log.d("DrinkDAO", "Drink matches search query: " + drink.getName());
+        }
+
+        return matches;
+    }
+
+    public enum DRINK_FIELD {
+        NAME("name"),
         DESCRIPTION("description"),
         RATE("rate"),
-        NAME("name");
+        CREATED_AT("createdAt"),
+        UPDATED_AT("updatedAt"),
+        CATEGORY_ID("categoryId"),
+        USER_ID("userId");
 
         private final String value;
 

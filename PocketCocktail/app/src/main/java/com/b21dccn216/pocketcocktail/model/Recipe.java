@@ -1,20 +1,28 @@
 package com.b21dccn216.pocketcocktail.model;
 
+import com.google.firebase.Timestamp;
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Recipe {
+public class Recipe implements Serializable {
     private String uuid;
     private String drinkId;
     private String ingredientId;
     private double amount;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
     public Recipe() {
+        this.createdAt = Timestamp.now();
+        this.updatedAt = Timestamp.now();
     }
 
     public Recipe(String drinkId, String ingredientId, double quantity) {
         this.drinkId = drinkId;
         this.ingredientId = ingredientId;
         this.amount = quantity;
+        this.createdAt = Timestamp.now();
+        this.updatedAt = Timestamp.now();
     }
 
     public String getUuid() {
@@ -33,6 +41,7 @@ public class Recipe {
 
     public void setDrinkId(String drinkId) {
         this.drinkId = drinkId;
+        this.updatedAt = Timestamp.now();
     }
 
     public String getIngredientId() {
@@ -41,6 +50,7 @@ public class Recipe {
 
     public void setIngredientId(String ingredientId) {
         this.ingredientId = ingredientId;
+        this.updatedAt = Timestamp.now();
     }
 
     public double getAmount() {
@@ -49,6 +59,23 @@ public class Recipe {
 
     public void setAmount(double amount) {
         this.amount = amount;
+        this.updatedAt = Timestamp.now();
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override
@@ -57,7 +84,9 @@ public class Recipe {
                 "uuid='" + uuid + '\'' +
                 ", drinkId='" + drinkId + '\'' +
                 ", ingredientId='" + ingredientId + '\'' +
-                ", quantity=" + amount +
+                ", amount=" + amount +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

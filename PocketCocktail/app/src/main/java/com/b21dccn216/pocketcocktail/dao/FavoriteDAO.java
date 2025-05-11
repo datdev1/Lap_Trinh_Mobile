@@ -3,6 +3,7 @@ package com.b21dccn216.pocketcocktail.dao;
 import com.b21dccn216.pocketcocktail.model.Favorite;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;

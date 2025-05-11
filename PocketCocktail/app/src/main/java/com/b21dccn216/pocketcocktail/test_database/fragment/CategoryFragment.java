@@ -182,7 +182,7 @@ public class CategoryFragment extends BaseModelFragment {
         selectedCategory.setDescription(description);
 
         if (selectedImageUri != null) {
-            categoryDAO.addCategoryWithImage(getContext(), selectedCategory, selectedImageUri,
+            categoryDAO.updateCategoryWithImage(getContext(), selectedCategory, selectedImageUri,
                     aVoid -> {
                         showToast("Category updated successfully");
                         clearInputs();

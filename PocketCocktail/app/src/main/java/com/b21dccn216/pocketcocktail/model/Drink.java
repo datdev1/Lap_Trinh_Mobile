@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.model;
 
+import com.google.firebase.Timestamp;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -12,9 +13,12 @@ public class Drink implements Serializable {
     private String instruction;
     private String description;
     private double rate;
-
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
     public Drink() {
+        this.createdAt = Timestamp.now();
+        this.updatedAt = Timestamp.now();
     }
 
     public Drink(String name, String categoryId, String instruction, String description, double rate) {
@@ -23,6 +27,8 @@ public class Drink implements Serializable {
         this.instruction = instruction;
         this.description = description;
         this.rate = rate;
+        this.createdAt = Timestamp.now();
+        this.updatedAt = Timestamp.now();
     }
 
     public Drink(String name, String userId, String image, String categoryId, String instruction, String description, double rate) {
@@ -33,6 +39,8 @@ public class Drink implements Serializable {
         this.instruction = instruction;
         this.description = description;
         this.rate = rate;
+        this.createdAt = Timestamp.now();
+        this.updatedAt = Timestamp.now();
     }
 
     public String getUuid() {
@@ -51,6 +59,7 @@ public class Drink implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+        this.updatedAt = Timestamp.now();
     }
 
     public String getUserId() {
@@ -59,6 +68,7 @@ public class Drink implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+        this.updatedAt = Timestamp.now();
     }
 
     public String getImage() {
@@ -67,6 +77,7 @@ public class Drink implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
+        this.updatedAt = Timestamp.now();
     }
 
     public String getCategoryId() {
@@ -75,6 +86,7 @@ public class Drink implements Serializable {
 
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
+        this.updatedAt = Timestamp.now();
     }
 
     public String getInstruction() {
@@ -83,6 +95,7 @@ public class Drink implements Serializable {
 
     public void setInstruction(String instruction) {
         this.instruction = instruction;
+        this.updatedAt = Timestamp.now();
     }
 
     public String getDescription() {
@@ -91,6 +104,7 @@ public class Drink implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+        this.updatedAt = Timestamp.now();
     }
 
     public double getRate() {
@@ -99,6 +113,23 @@ public class Drink implements Serializable {
 
     public void setRate(double rate) {
         this.rate = rate;
+        this.updatedAt = Timestamp.now();
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override
@@ -112,6 +143,8 @@ public class Drink implements Serializable {
                 ", instruction='" + instruction + '\'' +
                 ", description='" + description + '\'' +
                 ", rate=" + rate +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }
