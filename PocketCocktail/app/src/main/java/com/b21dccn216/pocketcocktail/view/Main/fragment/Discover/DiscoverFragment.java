@@ -1,21 +1,22 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Discover;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
 import com.b21dccn216.pocketcocktail.databinding.FragmentDiscoverBinding;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
-import com.b21dccn216.pocketcocktail.test_database.adapter.CategoryAdapter;
-import com.b21dccn216.pocketcocktail.test_database.adapter.IngredientAdapter;
+import com.b21dccn216.pocketcocktail.view.Main.adapter.CategoryDiscoverAdapter;;
+import com.b21dccn216.pocketcocktail.view.Main.adapter.IngredientDiscoverAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,28 +26,14 @@ public class DiscoverFragment extends BaseFragment<DiscoverContract.View, Discov
 
     private FragmentDiscoverBinding binding;
 
-    private CategoryAdapter adapterCategory;
-    private IngredientAdapter adapterIngredient;
+    private CategoryDiscoverAdapter categoryDiscoverAdapter;
+    private IngredientDiscoverAdapter ingredientDiscoverAdapter;
     private int column = 3;
     private List<Category> categoryList = new ArrayList<>();
     private List<Ingredient> ingredientList = new ArrayList<>();
 
-    public DiscoverFragment(){}
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        binding = FragmentDiscoverBinding.inflate(inflater, container, false);
-        adapterCategory = new CategoryAdapter(getActivity(), categoryList);
-
-        loadDrinkTypes();
-
-        return binding.getRoot();
-    }
-
-    private void loadDrinkTypes() {
-
+    public DiscoverFragment(){
+        // Required empty public constructor
     }
 
     @Override
@@ -56,16 +43,47 @@ public class DiscoverFragment extends BaseFragment<DiscoverContract.View, Discov
 
     @Override
     protected DiscoverContract.View getViewImpl() {
-        return null;
+        return this;
     }
 
     @Override
-    public void showCategoryList(List<Category> categoryList) {
-
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
-    public void showIngredientList(List<Ingredient> ingredientList) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentDiscoverBinding.inflate(inflater, container, false);
+        categoryDiscoverAdapter = new CategoryDiscoverAdapter(getActivity(), categoryList);
+        ingredientDiscoverAdapter = new IngredientDiscoverAdapter(getActivity(), ingredientList);
 
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), column, LinearLayoutManager.VERTICAL, false);
+        binding.recyclerCategories.setLayoutManager(gridLayoutManager);
+        binding.recyclerCategories.setAdapter(categoryDiscoverAdapter);
+
+        GridLayoutManager gridLayoutManager1 = new GridLayoutManager(getActivity(), column, LinearLayoutManager.VERTICAL, false);
+        binding.recyclerIngredients.setLayoutManager(gridLayoutManager1);
+        binding.recyclerIngredients.setAdapter(ingredientDiscoverAdapter);
+
+
+
+        return binding.getRoot();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void showCategoryList(List<Category> categoriesList) {
+        categoryList.clear();
+        categoryList.addAll(categoriesList);
+        categoryDiscoverAdapter.notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void showIngredientList(List<Ingredient> ingredientsList) {
+        ingredientList.clear();
+        ingredientList.addAll(ingredientsList);
+        ingredientDiscoverAdapter.notifyDataSetChanged();
     }
 }

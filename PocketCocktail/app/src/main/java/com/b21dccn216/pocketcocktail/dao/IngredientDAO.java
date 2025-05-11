@@ -3,12 +3,14 @@ package com.b21dccn216.pocketcocktail.dao;
 import android.content.Context;
 import android.net.Uri;
 
+import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -140,5 +142,36 @@ public class IngredientDAO {
                 .delete()
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
+    }
+
+    public void getIngredientDiscover(INGREDIENT_FIELD sortTag, Query.Direction sortOrder, int limit,
+                                    IngredientListCallback callback) {
+        ingredientRef
+                .orderBy(sortTag.getValue(), sortOrder)
+                .limit(limit)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Ingredient> ingredientList = new ArrayList<>();
+                    for (DocumentSnapshot ingredientSnapshot : queryDocumentSnapshots.getDocuments()) {
+                        Ingredient ingredient = ingredientSnapshot.toObject(Ingredient.class);
+                        ingredientList.add(ingredient);
+                    }
+                    callback.onIngredientListLoaded(ingredientList);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
+    public enum INGREDIENT_FIELD{
+        NAME("name");
+
+        private final String value;
+
+        INGREDIENT_FIELD(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 } 

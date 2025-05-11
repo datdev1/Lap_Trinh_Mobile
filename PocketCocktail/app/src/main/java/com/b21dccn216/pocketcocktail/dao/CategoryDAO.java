@@ -4,11 +4,13 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.b21dccn216.pocketcocktail.model.Category;
+import com.b21dccn216.pocketcocktail.model.Drink;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -126,5 +128,35 @@ public class CategoryDAO {
                 .addOnFailureListener(onFailure);
     }
 
+    public void getCategoryDiscover(CATEGORY_FIELD sortTag, Query.Direction sortOrder, int limit,
+                                      CategoryListCallback callback) {
+        categoryRef
+                .orderBy(sortTag.getValue(), sortOrder)
+                .limit(limit)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Category> categoryList = new ArrayList<>();
+                    for (DocumentSnapshot categorySnapshot : queryDocumentSnapshots.getDocuments()) {
+                        Category category = categorySnapshot.toObject(Category.class);
+                        categoryList.add(category);
+                    }
+                    callback.onCategoryListLoaded(categoryList);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
+    public enum CATEGORY_FIELD{
+        NAME("name");
+
+        private final String value;
+
+        CATEGORY_FIELD(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 
 }
