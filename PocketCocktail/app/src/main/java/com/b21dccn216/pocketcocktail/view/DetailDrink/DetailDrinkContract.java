@@ -2,6 +2,9 @@ package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.base.BaseContract;
+
+import java.util.List;
+
 public interface DetailDrinkContract {
     interface View extends BaseContract.View {
         void showDrinkDetail(Drink drink);
@@ -9,6 +12,7 @@ public interface DetailDrinkContract {
         void showInstruction(String instructionText);
         void updateFavoriteIcon(boolean isFavorite);
         void showShareIntent(String text);
+        void showSimilarDrinks(List<Drink> drinks);
     }
 
     interface Presenter extends BaseContract.Presenter<View> {

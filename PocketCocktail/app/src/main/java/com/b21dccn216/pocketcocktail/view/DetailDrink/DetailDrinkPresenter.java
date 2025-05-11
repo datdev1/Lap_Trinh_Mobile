@@ -1,5 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
+import android.util.Log;
+
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
 import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.dao.FavoriteDAO;
@@ -11,6 +13,10 @@ import com.b21dccn216.pocketcocktail.model.Favorite;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.b21dccn216.pocketcocktail.model.Recipe;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View> implements DetailDrinkContract.Presenter {
 
@@ -29,7 +35,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         drinkDAO = new DrinkDAO();
         recipeDAO = new RecipeDAO();
         ingredientDAO = new IngredientDAO();
-        currentUserId = String.valueOf(SessionManager.getInstance().getUser());
+        currentUserId = String.valueOf(SessionManager.getInstance().getUser().getUuid());
     }
 
 
@@ -63,6 +69,24 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
                 }
             }
         }, e -> view.showError(e.getMessage()));
+
+        // Load similar drink
+        drinkDAO.getDrinksByCategoryId(drink.getCategoryId(),
+                querySnapshot -> {
+                    List<Drink> similarDrinks = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Drink similarDrink = doc.toObject(Drink.class);
+                        if (similarDrink != null && !similarDrink.getUuid().equals(drink.getUuid())) {
+                            similarDrinks.add(similarDrink);
+                        }
+                    }
+                    view.showSimilarDrinks(similarDrinks);
+                },
+                e -> {
+                    Log.e("DetailDrink", "Failed to load similar drinks", e);
+                    view.showError(e.getMessage());
+                }
+        );
     }
 
     @Override

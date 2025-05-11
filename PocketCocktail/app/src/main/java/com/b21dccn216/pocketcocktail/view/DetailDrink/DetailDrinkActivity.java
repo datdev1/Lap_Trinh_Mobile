@@ -6,16 +6,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.b21dccn216.pocketcocktail.R;
 
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.databinding.ActivityDetailDrinkBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.SimilarDrinkAdapter;
 import com.bumptech.glide.Glide;
+
+import java.util.List;
 
 
 public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContract.View, DetailDrinkContract.Presenter> implements DetailDrinkContract.View{
     private ActivityDetailDrinkBinding binding;
+    private SimilarDrinkAdapter similarDrinkAdapter;
     public static final String EXTRA_DRINK_OBJECT = "drink_id";
 
     @Override
@@ -95,5 +101,16 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, text);
         startActivity(Intent.createChooser(intent, "Share via"));
+    }
+
+    @Override
+    public void showSimilarDrinks(List<Drink> drinks) {
+        similarDrinkAdapter = new SimilarDrinkAdapter(drinks, drink -> {
+            Intent intent = new Intent(this, DetailDrinkActivity.class);
+            intent.putExtra(EXTRA_DRINK_OBJECT, drink);
+            startActivity(intent);
+        });
+        binding.similarDrinksRecyclerView.setAdapter(similarDrinkAdapter);
+        binding.similarDrinksRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 }
