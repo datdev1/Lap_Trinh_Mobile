@@ -68,8 +68,9 @@ public class RecipeDAO {
     }
 
     public void addRecipe(Recipe recipe, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        recipe.generateUUID();
         Map<String, Object> data = convertRecipeToMap(recipe);
-        recipeRef.document(recipe.generateUUID())
+        recipeRef.document(recipe.getUuid())
                 .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);

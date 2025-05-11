@@ -74,8 +74,9 @@ public class CategoryDAO {
     }
 
     public void addCategory(Category category, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        category.generateUUID();
         Map<String, Object> data = convertCategoryToMap(category);
-        categoryRef.document(category.generateUUID())
+        categoryRef.document(category.getUuid())
                 .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);

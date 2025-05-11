@@ -75,8 +75,9 @@ public class IngredientDAO {
     }
 
     public void addIngredient(Ingredient ingredient, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        ingredient.generateUUID();
         Map<String, Object> data = convertIngredientToMap(ingredient);
-        ingredientRef.document(ingredient.generateUUID())
+        ingredientRef.document(ingredient.getUuid())
                 .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
