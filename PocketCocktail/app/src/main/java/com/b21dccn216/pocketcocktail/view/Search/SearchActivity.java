@@ -12,6 +12,9 @@ import com.b21dccn216.pocketcocktail.R;
 
 public class SearchActivity extends AppCompatActivity {
 
+    public static final String EXTRA_CATEGORY_OBJECT = "category_id";
+    public static final String EXTRA_INGREDIENT_OBJECT = "ingredient_id";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

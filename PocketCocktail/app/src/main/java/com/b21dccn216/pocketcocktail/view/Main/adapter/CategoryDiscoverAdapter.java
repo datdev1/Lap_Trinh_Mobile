@@ -1,6 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Main.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -10,13 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemDiscoverBinding;
 import com.b21dccn216.pocketcocktail.model.Category;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
+import com.b21dccn216.pocketcocktail.view.Search.SearchActivity;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 public class CategoryDiscoverAdapter extends RecyclerView.Adapter<CategoryDiscoverAdapter.CategoryViewHolder>{
-    private final List<Category> categoriesList;
-    private final Context context;
+    private List<Category> categoriesList;
+    private Context context;
     public CategoryDiscoverAdapter(Context context, List<Category> categoriesList){
         this.context = context;
         this.categoriesList = categoriesList;
@@ -32,7 +35,21 @@ public class CategoryDiscoverAdapter extends RecyclerView.Adapter<CategoryDiscov
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-        holder.bind(position);
+        Category category = categoriesList.get(position);
+        Glide.with(context)
+                .load(category.getImage())
+                .centerCrop()
+                .error(R.drawable.baseline_downloading_24)
+                .into(holder.binding.imageDiscover);
+
+        holder.binding.titleDiscover.setText(category.getName());
+        holder.binding.layout.setOnClickListener(v -> {
+            Intent intent = new Intent(context, SearchActivity.class);
+            intent.putExtra(SearchActivity.EXTRA_CATEGORY_OBJECT, category);
+            context.startActivity(intent);
+        });
+
+
     }
 
     @Override
