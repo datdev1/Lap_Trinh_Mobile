@@ -22,14 +22,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <ImageView
+                <com.b21dccn216.pocketcocktail.customView.CenterTopCropImageView
                     android:id="@+id/featureImage"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:src="@drawable/sample_cocktail_5"
                     android:background="@drawable/bg_round_bottom"
-                    android:clipToOutline="true"
-                    android:scaleType="centerCrop"/>
+                    android:clipToOutline="true"/>
                 <TextView
                     android:layout_marginTop="8dp"
                     android:layout_marginStart="8dp"

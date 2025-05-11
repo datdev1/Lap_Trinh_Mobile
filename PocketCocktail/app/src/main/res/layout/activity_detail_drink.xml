@@ -17,12 +17,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <com.b21dccn216.pocketcocktail.customView.CenterTopCropImageView
                 android:id="@+id/drink_image"
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/sample_cocktail_2" />
+                android:src="@drawable/sample_cocktail_5"/>
 
             <ImageButton
                 android:id="@+id/back_button"
