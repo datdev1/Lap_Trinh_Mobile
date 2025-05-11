@@ -114,10 +114,17 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
       - category : checkbox + recycle view
       - ingredients: dropdown
 - Trang discover, trang favorite, (Ngát) (Fragment) (Package Discover)
-  - Category: Recycle view
-  - Ingredient: Recycle view
-  - Khi ấn gửi Intent chứa nội dung 
-        "idCategory = xyz, idIngredient = null" đi đén Trang tìm kiếm.
+  - Discovery:
+    - Category: Recycle view
+    - Ingredient: Recycle view
+    - Khi ấn gửi Intent chứa nội dung 
+          "idCategory = xyz, idIngredient = null" đi đén Trang tìm kiếm.
+  - Favourite:
+    - Danh sách favourite
+      - RecyclerView, Vertical + GridLayoutManager
+      - Item: Tên, ảnh, nút trái tim (click -> thêm/xóa favourite)
+    - Danh sách gợi ý
+      - ...
 - Báo cáo (Ngát)
 
 ## Các công nghệ áp dụng
