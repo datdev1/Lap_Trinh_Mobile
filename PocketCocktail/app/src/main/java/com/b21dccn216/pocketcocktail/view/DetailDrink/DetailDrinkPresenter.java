@@ -136,7 +136,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
 //            if (view != null) view.showError(e.getMessage());
 //        });
 //
-        favoriteDAO.getFavoriteDrinkId(currentUserId, new FavoriteDAO.FavoriteListCallback() {
+        favoriteDAO.getFavoritesByUserId(currentUserId, new FavoriteDAO.FavoriteListCallback() {
 
             @Override
             public void onFavoriteListLoaded(List<Favorite> favorites) {
