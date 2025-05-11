@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.DialogCustomBinding;
@@ -43,15 +44,21 @@ public class HelperDialog extends Dialog {
         switch (type){
             case SUCCESS:
                 binding.imgStatus.setImageResource(R.drawable.check);
-                binding.imgStatus.setImageTintList(ColorStateList.valueOf(R.color.primary));
+                binding.imgStatus.setImageTintList(ColorStateList.valueOf(
+                        ContextCompat.getColor(getContext(), R.color.primary)
+                ));
                 break;
             case ERROR:
                 binding.imgStatus.setImageResource(R.drawable.baseline_warning_24);
-                binding.imgStatus.setImageTintList(ColorStateList.valueOf(R.color.error));
+                binding.imgStatus.setImageTintList(ColorStateList.valueOf(
+                        ContextCompat.getColor(getContext(), R.color.error)
+                ));
                 break;
             default:
                 binding.imgStatus.setImageResource(R.drawable.baseline_favorite_border_24);
-                binding.imgStatus.setImageTintList(ColorStateList.valueOf(R.color.warning));
+                binding.imgStatus.setImageTintList(ColorStateList.valueOf(
+                        ContextCompat.getColor(getContext(), R.color.warning)
+                ));
                 break;
         }
 
