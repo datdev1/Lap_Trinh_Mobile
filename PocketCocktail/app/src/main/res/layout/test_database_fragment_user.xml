@@ -16,6 +16,38 @@
             android:padding="16dp">
 
             <EditText
+                android:id="@+id/etUuid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="UUID"
+                android:inputType="text"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/etSaveUuidFromAuthen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Auth UUID"
+                android:inputType="text"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/etCreatedAt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Created At"
+                android:inputType="text"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/etUpdatedAt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Updated At"
+                android:inputType="text"
+                android:enabled="false" />
+
+            <EditText
                 android:id="@+id/etName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -35,6 +67,19 @@
                 android:layout_height="wrap_content"
                 android:hint="Password"
                 android:inputType="textPassword" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Role"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerRole"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"/>
 
             <Button
                 android:id="@+id/btnChooseImage"

@@ -6,31 +6,42 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.b21dccn216.pocketcocktail.R;
+import com.b21dccn216.pocketcocktail.dao.CategoryDAO;
 import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
+import com.b21dccn216.pocketcocktail.dao.UserDAO;
+import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.test_database.adapter.DrinkAdapter;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class DrinkFragment extends BaseModelFragment {
     private static final String TAG = "DrinkFragment";
     private static final int PAGE_SIZE = 10;
     private static final int SEARCH_DELAY = 500; // Delay in milliseconds
 
-    private EditText etName, etDescription, etInstruction, etCategoryId, etRate, etSearch;
+    private EditText etName, etDescription, etInstruction, etRate, etSearch;
+    private EditText etUuid, etCreatedAt, etUpdatedAt;
+    private Spinner spinnerUser, spinnerCategory;
     private Button btnSelectImage, btnSave, btnUpdate, btnDelete, btnLoadMore;
     private ImageView ivImage;
     private ListView lvDrinks;
@@ -38,12 +49,17 @@ public class DrinkFragment extends BaseModelFragment {
     private List<Drink> drinks;
     private Drink selectedDrink;
     private DrinkDAO drinkDAO;
+    private UserDAO userDAO;
+    private CategoryDAO categoryDAO;
     private Uri selectedImageUri;
     private DocumentSnapshot lastVisible;
     private boolean isLoading = false;
     private String currentSearchQuery = "";
     private android.os.Handler searchHandler = new android.os.Handler();
     private Runnable searchRunnable;
+    private List<User> users;
+    private List<Category> categories;
+    private SimpleDateFormat dateFormat;
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -65,12 +81,19 @@ public class DrinkFragment extends BaseModelFragment {
     @Override
     protected void initViews() {
         Log.d(TAG, "Initializing views");
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        
         etSearch = rootView.findViewById(R.id.etSearch);
         etName = rootView.findViewById(R.id.etName);
         etDescription = rootView.findViewById(R.id.etDescription);
         etInstruction = rootView.findViewById(R.id.etInstruction);
-        etCategoryId = rootView.findViewById(R.id.etCategoryId);
         etRate = rootView.findViewById(R.id.etRate);
+        etUuid = rootView.findViewById(R.id.etUuid);
+        etCreatedAt = rootView.findViewById(R.id.etCreatedAt);
+        etUpdatedAt = rootView.findViewById(R.id.etUpdatedAt);
+        spinnerUser = rootView.findViewById(R.id.spinnerUser);
+        spinnerCategory = rootView.findViewById(R.id.spinnerCategory);
+        
         btnSelectImage = rootView.findViewById(R.id.btnSelectImage);
         btnSave = rootView.findViewById(R.id.btnSave);
         btnUpdate = rootView.findViewById(R.id.btnUpdate);
@@ -80,14 +103,80 @@ public class DrinkFragment extends BaseModelFragment {
         lvDrinks = rootView.findViewById(R.id.lvDrinks);
 
         drinks = new ArrayList<>();
+        users = new ArrayList<>();
+        categories = new ArrayList<>();
+        
         adapter = new DrinkAdapter(getContext(), drinks);
         lvDrinks.setAdapter(adapter);
+        
         drinkDAO = new DrinkDAO();
+        userDAO = new UserDAO();
+        categoryDAO = new CategoryDAO();
 
         setupListeners();
         setupSearchListener();
+        loadUsers();
+        loadCategories();
         loadFirstPage();
         Log.d(TAG, "Views initialized successfully");
+    }
+
+    private void loadUsers() {
+        userDAO.getAllUsers(new UserDAO.UserListCallback() {
+            @Override
+            public void onUserListLoaded(List<User> userList) {
+                users.clear();
+                users.addAll(userList);
+                List<String> userDisplayList = new ArrayList<>();
+                userDisplayList.add(""); // Add empty option
+                for (User user : users) {
+                    userDisplayList.add(user.getName() + " (" + user.getUuid() + ")");
+                }
+                ArrayAdapter<String> userAdapter = new ArrayAdapter<>(
+                    getContext(),
+                    android.R.layout.simple_spinner_item,
+                    userDisplayList
+                );
+                userAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerUser.setAdapter(userAdapter);
+                spinnerUser.setSelection(0); // Set to empty by default
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(TAG, "Error loading users: " + e.getMessage());
+                showToast("Error loading users: " + e.getMessage());
+            }
+        });
+    }
+
+    private void loadCategories() {
+        categoryDAO.getAllCategorys(new CategoryDAO.CategoryListCallback() {
+            @Override
+            public void onCategoryListLoaded(List<Category> categoryList) {
+                categories.clear();
+                categories.addAll(categoryList);
+                List<String> categoryDisplayList = new ArrayList<>();
+                categoryDisplayList.add(""); // Add empty option
+                for (Category category : categories) {
+                    categoryDisplayList.add(category.getName() + " (" + category.getUuid() + ")");
+                }
+                ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                    getContext(),
+                    android.R.layout.simple_spinner_item,
+                    categoryDisplayList
+                );
+                categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerCategory.setAdapter(categoryAdapter);
+                spinnerCategory.setSelection(0); // Set to empty by default
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(TAG, "Error loading categories: " + e.getMessage());
+                showToast("Error loading categories: " + e.getMessage());
+            }
+        });
     }
 
     private void setupListeners() {
@@ -283,8 +372,12 @@ public class DrinkFragment extends BaseModelFragment {
         etName.setText("");
         etDescription.setText("");
         etInstruction.setText("");
-        etCategoryId.setText("");
         etRate.setText("");
+        etUuid.setText("");
+        etCreatedAt.setText("");
+        etUpdatedAt.setText("");
+        spinnerUser.setSelection(0);
+        spinnerCategory.setSelection(0);
         selectedImageUri = null;
         selectedDrink = null;
         ivImage.setImageResource(R.drawable.cocktail_logo);
@@ -300,8 +393,36 @@ public class DrinkFragment extends BaseModelFragment {
             etName.setText(drink.getName());
             etDescription.setText(drink.getDescription());
             etInstruction.setText(drink.getInstruction());
-            etCategoryId.setText(drink.getCategoryId());
             etRate.setText(String.valueOf(drink.getRate()));
+            etUuid.setText(drink.getUuid());
+            etCreatedAt.setText(dateFormat.format(drink.getCreatedAt()));
+            etUpdatedAt.setText(dateFormat.format(drink.getUpdatedAt()));
+            
+            // Set user spinner
+            boolean userFound = false;
+            for (int i = 0; i < users.size(); i++) {
+                if (users.get(i).getUuid().equals(drink.getUserId())) {
+                    spinnerUser.setSelection(i + 1); // +1 because of empty option
+                    userFound = true;
+                    break;
+                }
+            }
+            if (!userFound) {
+                spinnerUser.setSelection(0); // Set to empty if user not found
+            }
+            
+            // Set category spinner
+            boolean categoryFound = false;
+            for (int i = 0; i < categories.size(); i++) {
+                if (categories.get(i).getUuid().equals(drink.getCategoryId())) {
+                    spinnerCategory.setSelection(i + 1); // +1 because of empty option
+                    categoryFound = true;
+                    break;
+                }
+            }
+            if (!categoryFound) {
+                spinnerCategory.setSelection(0); // Set to empty if category not found
+            }
             
             if (drink.getImage() != null && !drink.getImage().isEmpty()) {
                 Log.d(TAG, "Loading drink image: " + drink.getImage());
@@ -321,10 +442,9 @@ public class DrinkFragment extends BaseModelFragment {
         String name = etName.getText().toString();
         String description = etDescription.getText().toString();
         String instruction = etInstruction.getText().toString();
-        String categoryId = etCategoryId.getText().toString();
         String rateStr = etRate.getText().toString();
 
-        if (name.isEmpty() || description.isEmpty() || instruction.isEmpty() || categoryId.isEmpty() || rateStr.isEmpty()) {
+        if (name.isEmpty() || description.isEmpty() || instruction.isEmpty() || rateStr.isEmpty()) {
             Log.w(TAG, "Save failed: Required fields are empty");
             showToast("Please fill all required fields");
             return;
@@ -339,7 +459,19 @@ public class DrinkFragment extends BaseModelFragment {
             return;
         }
 
-        Drink drink = new Drink(name, description, instruction, categoryId, rate);
+        // Get selected user and category
+        int userPosition = spinnerUser.getSelectedItemPosition();
+        int categoryPosition = spinnerCategory.getSelectedItemPosition();
+        
+        if (userPosition <= 0 || categoryPosition <= 0) { // Check if empty option is selected
+            showToast("Please select both user and category");
+            return;
+        }
+
+        User selectedUser = users.get(userPosition - 1); // -1 because of empty option
+        Category selectedCategory = categories.get(categoryPosition - 1); // -1 because of empty option
+
+        Drink drink = new Drink(name, selectedUser.getUuid(), "", selectedCategory.getUuid(), instruction, description, rate);
         drink.generateUUID();
         Log.d(TAG, "Creating new drink: " + drink.getName() + " with UUID: " + drink.getUuid());
 
@@ -383,10 +515,9 @@ public class DrinkFragment extends BaseModelFragment {
         String name = etName.getText().toString();
         String description = etDescription.getText().toString();
         String instruction = etInstruction.getText().toString();
-        String categoryId = etCategoryId.getText().toString();
         String rateStr = etRate.getText().toString();
 
-        if (name.isEmpty() || description.isEmpty() || instruction.isEmpty() || categoryId.isEmpty() || rateStr.isEmpty()) {
+        if (name.isEmpty() || description.isEmpty() || instruction.isEmpty() || rateStr.isEmpty()) {
             Log.w(TAG, "Update failed: Required fields are empty");
             showToast("Please fill all required fields");
             return;
@@ -401,11 +532,25 @@ public class DrinkFragment extends BaseModelFragment {
             return;
         }
 
+        // Get selected user and category
+        int userPosition = spinnerUser.getSelectedItemPosition();
+        int categoryPosition = spinnerCategory.getSelectedItemPosition();
+        
+        if (userPosition <= 0 || categoryPosition <= 0) { // Check if empty option is selected
+            showToast("Please select both user and category");
+            return;
+        }
+
+        User selectedUser = users.get(userPosition - 1); // -1 because of empty option
+        Category selectedCategory = categories.get(categoryPosition - 1); // -1 because of empty option
+
         selectedDrink.setName(name);
         selectedDrink.setDescription(description);
         selectedDrink.setInstruction(instruction);
-        selectedDrink.setCategoryId(categoryId);
         selectedDrink.setRate(rate);
+        selectedDrink.setUserId(selectedUser.getUuid());
+        selectedDrink.setCategoryId(selectedCategory.getUuid());
+        
         Log.d(TAG, "Updating drink: " + selectedDrink.getName() + " with UUID: " + selectedDrink.getUuid());
 
         if (selectedImageUri != null) {
