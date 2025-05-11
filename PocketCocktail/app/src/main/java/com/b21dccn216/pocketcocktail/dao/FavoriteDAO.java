@@ -3,13 +3,17 @@ package com.b21dccn216.pocketcocktail.dao;
 import com.b21dccn216.pocketcocktail.model.Favorite;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FavoriteDAO {
     private final FirebaseFirestore db;
@@ -20,6 +24,35 @@ public class FavoriteDAO {
     public FavoriteDAO() {
         db = FirebaseFirestore.getInstance();
         favoriteRef = db.collection("favorite");
+    }
+
+    private Map<String, Object> convertFavoriteToMap(Favorite favorite) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("uuid", favorite.getUuid());
+        data.put("drinkId", favorite.getDrinkId());
+        data.put("userId", favorite.getUserId());
+        data.put("createdAt", favorite.getCreatedAtTimestamp());
+        data.put("updatedAt", favorite.getUpdatedAtTimestamp());
+        return data;
+    }
+
+    private Favorite convertDocumentToFavorite(DocumentSnapshot doc) {
+        Favorite favorite = new Favorite();
+        favorite.setUuid(doc.getString("uuid"));
+        favorite.setDrinkId(doc.getString("drinkId"));
+        favorite.setUserId(doc.getString("userId"));
+        
+        Timestamp createdAt = doc.getTimestamp("createdAt");
+        if (createdAt != null) {
+            favorite.setCreatedAtTimestamp(createdAt);
+        }
+        
+        Timestamp updatedAt = doc.getTimestamp("updatedAt");
+        if (updatedAt != null) {
+            favorite.setUpdatedAtTimestamp(updatedAt);
+        }
+        
+        return favorite;
     }
 
     public interface FavoriteCallback {
@@ -33,8 +66,9 @@ public class FavoriteDAO {
     }
 
     public void addFavorite(Favorite favorite, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        Map<String, Object> data = convertFavoriteToMap(favorite);
         favoriteRef.document(favorite.generateUUID())
-                .set(favorite)
+                .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
     }
@@ -87,8 +121,9 @@ public class FavoriteDAO {
     }
 
     public void updateFavorite(Favorite updatedFavorite, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        Map<String, Object> data = convertFavoriteToMap(updatedFavorite);
         favoriteRef.document(updatedFavorite.getUuid())
-                .set(updatedFavorite)
+                .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
     }

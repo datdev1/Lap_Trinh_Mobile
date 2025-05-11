@@ -2,7 +2,7 @@ package com.b21dccn216.pocketcocktail.dao;
 
 import android.content.Context;
 import android.net.Uri;
-
+import com.google.firebase.Timestamp;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -12,9 +12,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CategoryDAO {
     private final FirebaseFirestore db;
@@ -39,9 +42,41 @@ public class CategoryDAO {
         void onError(Exception e);
     }
 
+    private Map<String, Object> convertCategoryToMap(Category category) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("uuid", category.getUuid());
+        data.put("name", category.getName());
+        data.put("description", category.getDescription());
+        data.put("image", category.getImage());
+        data.put("createdAt", category.getCreatedAtTimestamp());
+        data.put("updatedAt", category.getUpdatedAtTimestamp());
+        return data;
+    }
+
+    private Category convertDocumentToCategory(DocumentSnapshot doc) {
+        Category category = new Category();
+        category.setUuid(doc.getString("uuid"));
+        category.setName(doc.getString("name"));
+        category.setDescription(doc.getString("description"));
+        category.setImage(doc.getString("image"));
+        
+        Timestamp createdAt = doc.getTimestamp("createdAt");
+        if (createdAt != null) {
+            category.setCreatedAtTimestamp(createdAt);
+        }
+        
+        Timestamp updatedAt = doc.getTimestamp("updatedAt");
+        if (updatedAt != null) {
+            category.setUpdatedAtTimestamp(updatedAt);
+        }
+        
+        return category;
+    }
+
     public void addCategory(Category category, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        Map<String, Object> data = convertCategoryToMap(category);
         categoryRef.document(category.generateUUID())
-                .set(category)
+                .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
     }
@@ -50,14 +85,15 @@ public class CategoryDAO {
                                      OnSuccessListener<Void> onSuccess,
                                      OnFailureListener onFailure) {
         String title = ImageDAO.ImageDaoFolderForCategory + "_" + category.getName() + "_" + category.getUuid();
-        new ImageDAO().uploadImageToImgur(context, imageUri, title,new ImageDAO.UploadCallback() {
+        new ImageDAO().uploadImageToImgur(context, imageUri, title, new ImageDAO.UploadCallback() {
             @Override
             public void onSuccess(String imageUrl) {
                 category.generateUUID();
                 category.setImage(imageUrl);
-
+                Map<String, Object> data = convertCategoryToMap(category);
+                
                 categoryRef.document(category.getUuid())
-                        .set(category)
+                        .set(data)
                         .addOnSuccessListener(onSuccess)
                         .addOnFailureListener(onFailure);
             }
@@ -78,7 +114,7 @@ public class CategoryDAO {
     public void getCategory(String categoryUuid, CategoryCallback callback) {
         categoryRef.document(categoryUuid).get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    Category category = documentSnapshot.toObject(Category.class);
+                    Category category = convertDocumentToCategory(documentSnapshot);
                     callback.onCategoryLoaded(category);
                 })
                 .addOnFailureListener(callback::onError);
@@ -100,24 +136,51 @@ public class CategoryDAO {
     public void getAllCategorys(CategoryListCallback callback) {
         categoryRef.get()
                 .addOnSuccessListener(querySnapshot -> {
-                    List<Category> categorys = new ArrayList<>();
+                    List<Category> categories = new ArrayList<>();
                     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                        Category category = doc.toObject(Category.class);
+                        Category category = convertDocumentToCategory(doc);
                         if (category != null) {
-                            categorys.add(category);
+                            categories.add(category);
                         }
                     }
-                    callback.onCategoryListLoaded(categorys);
+                    callback.onCategoryListLoaded(categories);
                 })
                 .addOnFailureListener(callback::onError);
     }
 
 
     public void updateCategory(Category updatedCategory, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        Map<String, Object> data = convertCategoryToMap(updatedCategory);
         categoryRef.document(updatedCategory.getUuid())
-                .set(updatedCategory)
+                .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
+    }
+
+    public void updateCategoryWithImage(Context context, Category updatedCategory, @Nullable Uri newImageUri,
+                                     OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        if (newImageUri != null) {
+            String title = ImageDAO.ImageDaoFolderForCategory + "_" + updatedCategory.getName() + "_" + updatedCategory.getUuid();
+            new ImageDAO().uploadImageToImgur(context, newImageUri, title, new ImageDAO.UploadCallback() {
+                @Override
+                public void onSuccess(String imageUrl) {
+                    updatedCategory.setImage(imageUrl);
+                    Map<String, Object> data = convertCategoryToMap(updatedCategory);
+                    
+                    categoryRef.document(updatedCategory.getUuid())
+                            .set(data)
+                            .addOnSuccessListener(onSuccess)
+                            .addOnFailureListener(onFailure);
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    onFailure.onFailure(e);
+                }
+            });
+        } else {
+            updateCategory(updatedCategory, onSuccess, onFailure);
+        }
     }
 
     // 5. Delete a category by ID
@@ -137,7 +200,7 @@ public class CategoryDAO {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Category> categoryList = new ArrayList<>();
                     for (DocumentSnapshot categorySnapshot : queryDocumentSnapshots.getDocuments()) {
-                        Category category = categorySnapshot.toObject(Category.class);
+                        Category category = convertDocumentToCategory(categorySnapshot);
                         categoryList.add(category);
                     }
                     callback.onCategoryListLoaded(categoryList);
