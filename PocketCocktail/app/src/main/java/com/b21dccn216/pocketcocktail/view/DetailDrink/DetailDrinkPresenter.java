@@ -55,58 +55,124 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         }
 
         // Load ingredient
-        recipeDAO.getRecipesByDrinkId(drink.getUuid(), recipeSnapshots -> {
-            for (DocumentSnapshot doc : recipeSnapshots.getDocuments()) {
-                Recipe recipe = doc.toObject(Recipe.class);
-                if (recipe != null) {
-                    ingredientDAO.getIngredient(recipe.getIngredientId(), ingredientSnapshot -> {
-                        Ingredient ingredient = ingredientSnapshot.toObject(Ingredient.class);
-                        if (ingredient != null) {
+//        recipeDAO.getRecipesByDrinkId(drink.getUuid(), recipeSnapshots -> {
+//            for (DocumentSnapshot doc : recipeSnapshots.getDocuments()) {
+//                Recipe recipe = doc.toObject(Recipe.class);
+//                if (recipe != null) {
+//                    ingredientDAO.getIngredient(recipe.getIngredientId(), ingredientSnapshot -> {
+//                        Ingredient ingredient = ingredientSnapshot.toObject(Ingredient.class);
+//                        if (ingredient != null) {
+//                            String line = ingredient.getName() + " (" + recipe.getAmount() + " " + ingredient.getUnit() + ")";
+//                            view.showIngredient(line);
+//                        }
+//                    }, e -> view.showError(e.getMessage()));
+//                }
+//            }
+//        }, e -> view.showError(e.getMessage()));
+
+        recipeDAO.getRecipesByDrinkId(drink.getUuid(), new RecipeDAO.RecipeListCallback() {
+            @Override
+            public void onRecipeListLoaded(List<Recipe> recipes) {
+                for (Recipe recipe : recipes) {
+                    ingredientDAO.getIngredient(recipe.getIngredientId(), new IngredientDAO.IngredientCallback() {
+                        @Override
+                        public void onIngredientLoaded(Ingredient ingredient) {
                             String line = ingredient.getName() + " (" + recipe.getAmount() + " " + ingredient.getUnit() + ")";
                             view.showIngredient(line);
                         }
-                    }, e -> view.showError(e.getMessage()));
+
+                        @Override
+                        public void onError(Exception e) {
+                            view.showError(e.getMessage());
+                        }
+
+                    });
                 }
             }
-        }, e -> view.showError(e.getMessage()));
+
+            @Override
+            public void onError(Exception e) {
+                view.showError(e.getMessage());
+            }
+        });
 
         // Load similar drink
+//        drinkDAO.getDrinksByCategoryId(drink.getCategoryId(),
+//                querySnapshot -> {
+//                    List<Drink> similarDrinks = new ArrayList<>();
+//                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+//                        Drink similarDrink = doc.toObject(Drink.class);
+//                        if (similarDrink != null && !similarDrink.getUuid().equals(drink.getUuid())) {
+//                            similarDrinks.add(similarDrink);
+//                        }
+//                    }
+//                    view.showSimilarDrinks(similarDrinks);
+//                },
+//                e -> {
+//                    Log.e("DetailDrink", "Failed to load similar drinks", e);
+//                    view.showError(e.getMessage());
+//                }
+//        );
         drinkDAO.getDrinksByCategoryId(drink.getCategoryId(),
-                querySnapshot -> {
-                    List<Drink> similarDrinks = new ArrayList<>();
-                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                        Drink similarDrink = doc.toObject(Drink.class);
-                        if (similarDrink != null && !similarDrink.getUuid().equals(drink.getUuid())) {
-                            similarDrinks.add(similarDrink);
-                        }
+                new DrinkDAO.DrinkListCallback()
+                {
+                    @Override
+                    public void onDrinkListLoaded(List<Drink> drinks) {
+                        view.showSimilarDrinks(drinks);
                     }
-                    view.showSimilarDrinks(similarDrinks);
-                },
-                e -> {
-                    Log.e("DetailDrink", "Failed to load similar drinks", e);
-                    view.showError(e.getMessage());
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e("DetailDrink", "Failed to load similar drinks", e);
+                        view.showError(e.getMessage());
+                    }
                 }
         );
+
     }
 
     @Override
     public void checkFavorite(String drinkId) {
-        favoriteDAO.getFavoritesByUserId(currentUserId, querySnapshot -> {
-            isFavorite = false;
-            currentFavorite = null;
-            for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                Favorite favorite = doc.toObject(Favorite.class);
-                if (favorite != null && favorite.getDrinkId().equals(drinkId)) {
-                    isFavorite = true;
-                    currentFavorite = favorite;
-                    break;
+//        favoriteDAO.getFavoritesByUserId(currentUserId, querySnapshot -> {
+//            isFavorite = false;
+//            currentFavorite = null;
+//            for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+//                Favorite favorite = doc.toObject(Favorite.class);
+//                if (favorite != null && favorite.getDrinkId().equals(drinkId)) {
+//                    isFavorite = true;
+//                    currentFavorite = favorite;
+//                    break;
+//                }
+//            }
+//            if (view != null) {
+//                view.updateFavoriteIcon(isFavorite);
+//            }
+//        }, e -> {
+//            if (view != null) view.showError(e.getMessage());
+//        });
+//
+        favoriteDAO.getFavoriteDrinkId(currentUserId, new FavoriteDAO.FavoriteListCallback() {
+
+            @Override
+            public void onFavoriteListLoaded(List<Favorite> favorites) {
+                isFavorite = false;
+                currentFavorite = null;
+                for (Favorite favorite : favorites) {
+                    if (favorite != null && favorite.getDrinkId().equals(drinkId)) {
+                        isFavorite = true;
+                        currentFavorite = favorite;
+                        break;
+                    }
+                }
+                if (view != null) {
+                    view.updateFavoriteIcon(isFavorite);
                 }
             }
-            if (view != null) {
-                view.updateFavoriteIcon(isFavorite);
+
+            @Override
+            public void onError(Exception e) {
+                if (view != null) view.showError(e.getMessage());
             }
-        }, e -> {
-            if (view != null) view.showError(e.getMessage());
         });
     }
 

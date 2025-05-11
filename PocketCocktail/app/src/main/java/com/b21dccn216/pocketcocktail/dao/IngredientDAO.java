@@ -107,11 +107,11 @@ public class IngredientDAO {
         });
     }
 
-    public void getIngredient(String ingredientUuid, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
-        ingredientRef.document(ingredientUuid).get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
+//    public void getIngredient(String ingredientUuid, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
+//        ingredientRef.document(ingredientUuid).get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
 
     public void getIngredient(String ingredientUuid, IngredientCallback callback) {
         ingredientRef.document(ingredientUuid).get()
@@ -122,18 +122,36 @@ public class IngredientDAO {
                 .addOnFailureListener(callback::onError);
     }
 
-    public void getIngredientByName(String name, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//    public void getIngredientByName(String name, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        ingredientRef.whereEqualTo("name", name)
+//                .get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+
+    public void getIngredientByName(String name, IngredientListCallback callback) {
         ingredientRef.whereEqualTo("name", name)
                 .get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
+                .addOnSuccessListener(
+                        querySnapshot -> {
+                            List<Ingredient> ingredients = new ArrayList<>();
+                            for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                                Ingredient ingredient = convertDocumentToIngredient(doc);
+                                if (ingredient != null) {
+                                    ingredients.add(ingredient);
+                                }
+                                callback.onIngredientListLoaded(ingredients);
+                            }
+                        }
+                )
+                .addOnFailureListener(callback::onError);
     }
 
-    public void getAllIngredients(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
-        ingredientRef.get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
+//    public void getAllIngredients(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        ingredientRef.get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
 
     public void getAllIngredients(IngredientListCallback callback) {
         ingredientRef.get()
@@ -191,16 +209,16 @@ public class IngredientDAO {
                 .addOnFailureListener(onFailure);
     }
 
-    public void getIngredientDiscover(INGREDIENT_FIELD sortTag, Query.Direction sortOrder, int limit,
+    public void getAllIngredientSortAndLimit(INGREDIENT_FIELD sortField, Query.Direction sortOrder, int limit,
                                     IngredientListCallback callback) {
         ingredientRef
-                .orderBy(sortTag.getValue(), sortOrder)
+                .orderBy(sortField.getValue(), sortOrder)
                 .limit(limit)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Ingredient> ingredientList = new ArrayList<>();
                     for (DocumentSnapshot ingredientSnapshot : queryDocumentSnapshots.getDocuments()) {
-                        Ingredient ingredient = ingredientSnapshot.toObject(Ingredient.class);
+                        Ingredient ingredient = convertDocumentToIngredient(ingredientSnapshot);
                         ingredientList.add(ingredient);
                     }
                     callback.onIngredientListLoaded(ingredientList);

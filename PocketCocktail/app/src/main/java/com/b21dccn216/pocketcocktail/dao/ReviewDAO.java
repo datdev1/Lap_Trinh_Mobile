@@ -121,11 +121,11 @@ public class ReviewDAO {
                 .addOnFailureListener(callback::onError);
     }
 
-    public void getAllReviews(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
-        reviewRef.get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
+//    public void getAllReviews(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        reviewRef.get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
 
     public void getAllReviews(ReviewListCallback callback) {
         reviewRef.get()

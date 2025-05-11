@@ -1,5 +1,8 @@
 package com.b21dccn216.pocketcocktail.dao;
 
+import android.util.Log;
+
+import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Favorite;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -74,44 +77,85 @@ public class FavoriteDAO {
                 .addOnFailureListener(onFailure);
     }
 
-    public void getFavorite(String favoriteUuid, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
-        favoriteRef.document(favoriteUuid).get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
+//    public void getFavorite(String favoriteUuid, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
+//        favoriteRef.document(favoriteUuid).get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+//
+//    public void getFavorite(Favorite favorite, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
+//        favoriteRef.document(favorite.getUuid()).get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
 
-    public void getFavorite(Favorite favorite, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
+    public void getFavorite(Favorite favorite, FavoriteCallback callback) {
         favoriteRef.document(favorite.getUuid()).get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
+                .addOnSuccessListener(documentSnapshot -> {
+                    callback.onFavoriteLoaded(convertDocumentToFavorite(documentSnapshot));
+                })
+                .addOnFailureListener(callback::onError);
     }
+//    public void getFavoritesByDrinkId(String drinkId, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        favoriteRef.whereEqualTo("drinkId", drinkId)
+//                .get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
 
-    public void getFavoritesByDrinkId(String drinkId, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+    public void getFavoriteDrinkId(String drinkId, FavoriteListCallback callback) {
         favoriteRef.whereEqualTo("drinkId", drinkId)
                 .get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Favorite> favorites = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Favorite favorite = convertDocumentToFavorite(doc);
+                        if (favorite != null) {
+                            favorites.add(favorite);
+                        }
+                    }
+                    Log.e("load Drink", "getAllDrinks: " + favorites);
+                    callback.onFavoriteListLoaded(favorites);
+                })
+                .addOnFailureListener(callback::onError);
     }
 
-    public void getFavoritesByUserId(String userId, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//    public void getFavoritesByUserId(String userId, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        favoriteRef.whereEqualTo("userId", userId)
+//                .get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+
+    public void getFavoriteUserId(String userId, FavoriteListCallback callback) {
         favoriteRef.whereEqualTo("userId", userId)
                 .get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Favorite> favorites = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Favorite favorite = convertDocumentToFavorite(doc);
+                        if (favorite != null) {
+                            favorites.add(favorite);
+                        }
+                    }
+                    Log.e("load Drink", "getAllDrinks: " + favorites);
+                    callback.onFavoriteListLoaded(favorites);
+                })
+                .addOnFailureListener(callback::onError);
     }
 
-    public void getAllFavorites(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
-        favoriteRef.get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
+//    public void getAllFavorites(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        favoriteRef.get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
 
     public void getAllFavorites(FavoriteListCallback callback) {
         favoriteRef.get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<Favorite> favorites = new ArrayList<>();
                     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                        Favorite favorite = doc.toObject(Favorite.class);
+                        Favorite favorite = convertDocumentToFavorite(doc);
                         if (favorite != null) {
                             favorites.add(favorite);
                         }

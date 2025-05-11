@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -124,47 +125,6 @@ public class DrinkDAO {
         });
     }
 
-    public void getDrink(String drinkUuid, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
-        drinkRef.document(drinkUuid).get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
-
-    public void getDrink(Drink drink, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
-        drinkRef.document(drink.getUuid()).get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
-
-    public void getDrinksByCategoryId(String categoryId, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
-        drinkRef.whereEqualTo("categoryId", categoryId)
-                .get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
-
-    public void getAllDrinks(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
-        drinkRef.get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
-
-    public void getAllDrinks(DrinkListCallback callback) {
-        drinkRef.get()
-                .addOnSuccessListener(querySnapshot -> {
-                    List<Drink> drinks = new ArrayList<>();
-                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                        Drink drink = convertDocumentToDrink(doc);
-                        if (drink != null) {
-                            drinks.add(drink);
-                        }
-                    }
-                    Log.e("load Drink", "getAllDrinks: " + drinks);
-                    callback.onDrinkListLoaded(drinks);
-                })
-                .addOnFailureListener(callback::onError);
-    }
-
     public void updateDrink(Drink updatedDrink, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         Map<String, Object> data = convertDrinkToMap(updatedDrink);
         drinkRef.document(updatedDrink.getUuid())
@@ -182,7 +142,7 @@ public class DrinkDAO {
                 public void onSuccess(String imageUrl) {
                     updatedDrink.setImage(imageUrl);
                     Map<String, Object> data = convertDrinkToMap(updatedDrink);
-                    
+
                     drinkRef.document(updatedDrink.getUuid())
                             .set(data)
                             .addOnSuccessListener(onSuccess)
@@ -205,6 +165,92 @@ public class DrinkDAO {
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
     }
+
+//    public void getDrink(String drinkUuid, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
+//        drinkRef.document(drinkUuid).get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+//
+//    public void getDrink(Drink drink, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
+//        drinkRef.document(drink.getUuid()).get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+    public void getDrink(String drinkUuid, DrinkDAO.DrinkCallback callback) {
+        drinkRef.document(drinkUuid).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Drink drink = convertDocumentToDrink(documentSnapshot);
+                    callback.onDrinkLoaded(drink);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+//    public void getDrinksByCategoryId(String categoryId, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        drinkRef.whereEqualTo("categoryId", categoryId)
+//                .get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+
+    public void getDrinksByCategoryId(String categoryId, DrinkListCallback callback) {
+        drinkRef.whereEqualTo("categoryId", categoryId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Drink> drinks = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Drink drink = convertDocumentToDrink(doc);
+                        if (drink != null) {
+                            drinks.add(drink);
+                        }
+                    }
+                    Log.e("load Drink", "getAllDrinks: " + drinks);
+                    callback.onDrinkListLoaded(drinks);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
+
+    public void getDrinksByCategoryIdWithLimit(String categoryId, int limit, DrinkListCallback callback) {
+        drinkRef.whereEqualTo("categoryId", categoryId)
+                .limit(limit)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Drink> drinks = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Drink drink = convertDocumentToDrink(doc);
+                        if (drink != null) {
+                            drinks.add(drink);
+                        }
+                    }
+                    Log.e("load Drink", "getAllDrinks: " + drinks);
+                    callback.onDrinkListLoaded(drinks);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
+//    public void getAllDrinks(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        drinkRef.get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+
+    public void getAllDrinks(DrinkListCallback callback) {
+        drinkRef.get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Drink> drinks = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Drink drink = convertDocumentToDrink(doc);
+                        if (drink != null) {
+                            drinks.add(drink);
+                        }
+                    }
+                    Log.e("load Drink", "getAllDrinks: " + drinks);
+                    callback.onDrinkListLoaded(drinks);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
+
 
     public void getFeatureDrink(DrinkCallback callback) {
         drinkRef.get()
@@ -243,26 +289,10 @@ public class DrinkDAO {
         Log.d("DrinkDAO", "Getting all drinks with sort field: " + sortField.getValue() + ", order: " + sortOrder);
         
         Query query;
-        try {
-            if (sortField == DRINK_FIELD.CREATED_AT || sortField == DRINK_FIELD.UPDATED_AT) {
-                query = drinkRef
-                        .whereNotEqualTo(sortField.getValue(), null)
-                        .orderBy(sortField.getValue(), sortOrder)
-                        .limit(limit);
-                Log.d("DrinkDAO", "Query built with existence check for field: " + sortField.getValue());
-            } else {
-                query = drinkRef
-                        .orderBy(sortField.getValue(), sortOrder)
-                        .limit(limit);
-                Log.d("DrinkDAO", "Query built with direct sort for field: " + sortField.getValue());
-            }
-        } catch (Exception e) {
-            Log.e("DrinkDAO", "Error building query with sort field: " + sortField.getValue(), e);
-            query = drinkRef
-                    .orderBy(DRINK_FIELD.NAME.getValue(), Query.Direction.ASCENDING)
-                    .limit(limit);
-            Log.d("DrinkDAO", "Using fallback sort field: " + DRINK_FIELD.NAME.getValue());
-        }
+        query = drinkRef
+                .orderBy(sortField.getValue(), sortOrder)
+                .limit(limit);
+
 
         if (startAfter != null) {
             query = query.startAfter(startAfter);
@@ -296,9 +326,6 @@ public class DrinkDAO {
                 });
     }
 
-    public void searchDrinks(String query, int limit, DrinkListWithLastDocCallback callback) {
-        searchDrinksWithSort(query, limit, null, DRINK_FIELD.CREATED_AT, Query.Direction.DESCENDING, callback);
-    }
 
     public void searchDrinksWithSort(String query, int limit, DocumentSnapshot startAfter, 
                                    DRINK_FIELD sortField, Query.Direction sortOrder,
