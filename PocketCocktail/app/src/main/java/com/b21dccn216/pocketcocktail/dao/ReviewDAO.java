@@ -1,5 +1,7 @@
 package com.b21dccn216.pocketcocktail.dao;
 
+import android.util.Log;
+
 import com.b21dccn216.pocketcocktail.model.Review;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -88,8 +90,9 @@ public class ReviewDAO {
     }
 
     public void getReviewsByDrinkId(String drinkId, ReviewListCallback callback) {
+        Log.d("ReviewDAO", "getReviewsByDrinkId: " + drinkId);
         reviewRef.whereEqualTo("drinkId", drinkId)
-                .orderBy("createdAt", Query.Direction.DESCENDING)
+//                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<Review> reviews = new ArrayList<>();
@@ -99,6 +102,7 @@ public class ReviewDAO {
                             reviews.add(review);
                         }
                     }
+                    Log.d("ReviewDAO", "getReviewsByDrinkId: " + reviews);
                     callback.onReviewListLoaded(reviews);
                 })
                 .addOnFailureListener(callback::onError);
@@ -106,7 +110,7 @@ public class ReviewDAO {
 
     public void getReviewsByUserId(String userId, ReviewListCallback callback) {
         reviewRef.whereEqualTo("userId", userId)
-                .orderBy("createdAt", Query.Direction.DESCENDING)
+//                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<Review> reviews = new ArrayList<>();

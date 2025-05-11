@@ -283,6 +283,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
             public void onError(Exception e) {
                 if (view != null) {
                     view.showError("Failed to load reviews: " + e.getMessage());
+                    Log.d("ReviewDAO", "Failed to load reviews: " + e.getMessage());
                 }
             }
 
