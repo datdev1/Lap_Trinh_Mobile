@@ -94,8 +94,9 @@ public class DrinkDAO {
     }
 
     public void addDrink(Drink drink, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        drink.generateUUID();
         Map<String, Object> data = convertDrinkToMap(drink);
-        drinkRef.document(drink.generateUUID())
+        drinkRef.document(drink.getUuid())
                 .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
