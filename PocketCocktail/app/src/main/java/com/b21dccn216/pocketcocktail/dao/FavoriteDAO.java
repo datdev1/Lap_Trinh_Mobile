@@ -120,6 +120,22 @@ public class FavoriteDAO {
                 .addOnFailureListener(callback::onError);
     }
 
+    public void getFavoritesByUserId(String userId, FavoriteListCallback callback) {
+        favoriteRef.whereEqualTo("userId", userId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Favorite> favorites = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Favorite favorite = convertDocumentToFavorite(doc);
+                        if (favorite != null) {
+                            favorites.add(favorite);
+                        }
+                    }
+                    callback.onFavoriteListLoaded(favorites);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
 //    public void getFavoritesByUserId(String userId, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
 //        favoriteRef.whereEqualTo("userId", userId)
 //                .get()

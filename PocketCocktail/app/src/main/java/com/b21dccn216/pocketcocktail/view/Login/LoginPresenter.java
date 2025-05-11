@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
 import com.b21dccn216.pocketcocktail.dao.UserDAO;
 import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -87,22 +88,24 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>  implement
         });
     }
         
-        private void showAlertDialog(String title, String message){
-
+        private void showAlertDialog(String title, String message, HelperDialog.DialogType dialogType){
             DialogHelper.showAlertDialog(((Fragment)view).getActivity(),
                     title,
-                    message);
+                    message,
+                    dialogType);
         }
         
         private boolean validateSignUpInput(User user, String confirmPassword){
             if(user.getName() == null || user.getName().isEmpty() || user.getName().length() < 6){
                 showAlertDialog(
                         "Full name is invalid",
-                        "Please ensure name field is not empty and more than 6 digit");
+                        "Please ensure name field is not empty and more than 6 digit",
+                        HelperDialog.DialogType.ERROR);
                 return false;
             }
             if(confirmPassword == null || confirmPassword.isEmpty() || !confirmPassword.equals(user.getPassword())){
-                showAlertDialog("Confirm password is invalid","Please ensure confirm password is correct");
+                showAlertDialog("Confirm password is invalid","Please ensure confirm password is correct",
+                        HelperDialog.DialogType.ERROR);
                 Log.e("datdev1","confirmPassword.isEmpty(): " + confirmPassword.isEmpty());
                 Log.e("datdev1","!confirmPassword.equals(user.getPassword(): " + !confirmPassword.equals(user.getPassword()));
                 Log.e("datdev1","confirmPassword: " + confirmPassword);
@@ -114,7 +117,8 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>  implement
     
         private boolean validateLoginInput(User user) {
             if(user == null) {
-                showAlertDialog("User is invalid", "User is invalid");
+                showAlertDialog("User is invalid", "User is invalid",
+                        HelperDialog.DialogType.ERROR);
                 return false;
             }
             String email = user.getEmail(),
@@ -123,14 +127,16 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>  implement
             if(email == null || email.trim().isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 showAlertDialog(
                         "Email is invalid",
-                        "Ensure email is in correct format");
+                        "Ensure email is in correct format",
+                        HelperDialog.DialogType.ERROR);
                 return false;
             }
     
             if (password == null || password.trim().isEmpty() || password.length() < 6) {
                 showAlertDialog(
                         "Password is invalid",
-                        "Ensure password is more than 6 digit");
+                        "Ensure password is more than 6 digit",
+                        HelperDialog.DialogType.ERROR);
                 return false;
             }
             return true;

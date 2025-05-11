@@ -24,5 +24,9 @@ public interface ProfileContract {
         void saveUserInformation(User currentUser);
 
         void saveUserWithImage(User editingUser, Uri selectedImageUri);
+
+        User getCurrentUser();
+
+        void changePassword(String oldPassword, String newPassword, String confirmPassword);
     }
 }

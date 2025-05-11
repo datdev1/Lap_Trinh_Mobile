@@ -3,21 +3,16 @@ package com.b21dccn216.pocketcocktail.view.Search;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
-import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.databinding.ActivitySearchBinding;
 
 public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, SearchContract.Presenter>
     implements SearchContract.View{
 
-    public static final String EXTRA_CATEGORY_OBJECT = "category_id";
-    public static final String EXTRA_INGREDIENT_OBJECT = "ingredient_id";
+    public static final String EXTRA_CATEGORY_OBJECT = "category_object";
+    public static final String EXTRA_INGREDIENT_OBJECT = "ingredient_object";
+    public static final String SORT_FIELD = "search_field";
+    public static final String SORT_ORDER = "sort_order";
 
     private ActivitySearchBinding binding;
 
@@ -34,6 +29,9 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

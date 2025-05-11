@@ -253,7 +253,10 @@ public class DrinkDAO {
 
 
     public void getFeatureDrink(DrinkCallback callback) {
-        drinkRef.get()
+        drinkRef
+                .limit(20)
+                .get()
+
                 .addOnSuccessListener(snapShot -> {
                     if (snapShot.isEmpty()) {
                         callback.onError(new Exception("Drink not found"));

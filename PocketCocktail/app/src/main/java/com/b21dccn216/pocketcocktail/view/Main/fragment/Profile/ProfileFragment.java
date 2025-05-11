@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Profile;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -61,7 +62,7 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentProfileBinding.inflate(getLayoutInflater(), container, false);
-        editingUser = SessionManager.getInstance().getUser();
+        editingUser = presenter.getCurrentUser();
 
         setViewCurrentUser();
 
@@ -86,7 +87,7 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
             public void onClick(View view) {
                 isEditting = false;
                 setVisibilityEditing(isEditting);
-                editingUser = SessionManager.getInstance().getUser();
+                editingUser = presenter.getCurrentUser();
                 setViewCurrentUser();
             }
         });
@@ -95,7 +96,7 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
             @Override
             public void onClick(View view) {
                 // TODO:: SET DIALOG LOADING
-                //editingUser.setEmail(binding.edtEmail.getText().toString());
+                editingUser.setEmail(binding.edtEmail.getText().toString());
                 editingUser.setName(binding.edtFullName.getText().toString());
                 if(selectedImageUri != null){
                     presenter.saveUserWithImage(editingUser, selectedImageUri);
@@ -115,6 +116,23 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
             }
         });
 
+        binding.btnChangePassword.setOnClickListener(v -> {
+            ChangePasswordDialog dialog = new ChangePasswordDialog(requireActivity(),
+                    new ChangePasswordDialog.ChangePasswordDialogCallback() {
+                        @Override
+                        public void onCancel() {
+
+                        }
+
+                        @Override
+                        public void onSave(String oldPassword, String newPassword, String confirmPassword) {
+                            presenter.changePassword(oldPassword, newPassword, confirmPassword);
+                        }
+                    });
+            dialog.show();
+
+        });
+
         return binding.getRoot();
     }
 
@@ -125,7 +143,7 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
     }
 
     public void setVisibilityEditing(Boolean isEditting){
-//        binding.edtEmail.setEnabled(isEditting);
+        binding.edtEmail.setEnabled(isEditting);
         binding.edtFullName.setEnabled(isEditting);
         binding.confirmField.setVisibility(isEditting ? View.VISIBLE : View.GONE);
     }
@@ -146,7 +164,7 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
     @Override
     public void updateInfoSuccess() {
         // TODO:: SET DIALOG FINISH LOADING
-        editingUser = SessionManager.getInstance().getUser();
+        editingUser = presenter.getCurrentUser();
         setViewCurrentUser();
         isEditting = false;
         setVisibilityEditing(isEditting);
@@ -156,7 +174,7 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
     @Override
     public void updateInfoFail(String message) {
         // TODO:: SET DIALOG FINISH LOADING
-        editingUser = SessionManager.getInstance().getUser();
+        editingUser = presenter.getCurrentUser();
         setViewCurrentUser();
         isEditting = false;
         setVisibilityEditing(isEditting);
