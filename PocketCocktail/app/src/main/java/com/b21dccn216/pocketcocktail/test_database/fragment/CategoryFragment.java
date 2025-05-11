@@ -6,7 +6,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -17,21 +16,23 @@ import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.test_database.adapter.CategoryAdapter;
 import com.bumptech.glide.Glide;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CategoryFragment extends BaseModelFragment {
     private static final int PICK_IMAGE_REQUEST = 1;
-    private EditText etName, etDescription;
+    private EditText etUuid, etCreatedAt, etUpdatedAt, etName, etDescription;
     private ImageView ivImage;
     private Button btnSelectImage, btnSave, btnUpdate, btnDelete;
     private ListView lvCategories;
-    private TextView tvUuid, tvCreatedAt, tvUpdatedAt;
     private CategoryAdapter adapter;
     private List<Category> categories;
     private Category selectedCategory;
     private CategoryDAO categoryDAO;
     private Uri selectedImageUri;
+    private SimpleDateFormat dateFormat;
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -49,6 +50,11 @@ public class CategoryFragment extends BaseModelFragment {
 
     @Override
     protected void initViews() {
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        
+        etUuid = rootView.findViewById(R.id.etUuid);
+        etCreatedAt = rootView.findViewById(R.id.etCreatedAt);
+        etUpdatedAt = rootView.findViewById(R.id.etUpdatedAt);
         etName = rootView.findViewById(R.id.etName);
         etDescription = rootView.findViewById(R.id.etDescription);
         ivImage = rootView.findViewById(R.id.ivImage);
@@ -57,9 +63,6 @@ public class CategoryFragment extends BaseModelFragment {
         btnUpdate = rootView.findViewById(R.id.btnUpdate);
         btnDelete = rootView.findViewById(R.id.btnDelete);
         lvCategories = rootView.findViewById(R.id.lvCategories);
-        tvUuid = rootView.findViewById(R.id.tvUuid);
-        tvCreatedAt = rootView.findViewById(R.id.tvCreatedAt);
-        tvUpdatedAt = rootView.findViewById(R.id.tvUpdatedAt);
 
         categories = new ArrayList<>();
         adapter = new CategoryAdapter(getContext(), categories);
@@ -108,11 +111,11 @@ public class CategoryFragment extends BaseModelFragment {
 
     @Override
     protected void clearInputs() {
+        etUuid.setText("");
+        etCreatedAt.setText("");
+        etUpdatedAt.setText("");
         etName.setText("");
         etDescription.setText("");
-        tvUuid.setText("UUID: ");
-        tvCreatedAt.setText("Created At: ");
-        tvUpdatedAt.setText("Updated At: ");
         ivImage.setImageResource(R.drawable.ic_launcher_background);
         selectedImageUri = null;
         selectedCategory = null;
@@ -124,11 +127,11 @@ public class CategoryFragment extends BaseModelFragment {
     protected void fillInputs(Object item) {
         if (item instanceof Category) {
             Category category = (Category) item;
+            etUuid.setText(category.getUuid());
+            etCreatedAt.setText(dateFormat.format(category.getCreatedAt()));
+            etUpdatedAt.setText(dateFormat.format(category.getUpdatedAt()));
             etName.setText(category.getName());
             etDescription.setText(category.getDescription());
-            tvUuid.setText("UUID: " + category.getUuid());
-            tvCreatedAt.setText("Created At: " + category.getCreatedAt());
-            tvUpdatedAt.setText("Updated At: " + category.getUpdatedAt());
             
             if (category.getImage() != null && !category.getImage().isEmpty()) {
                 Glide.with(this)
