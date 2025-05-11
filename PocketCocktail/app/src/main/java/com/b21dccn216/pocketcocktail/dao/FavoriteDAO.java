@@ -144,17 +144,19 @@ public class FavoriteDAO {
 //    }
 
     public void getFavoriteUserId(String userId, FavoriteListCallback callback) {
-        favoriteRef.whereEqualTo("userId", userId)
+        favoriteRef
+                .whereEqualTo("userId", userId)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<Favorite> favorites = new ArrayList<>();
+                    Log.d("favourite", "Size querySnapshot: " + querySnapshot.size());
                     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                         Favorite favorite = convertDocumentToFavorite(doc);
                         if (favorite != null) {
                             favorites.add(favorite);
+                            Log.d("favourite", "getFavoriteUserId: " + favorite);
                         }
                     }
-                    Log.e("load Drink", "getAllDrinks: " + favorites);
                     callback.onFavoriteListLoaded(favorites);
                 })
                 .addOnFailureListener(callback::onError);

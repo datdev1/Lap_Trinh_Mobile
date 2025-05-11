@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
 import com.b21dccn216.pocketcocktail.databinding.FragmentFavoriteBinding;
+import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Favorite;
 import com.b21dccn216.pocketcocktail.test_database.adapter.FavoriteAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.ItemFavoriteAdapter;
@@ -26,7 +27,7 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
     private FragmentFavoriteBinding binding;
     private int column = 2;
     private ItemFavoriteAdapter itemFavoriteAdapter;
-    private List<Favorite> favoriteList = new ArrayList<>();
+    private List<Drink> favoriteList = new ArrayList<>();
     @Override
     protected FavoriteContract.Presenter createPresenter() {
         return new FavoritePresenter();
@@ -56,9 +57,12 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
     }
 
     @Override
-    public void showFavoriteList(List<Favorite> favoriteList) {
+    public void showFavoriteDrinkList(List<Drink> list) {
         favoriteList.clear();
-        favoriteList.addAll(favoriteList);
+        favoriteList.addAll(list);
         itemFavoriteAdapter.notifyDataSetChanged();
     }
+
+
+
 }

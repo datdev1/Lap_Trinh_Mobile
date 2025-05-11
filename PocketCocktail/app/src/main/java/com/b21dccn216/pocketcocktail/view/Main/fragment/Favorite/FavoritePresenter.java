@@ -1,15 +1,21 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Favorite;
 
+import android.util.Log;
+
+import androidx.fragment.app.Fragment;
+
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
 import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.dao.FavoriteDAO;
-import com.b21dccn216.pocketcocktail.dao.IngredientDAO;
 import com.b21dccn216.pocketcocktail.dao.UserDAO;
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
+import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Favorite;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
@@ -26,7 +32,7 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
         favoriteDAO = new FavoriteDAO();
         userDAO = new UserDAO();
         drinkDAO = new DrinkDAO();
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        currentUserId = SessionManager.getInstance().getUser().getUuid();
     }
 
     @Override
@@ -34,21 +40,42 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
         super.onCreate();
         getAllFavoriteByUserId();
     }
+
+
     public void getAllFavoriteByUserId() {
+        Log.d("favourite", "currentUserId: " + currentUserId);
         favoriteDAO.getFavoriteUserId(currentUserId, new FavoriteDAO.FavoriteListCallback() {
             @Override
             public void onFavoriteListLoaded(List<Favorite> favorites) {
-                if (view != null) {
-                    view.showFavoriteList(favorites);  // Gửi danh sách về View để hiển thị
+                // TODO
+                Log.d("favourite", "Size: " + favorites.size());
+                List<Drink> drinks = new ArrayList<>();
+                for(Favorite favorite : favorites){
+                    drinkDAO.getDrink(favorite.getDrinkId(),
+                            new DrinkDAO.DrinkCallback() {
+                                @Override
+                                public void onDrinkLoaded(Drink drink) {
+                                    drinks.add(drink);
+                                    view.showFavoriteDrinkList(drinks);
+
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Log.d("favourite", "onError: " + e.getMessage());
+                                }
+                            });
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                if (view != null) {
-                    view.showError(e.getMessage());
-                }
+                DialogHelper.showAlertDialog(((Fragment) view).requireActivity(),
+                        "Error", e.getMessage(),
+                        HelperDialog.DialogType.ERROR);
             }
         });
     }
+
+
 }

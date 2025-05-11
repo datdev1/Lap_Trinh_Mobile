@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.b21dccn216.pocketcocktail.databinding.ItemFavoriteBinding;
+import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Favorite;
 import com.bumptech.glide.Glide;
 
@@ -15,17 +16,12 @@ import java.util.List;
 
 public class ItemFavoriteAdapter extends RecyclerView.Adapter<ItemFavoriteAdapter.FavoriteViewHolder> {
 
-    private List<Favorite> favoriteList;
+    private List<Drink> favoriteList;
     private final Context context;
 
-    public ItemFavoriteAdapter(Context context, List<Favorite> favoriteList) {
+    public ItemFavoriteAdapter(Context context, List<Drink> favoriteList) {
         this.context = context;
         this.favoriteList = favoriteList;
-    }
-
-    public void setFavoriteList(List<Favorite> favoriteList) {
-        this.favoriteList = favoriteList;
-        notifyDataSetChanged();
     }
 
     @NonNull
@@ -37,7 +33,7 @@ public class ItemFavoriteAdapter extends RecyclerView.Adapter<ItemFavoriteAdapte
 
     @Override
     public void onBindViewHolder(@NonNull FavoriteViewHolder holder, int position) {
-        Favorite favorite = favoriteList.get(position);
+        Drink favorite = favoriteList.get(position);
         holder.bind(favorite);
     }
 
@@ -46,7 +42,7 @@ public class ItemFavoriteAdapter extends RecyclerView.Adapter<ItemFavoriteAdapte
         return favoriteList != null ? favoriteList.size() : 0;
     }
 
-    static class FavoriteViewHolder extends RecyclerView.ViewHolder {
+    class FavoriteViewHolder extends RecyclerView.ViewHolder {
         private final ItemFavoriteBinding binding;
 
         public FavoriteViewHolder(ItemFavoriteBinding binding) {
@@ -54,9 +50,10 @@ public class ItemFavoriteAdapter extends RecyclerView.Adapter<ItemFavoriteAdapte
             this.binding = binding;
         }
 
-        public void bind(Favorite favorite) {
-            Glide.with(binding.getRoot().getContext())
-                    .load(favorite.getUserId())
+        public void bind(Drink favorite) {
+            binding.name.setText(favorite.getName());
+            Glide.with(context)
+                    .load(favorite.getImage())
                     .into(binding.image);
         }
     }
