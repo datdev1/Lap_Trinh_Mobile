@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -17,7 +18,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class DrinkDAO {
@@ -34,6 +37,46 @@ public class DrinkDAO {
         Log.d("DrinkDAO", "Initialized with collection: " + COLLECTION_NAME);
         imageDAO = new ImageDAO();
     }
+
+    private Map<String, Object> convertDrinkToMap(Drink drink) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("uuid", drink.getUuid());
+        data.put("name", drink.getName());
+        data.put("userId", drink.getUserId());
+        data.put("image", drink.getImage());
+        data.put("categoryId", drink.getCategoryId());
+        data.put("instruction", drink.getInstruction());
+        data.put("description", drink.getDescription());
+        data.put("rate", drink.getRate());
+        data.put("createdAt", drink.getCreatedAtTimestamp());
+        data.put("updatedAt", drink.getUpdatedAtTimestamp());
+        return data;
+    }
+
+    private Drink convertDocumentToDrink(DocumentSnapshot doc) {
+        Drink drink = new Drink();
+        drink.setUuid(doc.getString("uuid"));
+        drink.setName(doc.getString("name"));
+        drink.setUserId(doc.getString("userId"));
+        drink.setImage(doc.getString("image"));
+        drink.setCategoryId(doc.getString("categoryId"));
+        drink.setInstruction(doc.getString("instruction"));
+        drink.setDescription(doc.getString("description"));
+        drink.setRate(doc.getDouble("rate"));
+        
+        Timestamp createdAt = doc.getTimestamp("createdAt");
+        if (createdAt != null) {
+            drink.setCreatedAtTimestamp(createdAt);
+        }
+        
+        Timestamp updatedAt = doc.getTimestamp("updatedAt");
+        if (updatedAt != null) {
+            drink.setUpdatedAtTimestamp(updatedAt);
+        }
+        
+        return drink;
+    }
+
     public interface DrinkCallback {
         void onDrinkLoaded(Drink drink);
         void onError(Exception e);
@@ -50,8 +93,9 @@ public class DrinkDAO {
     }
 
     public void addDrink(Drink drink, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        Map<String, Object> data = convertDrinkToMap(drink);
         drinkRef.document(drink.generateUUID())
-                .set(drink)
+                .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
     }
@@ -65,9 +109,10 @@ public class DrinkDAO {
             public void onSuccess(String imageUrl) {
                 drink.generateUUID();
                 drink.setImage(imageUrl);
+                Map<String, Object> data = convertDrinkToMap(drink);
 
                 drinkRef.document(drink.getUuid())
-                        .set(drink)
+                        .set(data)
                         .addOnSuccessListener(onSuccess)
                         .addOnFailureListener(onFailure);
             }
@@ -109,7 +154,7 @@ public class DrinkDAO {
                 .addOnSuccessListener(querySnapshot -> {
                     List<Drink> drinks = new ArrayList<>();
                     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                        Drink drink = doc.toObject(Drink.class);
+                        Drink drink = convertDocumentToDrink(doc);
                         if (drink != null) {
                             drinks.add(drink);
                         }
@@ -119,24 +164,29 @@ public class DrinkDAO {
                 })
                 .addOnFailureListener(callback::onError);
     }
+
     public void updateDrink(Drink updatedDrink, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        Map<String, Object> data = convertDrinkToMap(updatedDrink);
         drinkRef.document(updatedDrink.getUuid())
-                .set(updatedDrink)
+                .set(data)
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
     }
 
     public void updateDrinkWithImage(Context context, Drink updatedDrink, @Nullable Uri newImageUri,
                                      OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-
         if (newImageUri != null) {
-            // Nếu có ảnh mới → upload lên Imgur
             String title = ImageDAO.ImageDaoFolderForDrink + "_" + updatedDrink.getName() + "_" + updatedDrink.getUuid();
             new ImageDAO().uploadImageToImgur(context, newImageUri, title, new ImageDAO.UploadCallback() {
                 @Override
                 public void onSuccess(String imageUrl) {
-                    updatedDrink.setImage(imageUrl); // Cập nhật ảnh mới
-                    updateDrink(updatedDrink, onSuccess, onFailure); // Lưu vào Firestore
+                    updatedDrink.setImage(imageUrl);
+                    Map<String, Object> data = convertDrinkToMap(updatedDrink);
+                    
+                    drinkRef.document(updatedDrink.getUuid())
+                            .set(data)
+                            .addOnSuccessListener(onSuccess)
+                            .addOnFailureListener(onFailure);
                 }
 
                 @Override
@@ -144,15 +194,11 @@ public class DrinkDAO {
                     onFailure.onFailure(e);
                 }
             });
-
         } else {
-            // Không có ảnh mới → chỉ cập nhật thông tin
             updateDrink(updatedDrink, onSuccess, onFailure);
         }
     }
 
-
-    // 5. Delete a drink by ID
     public void deleteDrink(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         drinkRef.document(uuid)
                 .delete()
@@ -160,23 +206,19 @@ public class DrinkDAO {
                 .addOnFailureListener(onFailure);
     }
 
-    public void getFeatureDrink(DrinkCallback callback){
-        drinkRef
-//                .orderBy(DRINK_FIELD.DESCRIPTION.getValue(), Query.Direction.ASCENDING)
-//                .limit(1)
-                .get()
+    public void getFeatureDrink(DrinkCallback callback) {
+        drinkRef.get()
                 .addOnSuccessListener(snapShot -> {
-                    if(snapShot.isEmpty()){
+                    if (snapShot.isEmpty()) {
                         callback.onError(new Exception("Drink not found"));
                         return;
                     }
                     int index = new Random().nextInt(snapShot.size());
-                    Drink drink = snapShot.getDocuments().get(index).toObject(Drink.class);
+                    Drink drink = convertDocumentToDrink(snapShot.getDocuments().get(index));
                     callback.onDrinkLoaded(drink);
                 })
                 .addOnFailureListener(callback::onError);
     }
-
 
     public void getDrinksSortAndLimit(DRINK_FIELD sortTag, Query.Direction sortOrder, int limit,
                                       DrinkListCallback callback) {
@@ -187,7 +229,7 @@ public class DrinkDAO {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Drink> drinkList = new ArrayList<>();
                     for (DocumentSnapshot drinkSnapshot : queryDocumentSnapshots.getDocuments()) {
-                        Drink drink = drinkSnapshot.toObject(Drink.class);
+                        Drink drink = convertDocumentToDrink(drinkSnapshot);
                         drinkList.add(drink);
                     }
                     callback.onDrinkListLoaded(drinkList);
@@ -200,31 +242,15 @@ public class DrinkDAO {
                                            DrinkListWithLastDocCallback callback) {
         Log.d("DrinkDAO", "Getting all drinks with sort field: " + sortField.getValue() + ", order: " + sortOrder);
         
-        // First, let's try a simple query without sorting to test collection access
-        drinkRef.limit(limit).get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    Log.d("DrinkDAO", "Simple query returned " + queryDocumentSnapshots.size() + " documents");
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
-                        Log.d("DrinkDAO", "First document data: " + doc.getData());
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("DrinkDAO", "Error in simple query", e);
-                });
-
-        // Now try the actual sorted query
         Query query;
         try {
-            // For fields that might not exist in all documents, we need to check their existence
             if (sortField == DRINK_FIELD.CREATED_AT || sortField == DRINK_FIELD.UPDATED_AT) {
                 query = drinkRef
-                        .whereNotEqualTo(sortField.getValue(), null)  // Only get documents where the field exists
+                        .whereNotEqualTo(sortField.getValue(), null)
                         .orderBy(sortField.getValue(), sortOrder)
                         .limit(limit);
                 Log.d("DrinkDAO", "Query built with existence check for field: " + sortField.getValue());
             } else {
-                // For required fields like name, we can sort directly
                 query = drinkRef
                         .orderBy(sortField.getValue(), sortOrder)
                         .limit(limit);
@@ -232,7 +258,6 @@ public class DrinkDAO {
             }
         } catch (Exception e) {
             Log.e("DrinkDAO", "Error building query with sort field: " + sortField.getValue(), e);
-            // Fallback to name sorting if the requested field is not available
             query = drinkRef
                     .orderBy(DRINK_FIELD.NAME.getValue(), Query.Direction.ASCENDING)
                     .limit(limit);
@@ -252,7 +277,7 @@ public class DrinkDAO {
 
                     for (DocumentSnapshot drinkSnapshot : queryDocumentSnapshots.getDocuments()) {
                         Log.d("DrinkDAO", "Document data: " + drinkSnapshot.getData());
-                        Drink drink = drinkSnapshot.toObject(Drink.class);
+                        Drink drink = convertDocumentToDrink(drinkSnapshot);
                         if (drink != null) {
                             drinkList.add(drink);
                             lastVisible = drinkSnapshot;
@@ -281,7 +306,6 @@ public class DrinkDAO {
         String searchQuery = query.toLowerCase();
         Log.d("DrinkDAO", "Searching with query: " + searchQuery);
         
-        // Get all drinks first
         drinkRef.get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Drink> allDrinks = new ArrayList<>();
@@ -290,15 +314,13 @@ public class DrinkDAO {
 
                     Log.d("DrinkDAO", "Total documents: " + queryDocumentSnapshots.size());
 
-                    // Convert all documents to Drink objects
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
-                        Drink drink = document.toObject(Drink.class);
+                        Drink drink = convertDocumentToDrink(document);
                         if (drink != null) {
                             allDrinks.add(drink);
                         }
                     }
 
-                    // Filter drinks based on search query
                     if (searchQuery.isEmpty()) {
                         filteredDrinks.addAll(allDrinks);
                     } else {
@@ -309,10 +331,8 @@ public class DrinkDAO {
                         }
                     }
 
-                    // Sort the filtered list
                     sortDrinks(filteredDrinks, sortField, sortOrder);
 
-                    // Apply pagination
                     int endIndex = Math.min(limit, filteredDrinks.size());
                     List<Drink> paginatedDrinks = filteredDrinks.subList(0, endIndex);
 

@@ -2,6 +2,8 @@ package com.b21dccn216.pocketcocktail.model;
 
 import com.google.firebase.Timestamp;
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class Recipe implements Serializable {
@@ -9,24 +11,28 @@ public class Recipe implements Serializable {
     private String drinkId;
     private String ingredientId;
     private double amount;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
 
     public Recipe() {
-        this.createdAt = Timestamp.now();
-        this.updatedAt = Timestamp.now();
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
 
     public Recipe(String drinkId, String ingredientId, double quantity) {
         this.drinkId = drinkId;
         this.ingredientId = ingredientId;
         this.amount = quantity;
-        this.createdAt = Timestamp.now();
-        this.updatedAt = Timestamp.now();
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
 
     public String getUuid() {
         return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String generateUUID() {
@@ -41,7 +47,7 @@ public class Recipe implements Serializable {
 
     public void setDrinkId(String drinkId) {
         this.drinkId = drinkId;
-        this.updatedAt = Timestamp.now();
+        this.updatedAt = new Date();
     }
 
     public String getIngredientId() {
@@ -50,7 +56,7 @@ public class Recipe implements Serializable {
 
     public void setIngredientId(String ingredientId) {
         this.ingredientId = ingredientId;
-        this.updatedAt = Timestamp.now();
+        this.updatedAt = new Date();
     }
 
     public double getAmount() {
@@ -59,23 +65,41 @@ public class Recipe implements Serializable {
 
     public void setAmount(double amount) {
         this.amount = amount;
-        this.updatedAt = Timestamp.now();
+        this.updatedAt = new Date();
     }
 
-    public Timestamp getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getUpdatedAt() {
+
+
+    public Date getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Timestamp updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Timestamp getCreatedAtTimestamp() {
+        return new Timestamp(createdAt);
+    }
+
+    public void setCreatedAtTimestamp(Timestamp timestamp) {
+        this.createdAt = timestamp.toDate();
+    }
+
+    public Timestamp getUpdatedAtTimestamp() {
+        return new Timestamp(updatedAt);
+    }
+
+    public void setUpdatedAtTimestamp(Timestamp timestamp) {
+        this.updatedAt = timestamp.toDate();
     }
 
     @Override

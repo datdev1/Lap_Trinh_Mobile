@@ -2,6 +2,7 @@ package com.b21dccn216.pocketcocktail.model;
 
 import com.google.firebase.Timestamp;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 public class User implements Serializable {
@@ -14,12 +15,12 @@ public class User implements Serializable {
     private String role;
     private String password;
     private String image;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
 
     public User() {
-        this.createdAt = Timestamp.now();
-        this.updatedAt = Timestamp.now();
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
 
     // Dành riêng cho Authen
@@ -28,8 +29,8 @@ public class User implements Serializable {
         this.email = email;
         this.password = password;
         this.role = User.RoleUser;
-        this.createdAt = Timestamp.now();
-        this.updatedAt = Timestamp.now();
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
 
     public User(String name, String email, String password, String image) {
@@ -38,8 +39,8 @@ public class User implements Serializable {
         this.password = password;
         this.image = image;
         this.role = User.RoleUser;
-        this.createdAt = Timestamp.now();
-        this.updatedAt = Timestamp.now();
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
 
     public String generateUUID() {
@@ -52,13 +53,17 @@ public class User implements Serializable {
         return uuid;
     }
 
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public String getSaveUuidFromAuthen() {
         return saveUuidFromAuthen;
     }
 
     public void setSaveUuidFromAuthen(String saveUuidFromAuthen) {
         this.saveUuidFromAuthen = saveUuidFromAuthen;
-        this.updatedAt = Timestamp.now();
+        this.updatedAt = new Date();
     }
 
     public String getName() {
@@ -67,7 +72,7 @@ public class User implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-        this.updatedAt = Timestamp.now();
+        this.updatedAt = new Date();
     }
 
     public String getEmail() {
@@ -76,7 +81,7 @@ public class User implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
-        this.updatedAt = Timestamp.now();
+        this.updatedAt = new Date();
     }
 
     public String getPassword() {
@@ -85,7 +90,7 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-        this.updatedAt = Timestamp.now();
+        this.updatedAt = new Date();
     }
 
     public String getImage() {
@@ -98,28 +103,44 @@ public class User implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
-        this.updatedAt = Timestamp.now();
+        this.updatedAt = new Date();
     }
 
     public void setImage(String image) {
         this.image = image;
-        this.updatedAt = Timestamp.now();
+        this.updatedAt = new Date();
     }
 
-    public Timestamp getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getUpdatedAt() {
+    public Date getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Timestamp updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Timestamp getCreatedAtTimestamp() {
+        return new Timestamp(createdAt);
+    }
+
+    public void setCreatedAtTimestamp(Timestamp timestamp) {
+        this.createdAt = timestamp.toDate();
+    }
+
+    public Timestamp getUpdatedAtTimestamp() {
+        return new Timestamp(updatedAt);
+    }
+
+    public void setUpdatedAtTimestamp(Timestamp timestamp) {
+        this.updatedAt = timestamp.toDate();
     }
 
     @Override

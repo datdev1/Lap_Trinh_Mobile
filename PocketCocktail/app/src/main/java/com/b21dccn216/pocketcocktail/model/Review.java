@@ -2,29 +2,32 @@ package com.b21dccn216.pocketcocktail.model;
 
 import com.google.firebase.Timestamp;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 public class Review implements Serializable {
     private String uuid;
     private String drinkId;
     private String userId;
-    private String comment;
     private double rate;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private String comment;
+    private Date createdAt;
+    private Date updatedAt;
 
     public Review() {
-        this.createdAt = Timestamp.now();
-        this.updatedAt = Timestamp.now();
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
+
+
 
     public Review(String drinkId, String userId, String comment, double rate) {
         this.drinkId = drinkId;
         this.userId = userId;
-        this.comment = comment;
         this.rate = rate;
-        this.createdAt = Timestamp.now();
-        this.updatedAt = Timestamp.now();
+        this.comment = comment;
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
 
     public String generateUUID() {
@@ -37,13 +40,17 @@ public class Review implements Serializable {
         return uuid;
     }
 
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public String getDrinkId() {
         return drinkId;
     }
 
     public void setDrinkId(String drinkId) {
         this.drinkId = drinkId;
-        this.updatedAt = Timestamp.now();
+        this.updatedAt = new Date();
     }
 
     public String getUserId() {
@@ -52,16 +59,7 @@ public class Review implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
-        this.updatedAt = Timestamp.now();
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-        this.updatedAt = Timestamp.now();
+        this.updatedAt = new Date();
     }
 
     public double getRate() {
@@ -70,23 +68,48 @@ public class Review implements Serializable {
 
     public void setRate(double rate) {
         this.rate = rate;
-        this.updatedAt = Timestamp.now();
+        this.updatedAt = new Date();
     }
 
-    public Timestamp getCreatedAt() {
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+        this.updatedAt = new Date();
+    }
+
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getUpdatedAt() {
+    public Date getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Timestamp updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Timestamp getCreatedAtTimestamp() {
+        return new Timestamp(createdAt);
+    }
+
+    public void setCreatedAtTimestamp(Timestamp timestamp) {
+        this.createdAt = timestamp.toDate();
+    }
+
+    public Timestamp getUpdatedAtTimestamp() {
+        return new Timestamp(updatedAt);
+    }
+
+    public void setUpdatedAtTimestamp(Timestamp timestamp) {
+        this.updatedAt = timestamp.toDate();
     }
 
     @Override
@@ -95,8 +118,8 @@ public class Review implements Serializable {
                 "uuid='" + uuid + '\'' +
                 ", drinkId='" + drinkId + '\'' +
                 ", userId='" + userId + '\'' +
-                ", comment='" + comment + '\'' +
                 ", rate=" + rate +
+                ", comment='" + comment + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
