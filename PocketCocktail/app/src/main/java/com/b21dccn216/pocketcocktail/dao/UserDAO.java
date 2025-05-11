@@ -120,11 +120,6 @@ public class UserDAO {
                 .addOnFailureListener(callback::onError);
     }
 
-    public void getUser(User user, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
-        userRef.document(user.getUuid()).get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
 
     public void getUserByEmail(String email, UserCallback callback) {
         userRef.whereEqualTo("email", email)
@@ -141,11 +136,29 @@ public class UserDAO {
                 .addOnFailureListener(callback::onError);
     }
 
-    public void getUserByUuidAuthen(String uuidAuthen, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//    public void getUserByUuidAuthen(String uuidAuthen, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        userRef.whereEqualTo("saveUuidFromAuthen", uuidAuthen)
+//                .get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+
+    public void getUserByUuidAuthen(String uuidAuthen, UserListCallback callback) {
         userRef.whereEqualTo("saveUuidFromAuthen", uuidAuthen)
                 .get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
+                .addOnSuccessListener(
+                        querySnapshot -> {
+                            List<User> users = new ArrayList<>();
+                            for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                                User user = convertDocumentToUser(doc);
+                                if (user != null)
+                                    users.add(user);
+
+                            }
+                            callback.onUserListLoaded(users);
+                        }
+                )
+                .addOnFailureListener(callback::onError);
     }
 
     public void getUserByUuidAuthen(String uuidAuthen, UserCallback callback) {

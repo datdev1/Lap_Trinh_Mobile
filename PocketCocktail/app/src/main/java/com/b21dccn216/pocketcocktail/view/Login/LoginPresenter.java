@@ -13,6 +13,8 @@ import com.b21dccn216.pocketcocktail.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.List;
+
 public class LoginPresenter extends BasePresenter<LoginContract.View>  implements LoginContract.Presenter{
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -40,22 +42,46 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>  implement
             .addOnCompleteListener(((Fragment)view).getActivity(),task -> {
                 if(task.isSuccessful()){
                     FirebaseUser firebaseUser = mAuth.getCurrentUser();
+//                    userDAO.getUserByUuidAuthen(firebaseUser.getUid(),
+//                            querySnapshot -> {
+//                                if(querySnapshot.getDocuments().isEmpty()){
+//                                    view.authFail("User not found");
+//                                    return;
+//                                }
+//                                User u = querySnapshot.getDocuments().get(0).toObject(User.class);
+//                                if(u == null){
+//                                    view.authFail("User not found");
+//                                    return;
+//                                }
+//                                SessionManager.getInstance().setUser(u);
+//                                view.authSuccess();
+//                            }, e -> {
+//                                view.authFail(e.getMessage());
+//                            });
                     userDAO.getUserByUuidAuthen(firebaseUser.getUid(),
-                            querySnapshot -> {
-                                if(querySnapshot.getDocuments().isEmpty()){
-                                    view.authFail("User not found");
-                                    return;
+                            new UserDAO.UserListCallback() {
+                                @Override
+                                public void onUserListLoaded(List<User> users) {
+                                    if(users.isEmpty())
+                                    {
+                                        view.authFail("User not found");
+                                        return;
+                                    }
+                                    User u = users.get(0);
+                                    if(u == null){
+                                        view.authFail("User not found");
+                                        return;
+                                    }
+                                    SessionManager.getInstance().setUser(u);
+                                    view.authSuccess();
                                 }
-                                User u = querySnapshot.getDocuments().get(0).toObject(User.class);
-                                if(u == null){
-                                    view.authFail("User not found");
-                                    return;
+
+                                @Override
+                                public void onError(Exception e) {
+                                    view.authFail(e.getMessage());
                                 }
-                                SessionManager.getInstance().setUser(u);
-                                view.authSuccess();
-                            }, e -> {
-                                view.authFail(e.getMessage());
-                            });
+                            }
+                    );;
                 }else{
                     view.authFail("Login failed: " + task.getException().getMessage());
                 }

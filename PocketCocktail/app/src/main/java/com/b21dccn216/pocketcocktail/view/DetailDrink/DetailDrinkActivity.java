@@ -13,7 +13,9 @@ import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.databinding.ActivityDetailDrinkBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.ReviewAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.SimilarDrinkAdapter;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.List;
 
 public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContract.View, DetailDrinkContract.Presenter> implements DetailDrinkContract.View{
     private ActivityDetailDrinkBinding binding;
-
+    private ReviewAdapter reviewAdapter;
     private SimilarDrinkAdapter similarDrinkAdapter;
     public static final String EXTRA_DRINK_OBJECT = "drink_id";
 
@@ -113,5 +115,22 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         });
         binding.similarDrinksRecyclerView.setAdapter(similarDrinkAdapter);
         binding.similarDrinksRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+    }
+
+    @Override
+    public void showReviews(List<ReviewWithUserDTO> reviews) {
+        reviewAdapter = new ReviewAdapter(reviews);
+        binding.commentsRecyclerView.setAdapter(reviewAdapter);
+        binding.commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    public void showAddReviewSuccess() {
+        Toast.makeText(this, "Comment added successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showAddReviewError(String message) {
+        Toast.makeText(this, "Failed to add comment: " + message, Toast.LENGTH_SHORT).show();
     }
 }

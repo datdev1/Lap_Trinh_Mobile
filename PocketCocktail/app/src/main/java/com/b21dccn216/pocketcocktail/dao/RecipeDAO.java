@@ -76,11 +76,12 @@ public class RecipeDAO {
                 .addOnFailureListener(onFailure);
     }
 
-    public void getRecipe(String recipeUuid, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
-        recipeRef.document(recipeUuid).get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
+//    public void getRecipe(String recipeUuid, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
+//        recipeRef.document(recipeUuid).get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+
 
     public void getRecipe(String recipeUuid, RecipeCallback callback) {
         recipeRef.document(recipeUuid).get()
@@ -91,25 +92,61 @@ public class RecipeDAO {
                 .addOnFailureListener(callback::onError);
     }
 
-    public void getRecipesByDrinkId(String drinkId, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//    public void getRecipesByDrinkId(String drinkId, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        recipeRef.whereEqualTo("drinkId", drinkId)
+//                .get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+
+    public void getRecipesByDrinkId(String drinkId, RecipeListCallback callback) {
         recipeRef.whereEqualTo("drinkId", drinkId)
                 .get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
+                .addOnSuccessListener(
+                        querySnapshot -> {
+                            List<Recipe> recipes = new ArrayList<>();
+                            for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                                Recipe recipe = convertDocumentToRecipe(doc);
+                                if (recipe != null) {
+                                    recipes.add(recipe);
+                                }
+                            }
+                            callback.onRecipeListLoaded(recipes);
+                        }
+                )
+                .addOnFailureListener(callback::onError);
     }
 
-    public void getRecipesByIngredientId(String ingredientId, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
-        recipeRef.whereEqualTo("ingredientId", ingredientId)
+//    public void getRecipesByIngredientId(String ingredientId, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        recipeRef.whereEqualTo("ingredientId", ingredientId)
+//                .get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+
+    public void getRecipesByIngredientId(String ingredientId, RecipeListCallback callback) {
+        recipeRef.whereEqualTo("drinkId", ingredientId)
                 .get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
+                .addOnSuccessListener(
+                        querySnapshot -> {
+                            List<Recipe> recipes = new ArrayList<>();
+                            for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                                Recipe recipe = convertDocumentToRecipe(doc);
+                                if (recipe != null) {
+                                    recipes.add(recipe);
+                                }
+                            }
+                            callback.onRecipeListLoaded(recipes);
+                        }
+                )
+                .addOnFailureListener(callback::onError);
     }
 
-    public void getAllRecipes(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
-        recipeRef.get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
+//    public void getAllRecipes(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        recipeRef.get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
 
     public void getAllRecipes(RecipeListCallback callback) {
         recipeRef.get()

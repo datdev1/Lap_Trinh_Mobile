@@ -52,33 +52,59 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
         Recipe recipe = recipeList.get(position);
         
         // Lấy thông tin nguyên liệu từ database
-        ingredientDAO.getIngredient(recipe.getIngredientId(), 
-            new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    Ingredient ingredient = documentSnapshot.toObject(Ingredient.class);
-                    if (ingredient != null) {
-                        holder.tvIngredientName.setText(ingredient.getName());
-                        holder.tvQuantity.setText(String.format("%.1f %s", recipe.getAmount(), ingredient.getUnit()));
-                        
-                        // Load ảnh nguyên liệu nếu có
-                        if (ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
-                            Glide.with(holder.itemView.getContext())
-                                    .load(ingredient.getImage())
-                                    .placeholder(R.drawable.ic_launcher)
-                                    .error(R.drawable.ic_launcher)
-                                    .into(holder.ivIngredient);
+//        ingredientDAO.getIngredient(recipe.getIngredientId(),
+//            new OnSuccessListener<DocumentSnapshot>() {
+//                @Override
+//                public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                    Ingredient ingredient = documentSnapshot.toObject(Ingredient.class);
+//                    if (ingredient != null) {
+//                        holder.tvIngredientName.setText(ingredient.getName());
+//                        holder.tvQuantity.setText(String.format("%.1f %s", recipe.getAmount(), ingredient.getUnit()));
+//
+//                        // Load ảnh nguyên liệu nếu có
+//                        if (ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
+//                            Glide.with(holder.itemView.getContext())
+//                                    .load(ingredient.getImage())
+//                                    .placeholder(R.drawable.ic_launcher)
+//                                    .error(R.drawable.ic_launcher)
+//                                    .into(holder.ivIngredient);
+//                        }
+//                    }
+//                }
+//            },
+//            new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    holder.tvIngredientName.setText("Lỗi tải nguyên liệu");
+//                    holder.tvQuantity.setText("");
+//                }
+//            });
+        ingredientDAO.getIngredient(recipe.getIngredientId(),
+                new IngredientDAO.IngredientCallback() {
+                    @Override
+                    public void onIngredientLoaded(Ingredient ingredient) {
+                        if (ingredient != null) {
+                            holder.tvIngredientName.setText(ingredient.getName());
+                            holder.tvQuantity.setText(String.format("%.1f %s", recipe.getAmount(), ingredient.getUnit()));
+
+                            // Load ảnh nguyên liệu nếu có
+                            if (ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
+                                Glide.with(holder.itemView.getContext())
+                                        .load(ingredient.getImage())
+                                        .placeholder(R.drawable.ic_launcher)
+                                        .error(R.drawable.ic_launcher)
+                                        .into(holder.ivIngredient);
+                            }
                         }
                     }
+
+                    @Override
+                    public void onError(Exception e) {
+                        holder.tvIngredientName.setText("Lỗi tải nguyên liệu");
+                        holder.tvQuantity.setText("");
+                    }
                 }
-            },
-            new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    holder.tvIngredientName.setText("Lỗi tải nguyên liệu");
-                    holder.tvQuantity.setText("");
-                }
-            });
+                );
 
         holder.btnRemove.setOnClickListener(v -> {
             if (listener != null) {

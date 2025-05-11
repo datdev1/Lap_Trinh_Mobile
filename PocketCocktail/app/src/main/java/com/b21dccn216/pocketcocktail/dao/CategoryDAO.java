@@ -106,50 +106,6 @@ public class CategoryDAO {
         });
     }
 
-    public void getCategory(String categoryUuid, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
-        categoryRef.document(categoryUuid).get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
-
-    public void getCategory(String categoryUuid, CategoryCallback callback) {
-        categoryRef.document(categoryUuid).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    Category category = convertDocumentToCategory(documentSnapshot);
-                    callback.onCategoryLoaded(category);
-                })
-                .addOnFailureListener(callback::onError);
-    }
-
-    public void getCategory(Category category, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
-        categoryRef.document(category.getUuid()).get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
-
-
-    public void getAllCategorys(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
-        categoryRef.get()
-                .addOnSuccessListener(onSuccess)
-                .addOnFailureListener(onFailure);
-    }
-
-    public void getAllCategorys(CategoryListCallback callback) {
-        categoryRef.get()
-                .addOnSuccessListener(querySnapshot -> {
-                    List<Category> categories = new ArrayList<>();
-                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                        Category category = convertDocumentToCategory(doc);
-                        if (category != null) {
-                            categories.add(category);
-                        }
-                    }
-                    callback.onCategoryListLoaded(categories);
-                })
-                .addOnFailureListener(callback::onError);
-    }
-
-
     public void updateCategory(Category updatedCategory, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         Map<String, Object> data = convertCategoryToMap(updatedCategory);
         categoryRef.document(updatedCategory.getUuid())
@@ -159,7 +115,7 @@ public class CategoryDAO {
     }
 
     public void updateCategoryWithImage(Context context, Category updatedCategory, @Nullable Uri newImageUri,
-                                     OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+                                        OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         if (newImageUri != null) {
             String title = ImageDAO.ImageDaoFolderForCategory + "_" + updatedCategory.getName() + "_" + updatedCategory.getUuid();
             new ImageDAO().uploadImageToImgur(context, newImageUri, title, new ImageDAO.UploadCallback() {
@@ -167,7 +123,7 @@ public class CategoryDAO {
                 public void onSuccess(String imageUrl) {
                     updatedCategory.setImage(imageUrl);
                     Map<String, Object> data = convertCategoryToMap(updatedCategory);
-                    
+
                     categoryRef.document(updatedCategory.getUuid())
                             .set(data)
                             .addOnSuccessListener(onSuccess)
@@ -191,6 +147,52 @@ public class CategoryDAO {
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
     }
+
+//    public void getCategory(String categoryUuid, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
+//        categoryRef.document(categoryUuid).get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+
+    public void getCategory(String categoryUuid, CategoryCallback callback) {
+        categoryRef.document(categoryUuid).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Category category = convertDocumentToCategory(documentSnapshot);
+                    callback.onCategoryLoaded(category);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
+//    public void getCategory(Category category, OnSuccessListener<DocumentSnapshot> onSuccess, OnFailureListener onFailure) {
+//        categoryRef.document(category.getUuid()).get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+//
+//
+//    public void getAllCategorys(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+//        categoryRef.get()
+//                .addOnSuccessListener(onSuccess)
+//                .addOnFailureListener(onFailure);
+//    }
+
+    public void getAllCategorys(CategoryListCallback callback) {
+        categoryRef.get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Category> categories = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Category category = convertDocumentToCategory(doc);
+                        if (category != null) {
+                            categories.add(category);
+                        }
+                    }
+                    callback.onCategoryListLoaded(categories);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
+
+
 
     public void getCategoryDiscover(CATEGORY_FIELD sortTag, Query.Direction sortOrder, int limit,
                                       CategoryListCallback callback) {
