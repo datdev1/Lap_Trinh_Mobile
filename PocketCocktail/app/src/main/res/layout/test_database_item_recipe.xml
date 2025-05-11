@@ -6,17 +6,34 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/tvDrinkId"
+        android:id="@+id/tvDrinkName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/tvIngredientName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvDrinkId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textStyle="italic" />
+
+    <TextView
         android:id="@+id/tvIngredientId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textStyle="italic" />
+
+
 
     <TextView
         android:id="@+id/tvAmount"

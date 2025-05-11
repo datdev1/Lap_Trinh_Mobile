@@ -1,7 +1,11 @@
 package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,6 +16,7 @@ import com.b21dccn216.pocketcocktail.R;
 
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.databinding.ActivityDetailDrinkBinding;
+import com.b21dccn216.pocketcocktail.databinding.DialogAddReviewBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.ReviewAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.SimilarDrinkAdapter;
@@ -57,6 +62,10 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         }
         binding.favoriteButton.setOnClickListener(v -> presenter.toggleFavorite(drink));
         binding.shareButton.setOnClickListener(v -> presenter.shareDrink(drink));
+        binding.addCommentButton.setOnClickListener(v -> {
+            String drinkId = drink.getUuid();
+            presenter.onAddReviewClicked(drinkId);
+        });
 
 
         binding.backButton.setOnClickListener(v -> finish());
@@ -132,5 +141,39 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     @Override
     public void showAddReviewError(String message) {
         Toast.makeText(this, "Failed to add comment: " + message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showAddReviewDialog(String drinkId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        DialogAddReviewBinding dialogBinding = DialogAddReviewBinding.inflate(inflater);
+        builder.setView(dialogBinding.getRoot());
+        AlertDialog dialog = builder.create();
+
+        dialogBinding.commentEditText.addTextChangedListener(new TextWatcher() {
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                dialogBinding.characterCount.setText(s.length() + " / 4000");
+            }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(Editable s) {}
+        });
+
+        dialogBinding.cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialogBinding.submitButton.setOnClickListener(v -> {
+            float rating = dialogBinding.commentRatingBar.getRating();
+            String comment = dialogBinding.commentEditText.getText().toString().trim();
+
+            if (comment.isEmpty()) {
+                dialogBinding.commentEditText.setError("Please enter a comment");
+                return;
+            }
+
+            presenter.submitReview(comment, drinkId, rating);
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 }

@@ -10,8 +10,6 @@ public class Favorite implements Serializable {
     private String drinkId;
     private String userId;
     private Date createdAt;
-
-
     private Date updatedAt;
 
     public Favorite() {

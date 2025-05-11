@@ -104,7 +104,7 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                             showAlertDialog("WARN",
                                     "We has sent verification link to " + email +" address.\n" +
                                     "Pleas confirm to change email address",
-                                    HelperDialog.DialogType.ERROR);
+                                    HelperDialog.DialogType.WARNING);
                         }
                     }
                 });
@@ -184,7 +184,7 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                         .addOnCompleteListener(updateTask -> {
                             if (updateTask.isSuccessful()) {
                                 showAlertDialog("Success", "Password has been updated successfully.",
-                                        HelperDialog.DialogType.ERROR);
+                                        HelperDialog.DialogType.SUCCESS);
                             } else {
                                 showAlertDialog("Fail", "Check your network",
                                         HelperDialog.DialogType.ERROR);
@@ -193,6 +193,22 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
             } else {
                 showAlertDialog("Fail", "Check your old password and try again.",
                         HelperDialog.DialogType.ERROR);
+            }
+        });
+        UserDAO userDAO = new UserDAO();
+        userDAO.getUserByUuidAuthen(mAuth.getCurrentUser().getUid(), new UserDAO.UserCallback()
+        {
+
+            @Override
+            public void onUserLoaded(User user) {
+                userDAO.updateUser(user, aVoid -> {
+
+                }, e -> {});
+            }
+
+            @Override
+            public void onError(Exception e) {
+
             }
         });
 

@@ -30,6 +30,15 @@ public class FavoriteDAO {
     }
 
     private Map<String, Object> convertFavoriteToMap(Favorite favorite) {
+        if (favorite.getUuid() == null || favorite.getDrinkId() == null || favorite.getUserId() == null) {
+            throw new IllegalArgumentException("Favorite must have uuid, drinkId, and userId");
+        }
+        if (favorite.getCreatedAtTimestamp() == null) {
+            favorite.setCreatedAtTimestamp(Timestamp.now());
+        }
+        if (favorite.getUpdatedAtTimestamp() == null) {
+            favorite.setUpdatedAtTimestamp(Timestamp.now());
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("uuid", favorite.getUuid());
         data.put("drinkId", favorite.getDrinkId());
@@ -69,7 +78,9 @@ public class FavoriteDAO {
     }
 
     public void addFavorite(Favorite favorite, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        favorite.generateUUID();
+        if (favorite.getUuid() == null || favorite.getUuid().isEmpty()) {
+            favorite.generateUUID();
+        }
         Map<String, Object> data = convertFavoriteToMap(favorite);
         favoriteRef.document(favorite.getUuid())
                 .set(data)

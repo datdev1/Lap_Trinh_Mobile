@@ -2,10 +2,12 @@ package com.b21dccn216.pocketcocktail.test_database.fragment;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -16,13 +18,18 @@ import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.test_database.adapter.UserAdapter;
 import com.bumptech.glide.Glide;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class UserFragment extends BaseModelFragment {
     private static final int PICK_IMAGE_REQUEST = 1;
 
-    private EditText etName, etEmail, etPassword;
+    private EditText etUuid, etSaveUuidFromAuthen, etCreatedAt, etUpdatedAt, etName, etEmail, etPassword;
+    private Spinner spinnerRole;
     private Button btnChooseImage, btnSave, btnUpdate, btnDelete;
     private ImageView ivPreview;
     private ListView lvUsers;
@@ -31,6 +38,7 @@ public class UserFragment extends BaseModelFragment {
     private User selectedUser;
     private UserDAO userDAO;
     private Uri selectedImageUri;
+    private SimpleDateFormat dateFormat;
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -50,9 +58,16 @@ public class UserFragment extends BaseModelFragment {
 
     @Override
     protected void initViews() {
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        
+        etUuid = rootView.findViewById(R.id.etUuid);
+        etSaveUuidFromAuthen = rootView.findViewById(R.id.etSaveUuidFromAuthen);
+        etCreatedAt = rootView.findViewById(R.id.etCreatedAt);
+        etUpdatedAt = rootView.findViewById(R.id.etUpdatedAt);
         etName = rootView.findViewById(R.id.etName);
         etEmail = rootView.findViewById(R.id.etEmail);
         etPassword = rootView.findViewById(R.id.etPassword);
+        spinnerRole = rootView.findViewById(R.id.spinnerRole);
         btnChooseImage = rootView.findViewById(R.id.btnChooseImage);
         btnSave = rootView.findViewById(R.id.btnSave);
         btnUpdate = rootView.findViewById(R.id.btnUpdate);
@@ -65,8 +80,23 @@ public class UserFragment extends BaseModelFragment {
         lvUsers.setAdapter(adapter);
         userDAO = new UserDAO();
 
+        setupRoleSpinner();
         setupListeners();
         loadData();
+    }
+
+    private void setupRoleSpinner() {
+        List<String> roles = new ArrayList<>();
+        roles.add(User.RoleUser);
+        roles.add(User.RoleAdmin);
+        
+        ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(
+            getContext(),
+            android.R.layout.simple_spinner_item,
+            roles
+        );
+        roleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRole.setAdapter(roleAdapter);
     }
 
     private void setupListeners() {
@@ -89,6 +119,23 @@ public class UserFragment extends BaseModelFragment {
         imagePickerLauncher.launch(intent);
     }
 
+    private String encryptPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return password;
+        }
+    }
+
     @Override
     protected void loadData() {
         userDAO.getAllUsers(new UserDAO.UserListCallback() {
@@ -108,9 +155,14 @@ public class UserFragment extends BaseModelFragment {
 
     @Override
     protected void clearInputs() {
+        etUuid.setText("");
+        etSaveUuidFromAuthen.setText("");
+        etCreatedAt.setText("");
+        etUpdatedAt.setText("");
         etName.setText("");
         etEmail.setText("");
         etPassword.setText("");
+        spinnerRole.setSelection(0);
         selectedImageUri = null;
         selectedUser = null;
         ivPreview.setImageResource(R.drawable.cocktail_logo);
@@ -122,9 +174,17 @@ public class UserFragment extends BaseModelFragment {
     protected void fillInputs(Object item) {
         if (item instanceof User) {
             User user = (User) item;
+            etUuid.setText(user.getUuid());
+            etSaveUuidFromAuthen.setText(user.getSaveUuidFromAuthen());
+            etCreatedAt.setText(dateFormat.format(user.getCreatedAt()));
+            etUpdatedAt.setText(dateFormat.format(user.getUpdatedAt()));
             etName.setText(user.getName());
             etEmail.setText(user.getEmail());
             etPassword.setText(user.getPassword());
+            
+            // Set role spinner
+            int rolePosition = user.getRole().equals(User.RoleAdmin) ? 1 : 0;
+            spinnerRole.setSelection(rolePosition);
             
             if (user.getImage() != null && !user.getImage().isEmpty()) {
                 Glide.with(this)
@@ -143,13 +203,18 @@ public class UserFragment extends BaseModelFragment {
         String name = etName.getText().toString();
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
+        String role = spinnerRole.getSelectedItem().toString();
 
         if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
             showToast("Please fill all required fields");
             return;
         }
 
-        User user = new User(name, email, password, null);
+        // Encrypt password
+        String encryptedPassword = encryptPassword(password);
+
+        User user = new User(name, email, encryptedPassword, null);
+        user.setRole(role);
         user.generateUUID();
 
         if (selectedImageUri != null) {
@@ -181,6 +246,7 @@ public class UserFragment extends BaseModelFragment {
         String name = etName.getText().toString();
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
+        String role = spinnerRole.getSelectedItem().toString();
 
         if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
             showToast("Please fill all required fields");
@@ -189,7 +255,13 @@ public class UserFragment extends BaseModelFragment {
 
         selectedUser.setName(name);
         selectedUser.setEmail(email);
-        selectedUser.setPassword(password);
+        selectedUser.setRole(role);
+
+        // Only encrypt and update password if it has changed
+        if (!password.equals(selectedUser.getPassword())) {
+            String encryptedPassword = encryptPassword(password);
+            selectedUser.setPassword(encryptedPassword);
+        }
 
         if (selectedImageUri != null) {
             userDAO.updateUserWithImage(getContext(), selectedUser, selectedImageUri,
