@@ -250,18 +250,22 @@
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
-<!--                <androidx.recyclerview.widget.RecyclerView-->
-<!--                    android:id="@+id/similar_drinks_recycler_view"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="16dp"-->
-<!--                    android:clipToPadding="false"-->
-<!--                    android:orientation="horizontal"-->
-<!--                    android:paddingStart="0dp"-->
-<!--                    android:paddingEnd="16dp" />-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/similar_drinks_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="16dp"
+                    android:orientation="horizontal"
+                    android:overScrollMode="never" />
+
+
+                <!--Comment-->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="130dp"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:paddingStart="0dp"
@@ -299,16 +303,13 @@
                         android:layout_marginStart="8dp" />
                 </LinearLayout>
 
-
-
-
-<!--                <androidx.recyclerview.widget.RecyclerView-->
-<!--                    android:id="@+id/commentsRecyclerView"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:nestedScrollingEnabled="false"-->
-<!--                    android:visibility="visible"-->
-<!--                    android:paddingBottom="16dp" />-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/commentsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="visible"
+                    android:paddingBottom="16dp" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

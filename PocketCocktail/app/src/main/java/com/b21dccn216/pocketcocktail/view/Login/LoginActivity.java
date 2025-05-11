@@ -17,6 +17,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.List;
+
 public class LoginActivity extends AppCompatActivity{
 
     private ActivityLoginBinding binding;
@@ -27,25 +29,51 @@ public class LoginActivity extends AppCompatActivity{
 //        if(false){      //this line for debug only
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             UserDAO userDAO = new UserDAO();
+//            userDAO.getUserByUuidAuthen(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+//                    querySnapshot -> {
+//                        if(querySnapshot.getDocuments().isEmpty()){
+//                            return;
+//                        }
+//                        User u = querySnapshot.getDocuments().get(0).toObject(User.class);
+//                        if(u == null){
+//                            return;
+//                        }
+//                        SessionManager.getInstance().setUser(u);
+//                        // User is logged in, go to MainActivity
+//                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+//                        startActivity(intent);
+//                        finish(); // close LoginActivity
+//                        return;
+//                    }, e -> {
+//                        // TODO: process error
+//                        return;
+//                    });
             userDAO.getUserByUuidAuthen(FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                    querySnapshot -> {
-                        if(querySnapshot.getDocuments().isEmpty()){
+                    new UserDAO.UserListCallback() {
+                        @Override
+                        public void onUserListLoaded(List<User> users) {
+                            if(users.isEmpty()){
+                                return;
+                            }
+                            User u = users.get(0);
+                            if(u == null){
+                                return;
+                            }
+                            SessionManager.getInstance().setUser(u);
+                            // User is logged in, go to MainActivity
+                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                            startActivity(intent);
+                            finish(); // close LoginActivity
                             return;
                         }
-                        User u = querySnapshot.getDocuments().get(0).toObject(User.class);
-                        if(u == null){
+
+                        @Override
+                        public void onError(Exception e) {
+                            // TODO: process error
                             return;
                         }
-                        SessionManager.getInstance().setUser(u);
-                        // User is logged in, go to MainActivity
-                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                        startActivity(intent);
-                        finish(); // close LoginActivity
-                        return;
-                    }, e -> {
-                        // TODO: process error
-                        return;
-                    });
+                    }
+            );
         }
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());

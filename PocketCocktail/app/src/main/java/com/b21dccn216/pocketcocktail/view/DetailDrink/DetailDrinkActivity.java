@@ -1,126 +1,65 @@
 package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.b21dccn216.pocketcocktail.R;
 
-import com.b21dccn216.pocketcocktail.model.Recipe;
+import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
+import com.b21dccn216.pocketcocktail.databinding.ActivityDetailDrinkBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
-import com.b21dccn216.pocketcocktail.model.Ingredient;
-import com.b21dccn216.pocketcocktail.dao.RecipeDAO;
-import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
-import com.b21dccn216.pocketcocktail.dao.IngredientDAO;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.ReviewAdapter;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.SimilarDrinkAdapter;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
 import com.bumptech.glide.Glide;
-import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
-public class DetailDrinkActivity extends AppCompatActivity {
-    private ImageView drinkImage;
-    private ImageButton backButton, favoriteButton, shareButton;
-    private TextView badge, drinkTitle, drinkDescription;
-    private LinearLayout ingredientsLayout, instructionsLayout;
-    private DrinkDAO drinkDAO;
-    private RecipeDAO recipeDAO;
-    private IngredientDAO ingredientDAO;
-
+public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContract.View, DetailDrinkContract.Presenter> implements DetailDrinkContract.View{
+    private ActivityDetailDrinkBinding binding;
+    private ReviewAdapter reviewAdapter;
+    private SimilarDrinkAdapter similarDrinkAdapter;
     public static final String EXTRA_DRINK_OBJECT = "drink_id";
 
+    @Override
+    protected DetailDrinkContract.Presenter createPresenter() {
+        return new DetailDrinkPresenter();
+    }
+
+    @Override
+    protected DetailDrinkContract.View getView() {
+        return this;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        presenter = createPresenter();
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_detail_drink);
-
-        // Ánh xạ
-        drinkImage = findViewById(R.id.drink_image);
-        backButton = findViewById(R.id.back_button);
-        favoriteButton = findViewById(R.id.favorite_button);
-        shareButton = findViewById(R.id.share_button);
-        badge = findViewById(R.id.badge);
-        drinkTitle = findViewById(R.id.drink_title);
-        drinkDescription = findViewById(R.id.drink_description);
-        ingredientsLayout = findViewById(R.id.ingredients_layout);
-        instructionsLayout = findViewById(R.id.instructions_layout);
-
-        // DAO
-        drinkDAO = new DrinkDAO();
-        recipeDAO = new RecipeDAO();
-        ingredientDAO = new IngredientDAO();
+        binding = ActivityDetailDrinkBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
 
-//        String drinkUuid = getIntent().getStringExtra(EXTRA_DRINK_ID);
-//        if (drinkUuid != null) {
-//            loadDrinkDetails(drinkUuid);
-//        }
+        binding.instructionsLayout.removeAllViews();
+        binding.ingredientsLayout.removeAllViews();
         Drink drink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_OBJECT);
         if (drink != null) {
-            loadDrinkDetails(drink);
+            presenter.loadDrinkDetails(drink);
+            presenter.checkFavorite(drink.getUuid());
         } else {
             Toast.makeText(this, "Drink data not found", Toast.LENGTH_SHORT).show();
             finish();
         }
+        binding.favoriteButton.setOnClickListener(v -> presenter.toggleFavorite(drink));
+        binding.shareButton.setOnClickListener(v -> presenter.shareDrink(drink));
 
-        backButton.setOnClickListener(v -> finish());
-    }
-    private void loadDrinkDetails(Drink drink) {
-        // Load drink info
-        Glide.with(this).load(drink.getImage()).into(drinkImage);
-        drinkTitle.setText(drink.getName());
-        drinkDescription.setText(drink.getDescription());
 
-        // Load Ingredient
-        recipeDAO.getRecipesByDrinkId(drink.getUuid(), recipeSnapshots -> {
-            List<Recipe> recipes = new ArrayList<>();
-            for (DocumentSnapshot doc : recipeSnapshots.getDocuments()) {
-                Recipe recipe = doc.toObject(Recipe.class);
-                if (recipe != null) {
-                    recipes.add(recipe);
-                }
-            }
-
-            ingredientsLayout.removeAllViews();
-            for (Recipe recipe : recipes) {
-                ingredientDAO.getIngredient(recipe.getIngredientId(), ingredientSnapshot -> {
-                    if (ingredientSnapshot.exists()) {
-                        Ingredient ingredient = ingredientSnapshot.toObject(Ingredient.class);
-                        if (ingredient != null) {
-                            String line = ingredient.getName() + " (" + recipe.getAmount() + " " + ingredient.getUnit() + ")";
-                            TextView textView = createBulletTextView(line);
-                            ingredientsLayout.addView(textView);
-                        }
-                    }
-                }, e -> {
-                    Toast.makeText(this, "Failed to load ingredient: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-            }
-        }, e -> {
-            Toast.makeText(this, "Failed to load recipes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
-
-        // Load instruction
-        instructionsLayout.removeAllViews();
-        String instructions = drink.getInstruction();
-        if (instructions != null && !instructions.trim().isEmpty()) {
-            for (String instruction : instructions.split("\n")) {
-                if (!instruction.trim().isEmpty()) {
-                    TextView textView = createBulletTextView(instruction.trim());
-                    instructionsLayout.addView(textView);
-                }
-            }
-        }
+        binding.backButton.setOnClickListener(v -> finish());
     }
 
     private TextView createBulletTextView(String text) {
@@ -132,5 +71,66 @@ public class DetailDrinkActivity extends AppCompatActivity {
         textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dtd_ic_bullet, 0, 0, 0);
         textView.setCompoundDrawablePadding(8);
         return textView;
+    }
+
+    @Override
+    public void showDrinkDetail(Drink drink) {
+        Glide.with(this).load(drink.getImage()).into(binding.drinkImage);
+        binding.drinkTitle.setText(drink.getName());
+        binding.drinkDescription.setText(drink.getDescription());
+    }
+
+    @Override
+    public void showIngredient(String ingredientText) {
+        TextView textView = createBulletTextView(ingredientText);
+        binding.ingredientsLayout.addView(textView);
+    }
+
+    @Override
+    public void showInstruction(String instructionText) {
+        TextView textView = createBulletTextView(instructionText);
+        binding.instructionsLayout.addView(textView);
+    }
+
+    @Override
+    public void updateFavoriteIcon(boolean isFavorite) {
+        int icon = isFavorite ? R.drawable.dtd_ic_favorite_filled : R.drawable.dtd_ic_favorite_outline;
+        binding.favoriteButton.setImageResource(icon);
+    }
+
+    @Override
+    public void showShareIntent(String text) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        startActivity(Intent.createChooser(intent, "Share via"));
+    }
+
+    @Override
+    public void showSimilarDrinks(List<Drink> drinks) {
+        similarDrinkAdapter = new SimilarDrinkAdapter(drinks, drink -> {
+            Intent intent = new Intent(this, DetailDrinkActivity.class);
+            intent.putExtra(EXTRA_DRINK_OBJECT, drink);
+            startActivity(intent);
+        });
+        binding.similarDrinksRecyclerView.setAdapter(similarDrinkAdapter);
+        binding.similarDrinksRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+    }
+
+    @Override
+    public void showReviews(List<ReviewWithUserDTO> reviews) {
+        reviewAdapter = new ReviewAdapter(reviews);
+        binding.commentsRecyclerView.setAdapter(reviewAdapter);
+        binding.commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    public void showAddReviewSuccess() {
+        Toast.makeText(this, "Comment added successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showAddReviewError(String message) {
+        Toast.makeText(this, "Failed to add comment: " + message, Toast.LENGTH_SHORT).show();
     }
 }

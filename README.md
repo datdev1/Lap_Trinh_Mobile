@@ -80,7 +80,7 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
   - id đồ uống
 
 ## Các đầu mục công việc
-- Nghiên cứu kết nối dữ liệu AtlasMongo và Imagekit Dao + Model (Dũng) (Package data)
+- Nghiên cứu kết nối dữ liệu FireStore và Imagur, Dao + Model, các trang quản lý db (admin) (Dũng) (Package data)
 - Chức năng đăng kí, đăng nhập bằng Email, password (Package Login) (ĐạtĐạt)
 - Chức năng tạo công thức mới (Logic + giao diện) (Hà) (Activity) (Package CreateDrink)
   - Ô nhập tên đồ uống
@@ -114,10 +114,17 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
       - category : checkbox + recycle view
       - ingredients: dropdown
 - Trang discover, trang favorite, (Ngát) (Fragment) (Package Discover)
-  - Category: Recycle view
-  - Ingredient: Recycle view
-  - Khi ấn gửi Intent chứa nội dung 
-        "idCategory = xyz, idIngredient = null" đi đén Trang tìm kiếm.
+  - Discovery:
+    - Category: Recycle view
+    - Ingredient: Recycle view
+    - Khi ấn gửi Intent chứa nội dung 
+          "idCategory = xyz, idIngredient = null" đi đén Trang tìm kiếm.
+  - Favourite:
+    - Danh sách favourite
+      - RecyclerView, Vertical + GridLayoutManager
+      - Item: Tên, ảnh, nút trái tim (click -> thêm/xóa favourite)
+    - Danh sách gợi ý
+      - ...
 - Báo cáo (Ngát)
 
 ## Các công nghệ áp dụng
@@ -129,7 +136,7 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
 - Architecture: MVP (Model - View - Presenter)
 - Database: 
   - Firebase Authentication: Đăng nhập và xác thực người dùng.
-  - ... + ... (Firebase Realtime Database) //TODO:: Update
+  - Firebase FireStore Database + Imgur
   - SharedPreferences (lưu cài đặt người dùng cục bộ)
 - Các thư viện hỗ trợ:
   - Retrofit: gọi API ngoài

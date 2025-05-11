@@ -2,7 +2,10 @@ package com.b21dccn216.pocketcocktail.test_database.fragment;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,16 +19,19 @@ import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.test_database.adapter.DrinkAdapter;
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DrinkFragment extends BaseModelFragment {
     private static final String TAG = "DrinkFragment";
-    private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int PAGE_SIZE = 10;
+    private static final int SEARCH_DELAY = 500; // Delay in milliseconds
 
-    private EditText etName, etDescription, etInstruction, etCategoryId, etRate;
-    private Button btnSelectImage, btnSave, btnUpdate, btnDelete;
+    private EditText etName, etDescription, etInstruction, etCategoryId, etRate, etSearch;
+    private Button btnSelectImage, btnSave, btnUpdate, btnDelete, btnLoadMore;
     private ImageView ivImage;
     private ListView lvDrinks;
     private DrinkAdapter adapter;
@@ -33,6 +39,11 @@ public class DrinkFragment extends BaseModelFragment {
     private Drink selectedDrink;
     private DrinkDAO drinkDAO;
     private Uri selectedImageUri;
+    private DocumentSnapshot lastVisible;
+    private boolean isLoading = false;
+    private String currentSearchQuery = "";
+    private android.os.Handler searchHandler = new android.os.Handler();
+    private Runnable searchRunnable;
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -54,6 +65,7 @@ public class DrinkFragment extends BaseModelFragment {
     @Override
     protected void initViews() {
         Log.d(TAG, "Initializing views");
+        etSearch = rootView.findViewById(R.id.etSearch);
         etName = rootView.findViewById(R.id.etName);
         etDescription = rootView.findViewById(R.id.etDescription);
         etInstruction = rootView.findViewById(R.id.etInstruction);
@@ -63,6 +75,7 @@ public class DrinkFragment extends BaseModelFragment {
         btnSave = rootView.findViewById(R.id.btnSave);
         btnUpdate = rootView.findViewById(R.id.btnUpdate);
         btnDelete = rootView.findViewById(R.id.btnDelete);
+        btnLoadMore = rootView.findViewById(R.id.btnLoadMore);
         ivImage = rootView.findViewById(R.id.ivImage);
         lvDrinks = rootView.findViewById(R.id.lvDrinks);
 
@@ -72,7 +85,8 @@ public class DrinkFragment extends BaseModelFragment {
         drinkDAO = new DrinkDAO();
 
         setupListeners();
-        loadData();
+        setupSearchListener();
+        loadFirstPage();
         Log.d(TAG, "Views initialized successfully");
     }
 
@@ -82,6 +96,7 @@ public class DrinkFragment extends BaseModelFragment {
         btnSave.setOnClickListener(v -> saveItem());
         btnUpdate.setOnClickListener(v -> updateItem());
         btnDelete.setOnClickListener(v -> deleteItem());
+        btnLoadMore.setOnClickListener(v -> loadMoreDrinks());
 
         lvDrinks.setOnItemClickListener((parent, view, position, id) -> {
             selectedDrink = drinks.get(position);
@@ -92,6 +107,165 @@ public class DrinkFragment extends BaseModelFragment {
         });
     }
 
+    private void setupSearchListener() {
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (searchRunnable != null) {
+                    searchHandler.removeCallbacks(searchRunnable);
+                }
+                searchRunnable = () -> {
+                    String query = s.toString().trim();
+                    if (!query.equals(currentSearchQuery)) {
+                        currentSearchQuery = query;
+                        searchDrinks(query);
+                    }
+                };
+                searchHandler.postDelayed(searchRunnable, SEARCH_DELAY);
+            }
+        });
+    }
+
+    private void searchDrinks(String query) {
+        if (query.isEmpty()) {
+            loadFirstPage();
+            return;
+        }
+
+        isLoading = true;
+        btnLoadMore.setVisibility(View.GONE); // Hide load more button during search
+        drinkDAO.searchDrinksWithSort(
+                query,
+                PAGE_SIZE,
+                null,
+                DrinkDAO.DRINK_FIELD.NAME,
+                Query.Direction.ASCENDING,
+                new DrinkDAO.DrinkListWithLastDocCallback() {
+                    @Override
+                    public void onDrinkListLoaded(List<Drink> drinkList, DocumentSnapshot lastVisible) {
+                        Log.d(TAG, "Search: onDrinkListLoaded: " + drinkList);
+                        drinks.clear();
+                        drinks.addAll(drinkList);
+                        DrinkFragment.this.lastVisible = lastVisible;
+                        adapter.notifyDataSetChanged();
+                        isLoading = false;
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, "Error searching drinks: " + e.getMessage(), e);
+                        showToast("Error searching drinks: " + e.getMessage());
+                        isLoading = false;
+                    }
+                }
+        );
+    }
+
+    private void loadFirstPage() {
+        isLoading = true;
+        btnLoadMore.setVisibility(View.VISIBLE); // Show load more button for normal pagination
+        btnLoadMore.setEnabled(false);
+        drinkDAO.getAllDrinksWithLimitAndSort(
+                DrinkDAO.DRINK_FIELD.CREATED_AT,
+                Query.Direction.DESCENDING,
+                PAGE_SIZE,
+                null,
+                new DrinkDAO.DrinkListWithLastDocCallback() {
+                    @Override
+                    public void onDrinkListLoaded(List<Drink> drinkList, DocumentSnapshot lastVisible) {
+                        Log.d(TAG, "Load first: onDrinkListLoaded: " + drinkList);
+                        drinks.clear();
+                        drinks.addAll(drinkList);
+                        DrinkFragment.this.lastVisible = lastVisible;
+                        adapter.notifyDataSetChanged();
+                        btnLoadMore.setEnabled(true);
+                        isLoading = false;
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, "Error loading drinks: " + e.getMessage(), e);
+                        showToast("Error loading drinks: " + e.getMessage());
+                        btnLoadMore.setEnabled(true);
+                        isLoading = false;
+                    }
+                }
+        );
+    }
+
+    private void loadMoreDrinks() {
+        if (isLoading || lastVisible == null) return;
+        
+        isLoading = true;
+        btnLoadMore.setEnabled(false);
+
+        if (!currentSearchQuery.isEmpty()) {
+            // Load more search results
+            drinkDAO.searchDrinksWithSort(
+                    currentSearchQuery,
+                    PAGE_SIZE,
+                    lastVisible,
+                    DrinkDAO.DRINK_FIELD.NAME,
+                    Query.Direction.ASCENDING,
+                    new DrinkDAO.DrinkListWithLastDocCallback() {
+                        @Override
+                        public void onDrinkListLoaded(List<Drink> drinkList, DocumentSnapshot lastVisible) {
+                            Log.d(TAG, "Load more: onDrinkListLoaded: " + drinkList);
+                            if (!drinkList.isEmpty()) {
+                                drinks.addAll(drinkList);
+                                DrinkFragment.this.lastVisible = lastVisible;
+                                adapter.notifyDataSetChanged();
+                            }
+                            btnLoadMore.setEnabled(true);
+                            isLoading = false;
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e(TAG, "Error loading more search results: " + e.getMessage(), e);
+                            showToast("Error loading more results: " + e.getMessage());
+                            btnLoadMore.setEnabled(true);
+                            isLoading = false;
+                        }
+                    }
+            );
+        } else {
+            // Load more normal results
+            drinkDAO.getAllDrinksWithLimitAndSort(
+                    DrinkDAO.DRINK_FIELD.CREATED_AT,
+                    Query.Direction.DESCENDING,
+                    PAGE_SIZE,
+                    lastVisible,
+                    new DrinkDAO.DrinkListWithLastDocCallback() {
+                        @Override
+                        public void onDrinkListLoaded(List<Drink> drinkList, DocumentSnapshot lastVisible) {
+                            if (!drinkList.isEmpty()) {
+                                drinks.addAll(drinkList);
+                                DrinkFragment.this.lastVisible = lastVisible;
+                                adapter.notifyDataSetChanged();
+                            }
+                            btnLoadMore.setEnabled(true);
+                            isLoading = false;
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e(TAG, "Error loading more drinks: " + e.getMessage(), e);
+                            showToast("Error loading more drinks: " + e.getMessage());
+                            btnLoadMore.setEnabled(true);
+                            isLoading = false;
+                        }
+                    }
+            );
+        }
+    }
+
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -100,23 +274,7 @@ public class DrinkFragment extends BaseModelFragment {
 
     @Override
     protected void loadData() {
-        Log.d(TAG, "Loading drinks data");
-        drinkDAO.getAllDrinks(new DrinkDAO.DrinkListCallback() {
-            @Override
-            public void onDrinkListLoaded(List<Drink> drinkList) {
-                Log.d(TAG, "Drinks loaded successfully. Count: " + drinkList.size());
-                drinks.clear();
-                drinks.addAll(drinkList);
-                adapter.notifyDataSetChanged();
-                Log.d(TAG, "Adapter notified of data change");
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e(TAG, "Error loading drinks: " + e.getMessage(), e);
-                showToast("Error loading drinks: " + e.getMessage());
-            }
-        });
+        loadFirstPage();
     }
 
     @Override
@@ -192,7 +350,7 @@ public class DrinkFragment extends BaseModelFragment {
                         Log.d(TAG, "Drink saved successfully with image");
                         showToast("Drink added successfully");
                         clearInputs();
-                        loadData();
+                        loadFirstPage(); // Reload first page after adding new drink
                     },
                     e -> {
                         Log.e(TAG, "Error saving drink with image", e);
@@ -205,7 +363,7 @@ public class DrinkFragment extends BaseModelFragment {
                         Log.d(TAG, "Drink saved successfully");
                         showToast("Drink added successfully");
                         clearInputs();
-                        loadData();
+                        loadFirstPage(); // Reload first page after adding new drink
                     },
                     e -> {
                         Log.e(TAG, "Error saving drink", e);
@@ -257,7 +415,7 @@ public class DrinkFragment extends BaseModelFragment {
                         Log.d(TAG, "Drink updated successfully with image");
                         showToast("Drink updated successfully");
                         clearInputs();
-                        loadData();
+                        loadFirstPage(); // Reload first page after updating drink
                     },
                     e -> {
                         Log.e(TAG, "Error updating drink with image", e);
@@ -270,7 +428,7 @@ public class DrinkFragment extends BaseModelFragment {
                         Log.d(TAG, "Drink updated successfully");
                         showToast("Drink updated successfully");
                         clearInputs();
-                        loadData();
+                        loadFirstPage(); // Reload first page after updating drink
                     },
                     e -> {
                         Log.e(TAG, "Error updating drink", e);
@@ -293,7 +451,7 @@ public class DrinkFragment extends BaseModelFragment {
                     Log.d(TAG, "Drink deleted successfully");
                     showToast("Drink deleted successfully");
                     clearInputs();
-                    loadData();
+                    loadFirstPage(); // Reload first page after deleting drink
                 },
                 e -> {
                     Log.e(TAG, "Error deleting drink", e);

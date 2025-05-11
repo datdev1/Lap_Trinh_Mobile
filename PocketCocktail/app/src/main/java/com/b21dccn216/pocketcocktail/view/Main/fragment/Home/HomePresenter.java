@@ -35,7 +35,6 @@ public class HomePresenter
         getHighestRateDrinks();
         getOneCategoryDrinkList();
 
-        getLatestDrinkList();
         getRecommendDrinkList();
         getBannerDrink();
     }
@@ -43,6 +42,8 @@ public class HomePresenter
     @Override
     public void onResume() {
         super.onResume();
+        getBannerDrink();
+        Log.d("datdev1", "onResume:");
 
     }
 
@@ -112,20 +113,34 @@ public class HomePresenter
 
 
     private void loadOneCategoryDrinkList(Category category){
-        drinkDAO.getDrinksByCategoryId(category.getUuid(),
-                queryDocumentSnapshots -> {
-                    List<Drink> drinkList = new ArrayList<>();
-                    for (DocumentSnapshot drinkSnapshot : queryDocumentSnapshots.getDocuments()) {
-                        Drink drink = drinkSnapshot.toObject(Drink.class);
-                        drinkList.add(drink);
-                        if(drinkList.size() == 10) break;
+//        drinkDAO.getDrinksByCategoryId(category.getUuid(),
+//                queryDocumentSnapshots -> {
+//                    List<Drink> drinkList = new ArrayList<>();
+//                    for (DocumentSnapshot drinkSnapshot : queryDocumentSnapshots.getDocuments()) {
+//                        Drink drink = drinkSnapshot.toObject(Drink.class);
+//                        drinkList.add(drink);
+//                        if(drinkList.size() == 10) break;
+//                    }
+//                    Log.d("datdev1", "loadOneCategoryDrinkList: " + drinkList.size());
+//                    view.showOneCategoryDrinkList(category, drinkList);
+//                },
+//                e -> {
+//
+//                });
+        drinkDAO.getDrinksByCategoryIdWithLimit(category.getUuid(), 10,
+                new DrinkDAO.DrinkListCallback()
+                {
+                    @Override
+                    public void onDrinkListLoaded(List<Drink> drinkList) {
+                        Log.d("datdev1", "loadOneCategoryDrinkList: " + drinkList.size());
+                        view.showOneCategoryDrinkList(category, drinkList);
                     }
-                    Log.d("datdev1", "loadOneCategoryDrinkList: " + drinkList.size());
-                    view.showOneCategoryDrinkList(category, drinkList);
-                },
-                e -> {
 
-                });
+                    @Override
+                    public void onError(Exception e) {
+                    }
+                }
+        );
     }
 
     private void getRecommendDrinkList(){
