@@ -314,7 +314,13 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
                 {
                     @Override
                     public void onDrinkListLoaded(List<Drink> drinks) {
-                        view.showSimilarDrinks(drinks);
+                        List<Drink> similarDrinks = new ArrayList<>();
+                        for (Drink d : drinks) {
+                            if (!d.getUuid().equals(drink.getUuid())) {
+                                similarDrinks.add(d);
+                            }
+                        }
+                        view.showSimilarDrinks(similarDrinks);
                     }
 
                     @Override

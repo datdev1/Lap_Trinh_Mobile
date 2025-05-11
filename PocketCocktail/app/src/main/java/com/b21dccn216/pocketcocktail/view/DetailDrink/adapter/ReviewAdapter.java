@@ -12,7 +12,10 @@ import com.b21dccn216.pocketcocktail.model.Review;
 import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
@@ -56,13 +59,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         }
 
         // Format ngày nếu có timestamp
-//        if (review.getTimestamp() != null) {
-//            Date date = review.getTimestamp().toDate(); // giả định là com.google.firebase.Timestamp
-//            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-//            holder.binding.commentDate.setText(sdf.format(date));
-//        } else {
-//            holder.binding.commentDate.setText("");
-//        }
+        if (review.getCreatedAtTimestamp() != null) {
+            Date date = review.getCreatedAtTimestamp().toDate();
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+            holder.binding.commentDate.setText(sdf.format(date));
+        } else {
+            holder.binding.commentDate.setText("");
+        }
     }
 
     @Override
