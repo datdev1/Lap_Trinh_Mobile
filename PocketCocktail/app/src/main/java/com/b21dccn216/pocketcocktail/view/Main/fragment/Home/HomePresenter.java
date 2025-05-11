@@ -16,8 +16,7 @@ import java.util.List;
 
 public class HomePresenter
     extends BasePresenter<HomeContract.View>
-    implements HomeContract.Presenter
-{
+    implements HomeContract.Presenter{
 
     private DrinkDAO drinkDAO = new DrinkDAO();
     private CategoryDAO categoryDAO = new CategoryDAO();
@@ -32,11 +31,7 @@ public class HomePresenter
     public void onCreate() {
         super.onCreate();
 
-        getHighestRateDrinks();
-        getOneCategoryDrinkList();
-
-        getRecommendDrinkList();
-        getBannerDrink();
+        refreshScreen();
     }
 
     @Override
@@ -81,23 +76,22 @@ public class HomePresenter
         drinkDAO.getDrinksSortAndLimit(
                 DrinkDAO.DRINK_FIELD.RATE, Query.Direction.DESCENDING,10,
                 new DrinkDAO.DrinkListCallback(){
-
                     @Override
                     public void onDrinkListLoaded(List<Drink> drinks) {
                         view.showHighestRateDrinkList(drinks);
                     }
-
                     @Override
                     public void onError(Exception e) {
 
                     }
                 }
-                );
+            );
     }
 
     private void getLatestDrinkList(){
+        //
         drinkDAO.getDrinksSortAndLimit(
-                DrinkDAO.DRINK_FIELD.NAME, Query.Direction.ASCENDING,10,
+                DrinkDAO.DRINK_FIELD.CREATED_AT, Query.Direction.DESCENDING,10,
                 new DrinkDAO.DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinkList) {
@@ -110,7 +104,6 @@ public class HomePresenter
             }
         });
     }
-
 
     private void loadOneCategoryDrinkList(Category category){
         drinkDAO.getDrinksByCategoryId(category.getUuid(),
@@ -130,8 +123,9 @@ public class HomePresenter
     }
 
     private void getRecommendDrinkList(){
+        // sort by name desc and limit 12
         drinkDAO.getDrinksSortAndLimit(
-                DrinkDAO.DRINK_FIELD.NAME, Query.Direction.DESCENDING, 13,
+                DrinkDAO.DRINK_FIELD.NAME, Query.Direction.DESCENDING, 12,
                 new DrinkDAO.DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinkList) {

@@ -15,6 +15,7 @@ import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
 import com.b21dccn216.pocketcocktail.databinding.FragmentSignUpBinding;
 import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.view.Login.LoginContract;
 import com.b21dccn216.pocketcocktail.view.Login.LoginPresenter;
@@ -119,8 +120,9 @@ public class SignUpFragment extends BaseFragment<LoginContract.View, LoginContra
     @Override
     public void authFail(String mess) {
         DialogHelper.showAlertDialog(getActivity(),
-                null,
-                mess);
+                "",
+                mess,
+                HelperDialog.DialogType.ERROR);
     }
 
 }

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
 import com.b21dccn216.pocketcocktail.dao.UserDAO;
 import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -55,13 +56,15 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
 
     private boolean validateUserInformation(User user) {
         if(user == null) {
-            showAlertDialog("User is invalid", "User is invalid");
+            showAlertDialog("User is invalid", "User is invalid",
+                    HelperDialog.DialogType.ERROR);
             return false;
         }
         if(user.getName() == null || user.getName().isEmpty() || user.getName().length() < 6){
             showAlertDialog(
                     "Full name is invalid",
-                    "Please ensure name field is not empty and more than 6 digit");
+                    "Please ensure name field is not empty and more than 6 digit",
+                    HelperDialog.DialogType.ERROR);
             return false;
         }
         String email = user.getEmail();
@@ -69,16 +72,18 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
         if(email == null || email.trim().isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             showAlertDialog(
                     "Email is invalid",
-                    "Ensure email is in correct format");
+                    "Ensure email is in correct format",
+                    HelperDialog.DialogType.ERROR);
             return false;
         }
         return true;
     }
 
-    private void showAlertDialog(String title, String message){
-        DialogHelper.showAlertDialog(((Fragment)view).getActivity(),
+    private void showAlertDialog(String title, String message, HelperDialog.DialogType type){
+        DialogHelper.showAlertDialog(((Fragment)view).requireContext(),
                 title,
-                message);
+                message,
+                type);
     }
 
     private void changeEmailFirebase(String email, String password){
@@ -94,7 +99,12 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText((Context) view, "Email Changed" + " Current Email is " + email, Toast.LENGTH_LONG).show();
+
+                            //TODO: Show to View
+                            showAlertDialog("WARN",
+                                    "We has sent verification link to " + email +" address.\n" +
+                                    "Pleas confirm to change email address",
+                                    HelperDialog.DialogType.ERROR);
                         }
                     }
                 });
@@ -104,31 +114,43 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
 
     @Override
     public void saveUserWithImage(User editingUser, Uri selectedImageUri) {
-        userDAO.updateUserWithImage(((Fragment)view).requireActivity(), editingUser, selectedImageUri,
-                avoid -> {
-                    userDAO.getUserByUuidAuthen(mAuth.getCurrentUser().getUid(),
-                            new UserDAO.UserCallback() {
-                                @Override
-                                public void onUserLoaded(User user) {
-                                    SessionManager.getInstance().setUser(user);
-                                    view.updateInfoSuccess();
-                                }
+        if(validateUserInformation(editingUser)) {
+            if (!mAuth.getCurrentUser().getEmail().equals(editingUser.getEmail())) {
+                changeEmailFirebase(editingUser.getEmail(), editingUser.getPassword());
+            }
 
-                                @Override
-                                public void onError(Exception e) {
-                                    view.updateInfoFail(e.getMessage());
+
+            userDAO.updateUserWithImage(((Fragment) view).requireActivity(), editingUser, selectedImageUri,
+                    avoid -> {
+                        userDAO.getUserByUuidAuthen(mAuth.getCurrentUser().getUid(),
+                                new UserDAO.UserCallback() {
+                                    @Override
+                                    public void onUserLoaded(User user) {
+                                        SessionManager.getInstance().setUser(user);
+                                        view.updateInfoSuccess();
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        view.updateInfoFail(e.getMessage());
+                                    }
                                 }
-                            }
-                    );
-                },
-                e -> {
-                    view.updateInfoFail(e.getMessage());
-                });
+                        );
+                    },
+                    e -> {
+                        view.updateInfoFail(e.getMessage());
+                    });
+        }
     }
 
     @Override
     public void saveUserInformation(User currentUser) {
         if(validateUserInformation(currentUser)){
+
+            if(!mAuth.getCurrentUser().getEmail().equals(currentUser.getEmail())){
+                changeEmailFirebase(currentUser.getEmail(), currentUser.getPassword());
+            }
+
             userDAO.updateUser(currentUser,
                     avoid -> {
                         SessionManager.getInstance().setUser(currentUser);
@@ -139,5 +161,40 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                         view.updateInfoFail(e.getMessage());
                     });
         }
+    }
+
+    @Override
+    public User getCurrentUser() {
+        User u = SessionManager.getInstance().getUser();
+        u.setEmail(mAuth.getCurrentUser().getEmail());
+        return u;
+    }
+
+    @Override
+    public void changePassword(String oldPassword, String newPassword, String confirmPassword) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user == null) return;
+        String email = user.getEmail(); // already logged-in user's email
+
+        AuthCredential credential = EmailAuthProvider.getCredential(email, oldPassword);
+        user.reauthenticate(credential).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Proceed to update password
+                user.updatePassword(newPassword)
+                        .addOnCompleteListener(updateTask -> {
+                            if (updateTask.isSuccessful()) {
+                                showAlertDialog("Success", "Password has been updated successfully.",
+                                        HelperDialog.DialogType.ERROR);
+                            } else {
+                                showAlertDialog("Fail", "Check your network",
+                                        HelperDialog.DialogType.ERROR);
+                            }
+                        });
+            } else {
+                showAlertDialog("Fail", "Check your old password and try again.",
+                        HelperDialog.DialogType.ERROR);
+            }
+        });
+
     }
 }

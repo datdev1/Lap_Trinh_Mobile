@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
+import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.databinding.FragmentHomeBinding;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
@@ -24,7 +25,9 @@ import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.CocktailHomeItemAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.RecommendDrinkAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithCategoryDTO;
+import com.b21dccn216.pocketcocktail.view.Search.SearchActivity;
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +123,20 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
         });
 
 
+        binding.btnLatestSeeAll.setOnClickListener(v -> {
+            Intent intent = new Intent(requireActivity(), SearchActivity.class);
+            intent.putExtra(SearchActivity.SORT_FIELD, DrinkDAO.DRINK_FIELD.CREATED_AT);
+            intent.putExtra(SearchActivity.SORT_ORDER, Query.Direction.DESCENDING);
+            startActivity(intent);
+        });
+
+        binding.btnHighestRateSeeAll.setOnClickListener(v -> {
+            Intent intent = new Intent(requireActivity(), SearchActivity.class);
+            intent.putExtra(SearchActivity.SORT_FIELD, DrinkDAO.DRINK_FIELD.RATE);
+            intent.putExtra(SearchActivity.SORT_ORDER, Query.Direction.DESCENDING);
+            startActivity(intent);
+        });
+
         return binding.getRoot();
     }
 
@@ -132,6 +149,13 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
         categoryDrinkList.clear();
         categoryDrinkList.addAll(drinkList);
         categoryCocktailAdapter.notifyDataSetChanged();
+        binding.btnSeeAllMocktail.setOnClickListener(v -> {
+            Intent intent = new Intent(requireActivity(), SearchActivity.class);
+            intent.putExtra(SearchActivity.EXTRA_CATEGORY_OBJECT, category);
+            intent.putExtra(SearchActivity.SORT_ORDER, Query.Direction.DESCENDING);
+            startActivity(intent);
+        });
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -165,7 +189,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
         Glide
                 .with(requireActivity())
                 .load(bannerDrink.getImage())
-                .placeholder(R.drawable.bouncing_circles) // Replace with your placeholder
+                .placeholder(R.drawable.bg_btn_outline_pink_pastel) // Replace with your placeholder
                 .error(R.drawable.baseline_error_outline_24)
                 .into(binding.featureImage);
         binding.featureTitle.setText(bannerDrink.getName());
@@ -180,3 +204,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     }
 }
 
+
+// 1, Trường sắp xếp (DrinkDao.DRINK_FIELD), Chiều sắp xếp (Query.Direction)
+// 2, Category,
+// 3, Ingredient
