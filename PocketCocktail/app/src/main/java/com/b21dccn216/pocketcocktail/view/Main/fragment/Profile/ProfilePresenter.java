@@ -104,7 +104,7 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                             showAlertDialog("WARN",
                                     "We has sent verification link to " + email +" address.\n" +
                                     "Pleas confirm to change email address",
-                                    HelperDialog.DialogType.ERROR);
+                                    HelperDialog.DialogType.WARNING);
                         }
                     }
                 });
@@ -184,7 +184,7 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                         .addOnCompleteListener(updateTask -> {
                             if (updateTask.isSuccessful()) {
                                 showAlertDialog("Success", "Password has been updated successfully.",
-                                        HelperDialog.DialogType.ERROR);
+                                        HelperDialog.DialogType.SUCCESS);
                             } else {
                                 showAlertDialog("Fail", "Check your network",
                                         HelperDialog.DialogType.ERROR);
