@@ -16,12 +16,14 @@ import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.test_database.adapter.CategoryAdapter;
 import com.bumptech.glide.Glide;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CategoryFragment extends BaseModelFragment {
     private static final int PICK_IMAGE_REQUEST = 1;
-    private EditText etName, etDescription;
+    private EditText etUuid, etCreatedAt, etUpdatedAt, etName, etDescription;
     private ImageView ivImage;
     private Button btnSelectImage, btnSave, btnUpdate, btnDelete;
     private ListView lvCategories;
@@ -30,6 +32,7 @@ public class CategoryFragment extends BaseModelFragment {
     private Category selectedCategory;
     private CategoryDAO categoryDAO;
     private Uri selectedImageUri;
+    private SimpleDateFormat dateFormat;
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -47,6 +50,11 @@ public class CategoryFragment extends BaseModelFragment {
 
     @Override
     protected void initViews() {
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        
+        etUuid = rootView.findViewById(R.id.etUuid);
+        etCreatedAt = rootView.findViewById(R.id.etCreatedAt);
+        etUpdatedAt = rootView.findViewById(R.id.etUpdatedAt);
         etName = rootView.findViewById(R.id.etName);
         etDescription = rootView.findViewById(R.id.etDescription);
         ivImage = rootView.findViewById(R.id.ivImage);
@@ -103,9 +111,12 @@ public class CategoryFragment extends BaseModelFragment {
 
     @Override
     protected void clearInputs() {
+        etUuid.setText("");
+        etCreatedAt.setText("");
+        etUpdatedAt.setText("");
         etName.setText("");
         etDescription.setText("");
-        ivImage.setImageResource(0);
+        ivImage.setImageResource(R.drawable.ic_launcher_background);
         selectedImageUri = null;
         selectedCategory = null;
         btnUpdate.setEnabled(false);
@@ -116,6 +127,9 @@ public class CategoryFragment extends BaseModelFragment {
     protected void fillInputs(Object item) {
         if (item instanceof Category) {
             Category category = (Category) item;
+            etUuid.setText(category.getUuid());
+            etCreatedAt.setText(dateFormat.format(category.getCreatedAt()));
+            etUpdatedAt.setText(dateFormat.format(category.getUpdatedAt()));
             etName.setText(category.getName());
             etDescription.setText(category.getDescription());
             
@@ -126,7 +140,7 @@ public class CategoryFragment extends BaseModelFragment {
                     .error(R.drawable.error_icon)
                     .into(ivImage);
             } else {
-                ivImage.setImageResource(0);
+                ivImage.setImageResource(R.drawable.ic_launcher_background);
             }
         }
     }

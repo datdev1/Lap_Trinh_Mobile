@@ -18,6 +18,7 @@ public interface DetailDrinkContract {
         void showReviews(List<ReviewWithUserDTO> reviews);
         void showAddReviewSuccess();
         void showAddReviewError(String message);
+        void showAddReviewDialog(String drinkId);
     }
 
     interface Presenter extends BaseContract.Presenter<View> {
@@ -28,5 +29,7 @@ public interface DetailDrinkContract {
         void addReview(Review review);
         void loadReviews(String drinkId);
         void loadSimilarDrinks(Drink drink);
+        void onAddReviewClicked(String drinkId);
+        void submitReview(String comment, String drinkId, float rating);
     }
 }

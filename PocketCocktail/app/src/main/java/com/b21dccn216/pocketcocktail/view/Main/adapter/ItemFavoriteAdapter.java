@@ -1,15 +1,18 @@
 package com.b21dccn216.pocketcocktail.view.Main.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemFavoriteBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Favorite;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -34,7 +37,21 @@ public class ItemFavoriteAdapter extends RecyclerView.Adapter<ItemFavoriteAdapte
     @Override
     public void onBindViewHolder(@NonNull FavoriteViewHolder holder, int position) {
         Drink favorite = favoriteList.get(position);
-        holder.bind(favorite);
+        Glide.with(context)
+                .load(favorite.getImage())
+                .centerCrop()
+                .error(R.drawable.baseline_downloading_24)
+                .into(holder.binding.image);
+
+        holder.binding.name.setText(favorite.getName());
+//        holder.binding.cate.setText(String.valueOf(images.get(position).rate));
+
+        holder.binding.layout.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailDrinkActivity.class);
+            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, favorite);
+//            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_ID, drinks.get(position).getUuid());
+            context.startActivity(intent);
+        });
     }
 
     @Override

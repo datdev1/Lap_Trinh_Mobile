@@ -6,8 +6,8 @@ import java.util.Date;
 import java.util.UUID;
 
 public class User implements Serializable {
-    private static final String RoleUser = "User";
-    private static final String RoleAdmin = "Admin";
+    public static final String RoleUser = "User";
+    public static final String RoleAdmin = "Admin";
     private String uuid;
     private String saveUuidFromAuthen;
     private String name;
