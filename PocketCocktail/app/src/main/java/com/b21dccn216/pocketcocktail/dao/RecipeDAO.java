@@ -69,6 +69,11 @@ public class RecipeDAO {
         void onError(Exception e);
     }
 
+    public interface DrinkIDListCallback {
+        void onDrinkIDListLoaded(List<String> drinkIds);
+        void onError(Exception e);
+    }
+
     public void addRecipe(Recipe recipe, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         recipe.generateUUID();
         Map<String, Object> data = convertRecipeToMap(recipe);
@@ -180,5 +185,37 @@ public class RecipeDAO {
                 .addOnFailureListener(onFailure);
     }
 
+    public void searchDrinkIDByIngredient(List<String> drinkIds, List<String> ingredientIds, DrinkIDListCallback callback) {
+        recipeRef.whereIn("drinkId", drinkIds)
+                .whereIn("ingredientId", ingredientIds)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<String> matchingDrinkIds = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Recipe recipe = convertDocumentToRecipe(doc);
+                        if (recipe != null && !matchingDrinkIds.contains(recipe.getDrinkId())) {
+                            matchingDrinkIds.add(recipe.getDrinkId());
+                        }
+                    }
+                    callback.onDrinkIDListLoaded(matchingDrinkIds);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
+    public void searchDrinkIDByIngredient(List<String> ingredientIds, DrinkIDListCallback callback) {
+        recipeRef.whereIn("ingredientId", ingredientIds)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<String> matchingDrinkIds = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Recipe recipe = convertDocumentToRecipe(doc);
+                        if (recipe != null && !matchingDrinkIds.contains(recipe.getDrinkId())) {
+                            matchingDrinkIds.add(recipe.getDrinkId());
+                        }
+                    }
+                    callback.onDrinkIDListLoaded(matchingDrinkIds);
+                })
+                .addOnFailureListener(callback::onError);
+    }
 
 } 
