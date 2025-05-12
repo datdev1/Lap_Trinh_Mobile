@@ -5,10 +5,12 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
@@ -28,6 +30,9 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
     private FragmentFavoriteBinding binding;
     private int column = 2;
     private ItemFavoriteAdapter itemFavoriteAdapter;
+
+    private TextView emptyText;
+    private RecyclerView recyclerViewEmptyText;
     private FavoriteCreateAdapter favoriteCreateAdapter;
     private List<Drink> favoriteList = new ArrayList<>();
     private List<Drink> favoriteCreateList = new ArrayList<>();
@@ -67,15 +72,36 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
 
     @Override
     public void showFavoriteDrinkList(List<Drink> list) {
-        favoriteList.clear();
-        favoriteList.addAll(list);
-        itemFavoriteAdapter.notifyDataSetChanged();
+        if (list.isEmpty()) {
+            binding.recyclerFavorites.setVisibility(View.GONE);
+            binding.emptyFavorite.setVisibility(View.VISIBLE);
+            binding.emptyFavorite.setText("Hãy thêm vào đồ uống yêu thích của bạn!");
+        } else {
+            binding.emptyFavorite.setVisibility(View.GONE);
+            binding.recyclerFavorites.setVisibility(View.VISIBLE);
+
+            favoriteList.clear();
+            favoriteList.addAll(list);
+            itemFavoriteAdapter.notifyDataSetChanged();
+        }
     }
+
 
     @Override
     public void showFavoriteDrinkCreateByUserId(List<Drink> favoriteDrinkCreateListByUserId) {
+        binding.emptyCreation.setVisibility(View.GONE);
+        binding.recyclerDrinkCreateByUser.setVisibility(View.VISIBLE);
+
         favoriteCreateList.clear();
         favoriteCreateList.addAll(favoriteDrinkCreateListByUserId);
         favoriteCreateAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void showNoCreatedDrinksMessage() {
+        binding.emptyCreation.setVisibility(View.VISIBLE);
+        binding.recyclerDrinkCreateByUser.setVisibility(View.GONE);
+        binding.emptyCreation.setText("Hiện bạn chưa tạo công thức nào");
+    }
+
 }

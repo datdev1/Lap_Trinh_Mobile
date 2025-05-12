@@ -49,6 +49,12 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
             public void onFavoriteListLoaded(List<Favorite> favorites) {
                 // TODO
                 Log.d("favourite", "Size: " + favorites.size());
+
+                if (favorites.isEmpty()) {
+                    view.showFavoriteDrinkList(new ArrayList<>()); // Truyền list rỗng để xử lý hiển thị thông báo
+                    return;
+                }
+
                 List<Drink> drinks = new ArrayList<>();
                 for(Favorite favorite : favorites){
                     drinkDAO.getDrink(favorite.getDrinkId(),
@@ -83,7 +89,11 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
             @Override
             public void onDrinkListLoaded(List<Drink> drinks) {
                 Log.d("drink", "Drinks created by user: " + drinks.size());
-                view.showFavoriteDrinkCreateByUserId(drinks); // Hiển thị lên UI
+                if (drinks.isEmpty()) {
+                    view.showNoCreatedDrinksMessage(); // Hiển thị thông báo nếu rỗng
+                } else {
+                    view.showFavoriteDrinkCreateByUserId(drinks); // Hiển thị danh sách nếu có
+                }
             }
 
             @Override
@@ -94,4 +104,5 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
             }
         });
     }
+
 }

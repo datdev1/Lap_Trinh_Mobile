@@ -31,6 +31,15 @@
             android:nestedScrollingEnabled="false" />
 
         <TextView
+            android:id="@+id/emptyFavorite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:padding="16dp" />
+
+        <TextView
             android:text="Your Creations"
             android:textSize="18dp"
             android:textStyle="bold"
@@ -47,6 +56,17 @@
             android:orientation="horizontal"
             android:overScrollMode="never"
             android:nestedScrollingEnabled="false" />
+
+        <TextView
+            android:id="@+id/emptyCreation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textSize="16sp"
+            android:padding="16dp"
+            />
+
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
