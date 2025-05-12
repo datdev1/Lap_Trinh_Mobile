@@ -63,6 +63,10 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
         itemFavoriteAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void showFavoriteDrinkCreateByUserId(List<Drink> favoriteDrinkCreateListByUserId) {
+
+    }
 
 
 }

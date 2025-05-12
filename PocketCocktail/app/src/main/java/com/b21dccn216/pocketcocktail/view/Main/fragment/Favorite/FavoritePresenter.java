@@ -39,8 +39,8 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
     public void onCreate(){
         super.onCreate();
         getAllFavoriteByUserId();
+        getAllDrinkCreateByUserId();
     }
-
 
     public void getAllFavoriteByUserId() {
         Log.d("favourite", "currentUserId: " + currentUserId);
@@ -75,6 +75,9 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
                         HelperDialog.DialogType.ERROR);
             }
         });
+    }
+
+    private void getAllDrinkCreateByUserId() {
     }
 
 
