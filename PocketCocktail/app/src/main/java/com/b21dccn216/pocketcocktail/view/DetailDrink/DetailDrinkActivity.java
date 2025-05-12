@@ -33,6 +33,9 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     private ReviewAdapter reviewAdapter;
     private SimilarDrinkAdapter similarDrinkAdapter;
     public static final String EXTRA_DRINK_OBJECT = "drink_id";
+    private static final int REQUEST_EDIT_DRINK = 1;
+    private Drink currentDrink;
+    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected DetailDrinkContract.Presenter createPresenter() {
@@ -51,26 +54,40 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         binding = ActivityDetailDrinkBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Khởi tạo SwipeRefreshLayout
+        swipeRefreshLayout = binding.swipeRefreshLayout;
+        swipeRefreshLayout.setOnRefreshListener(this::refreshData);
 
         binding.instructionsLayout.removeAllViews();
         binding.ingredientsLayout.removeAllViews();
-        Drink drink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_OBJECT);
-        if (drink != null) {
-            presenter.loadDrinkDetails(drink);
-            presenter.checkFavorite(drink.getUuid());
+        currentDrink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_OBJECT);
+        if (currentDrink != null) {
+            loadDrinkData();
         } else {
             Toast.makeText(this, "Drink data not found", Toast.LENGTH_SHORT).show();
             finish();
         }
-        binding.favoriteButton.setOnClickListener(v -> presenter.toggleFavorite(drink));
-        binding.shareButton.setOnClickListener(v -> presenter.shareDrink(drink));
+        binding.favoriteButton.setOnClickListener(v -> presenter.toggleFavorite(currentDrink));
+        binding.shareButton.setOnClickListener(v -> presenter.shareDrink(currentDrink));
         binding.addCommentButton.setOnClickListener(v -> {
-            String drinkId = drink.getUuid();
+            String drinkId = currentDrink.getUuid();
             presenter.onAddReviewClicked(drinkId);
         });
 
-
         binding.backButton.setOnClickListener(v -> finish());
+    }
+
+    private void loadDrinkData() {
+        binding.instructionsLayout.removeAllViews();
+        binding.ingredientsLayout.removeAllViews();
+        presenter.loadDrinkById(currentDrink.getUuid());
+        presenter.checkFavorite(currentDrink.getUuid());
+    }
+
+    private void refreshData() {
+        if (currentDrink != null) {
+            loadDrinkData();
+        }
     }
 
     private TextView createBulletTextView(String text) {
@@ -86,9 +103,50 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
 
     @Override
     public void showDrinkDetail(Drink drink) {
+        currentDrink = drink;
         Glide.with(this).load(drink.getImage()).into(binding.drinkImage);
         binding.drinkTitle.setText(drink.getName());
         binding.drinkDescription.setText(drink.getDescription());
+        String currentUserId = com.b21dccn216.pocketcocktail.helper.SessionManager.getInstance().getUser().getUuid();
+        com.b21dccn216.pocketcocktail.dao.RecipeDAO recipeDAO = new com.b21dccn216.pocketcocktail.dao.RecipeDAO();
+        binding.btnEditOrCopy.setVisibility(android.view.View.VISIBLE);
+        binding.btnEditOrCopy.setOnClickListener(null);
+        recipeDAO.getRecipesByDrinkId(drink.getUuid(), new com.b21dccn216.pocketcocktail.dao.RecipeDAO.RecipeListCallback() {
+            @Override
+            public void onRecipeListLoaded(java.util.List<com.b21dccn216.pocketcocktail.model.Recipe> recipes) {
+                if (drink.getUserId() != null && drink.getUserId().equals(currentUserId)) {
+                    binding.btnEditOrCopy.setImageResource(R.drawable.ic_edit);
+                    binding.btnEditOrCopy.setOnClickListener(v -> {
+                        Intent intent = new Intent(DetailDrinkActivity.this, com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity.class);
+                        intent.putExtra("mode", "edit");
+                        intent.putExtra("drink", drink);
+                        intent.putExtra("categoryId", drink.getCategoryId());
+                        intent.putExtra("recipes", new java.util.ArrayList<>(recipes));
+                        startActivityForResult(intent, REQUEST_EDIT_DRINK);
+                    });
+                } else {
+                    binding.btnEditOrCopy.setImageResource(R.drawable.ic_copy);
+                    binding.btnEditOrCopy.setOnClickListener(v -> {
+                        com.b21dccn216.pocketcocktail.model.Drink copyDrink = drink.cloneForCopy();
+                        copyDrink.setUserId(currentUserId);
+                        copyDrink.setUuid(null);
+                        Intent intent = new Intent(DetailDrinkActivity.this, com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity.class);
+                        intent.putExtra("mode", "copy");
+                        intent.putExtra("drink", copyDrink);
+                        intent.putExtra("categoryId", copyDrink.getCategoryId());
+                        intent.putExtra("recipes", new java.util.ArrayList<>(recipes));
+                        startActivity(intent);
+                    });
+                }
+                // Tắt animation loading khi đã load xong
+                swipeRefreshLayout.setRefreshing(false);
+            }
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(DetailDrinkActivity.this, "Không thể lấy nguyên liệu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
@@ -209,5 +267,17 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     @Override
     public void showMessage(String message) {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_EDIT_DRINK && resultCode == RESULT_OK) {
+            // Load lại dữ liệu khi quay lại từ màn hình edit
+            if (currentDrink != null) {
+                swipeRefreshLayout.setRefreshing(true);
+                loadDrinkData();
+            }
+        }
     }
 }

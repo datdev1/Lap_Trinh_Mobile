@@ -1,317 +1,338 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".view.DetailDrink.DetailDrinkActivity">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:context=".view.DetailDrink.DetailDrinkActivity">
 
-        <!-- Back button and image container -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.b21dccn216.pocketcocktail.customView.CenterTopCropImageView
-                android:id="@+id/drink_image"
-                android:layout_width="match_parent"
-                android:layout_height="350dp"
-                android:src="@drawable/sample_cocktail_5"/>
-
-            <ImageButton
-                android:id="@+id/back_button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_margin="16dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
-                android:src="@drawable/dtd_ic_back" />
-        </FrameLayout>
-
-        <!-- Drink details card -->
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-24dp"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="0dp">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <!-- Back button and image container -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.b21dccn216.pocketcocktail.customView.CenterTopCropImageView
+                    android:id="@+id/drink_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="350dp"
+                    android:src="@drawable/sample_cocktail_5"/>
+
+                <ImageButton
+                    android:id="@+id/back_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Back"
+                    android:src="@drawable/dtd_ic_back" />
+            </FrameLayout>
+
+            <!-- Drink details card -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <!--Badge-->
-                <TextView
-                    android:id="@+id/badge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_badge_iba"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:text="IBA Official"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:gravity="center_vertical"
-                    android:drawablePadding="8dp"
-                    app:drawableStartCompat="@drawable/dtd_ic_badge" />
-
-                <!-- Title and actions -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="0dp"
-                    android:paddingEnd="16dp"
-                    android:paddingVertical="8dp">
-
-                    <!-- Drink title -->
-                    <TextView
-                        android:id="@+id/drink_title"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Mojito"
-                        android:textColor="@color/black"
-                        android:textSize="28sp"
-                        android:textStyle="bold" />
-
-                    <!-- Favorite button -->
-                    <ImageButton
-                        android:id="@+id/favorite_button"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Favorite"
-                        android:src="@drawable/dtd_ic_favorite_outline"
-                        app:tint="@color/secondary" />
-
-                    <!-- Share button -->
-                    <ImageButton
-                        android:id="@+id/share_button"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Share"
-                        android:src="@drawable/dtd_ic_share"
-                        app:tint="@color/ripple_dark" />
-                </LinearLayout>
-
-                <!-- Drink description -->
-                <TextView
-                    android:id="@+id/drink_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Mojito variations can be made using different fruits such as strawberries, raspberries, or watermelon."
-                    android:textColor="@color/gray"
-                    android:textSize="16sp" />
-
-                <!-- Ingredients section -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Ingredients"
-                    android:textColor="@color/black"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                android:layout_marginTop="-24dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp">
 
                 <LinearLayout
-                    android:id="@+id/ingredients_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
+                    <!--Badge-->
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Soda water"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Light/white rum (45 ml)"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Fresh lime juice (20 ml)"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Sugar (2 tsp)"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Mint (6 pcs)"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-                </LinearLayout>
-
-                <!-- Instructions section -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Instructions"
-                    android:textColor="@color/black"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:id="@+id/instructions_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Muddle mint leaves with sugar and lime juice"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Add a splash of soda water and fill the glass with ice"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Pour the rum and top with soda water"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Garnish with mint leaves and lime wedge"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-                </LinearLayout>
-
-                <!-- Similar Taste section -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Similar Taste"
-                    android:textColor="@color/black"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/similar_drinks_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:clipToPadding="false"
-                    android:paddingEnd="16dp"
-                    android:paddingBottom="16dp"
-                    android:orientation="horizontal"
-                    android:overScrollMode="never" />
-
-
-                <!--Comment-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="0dp"
-                    android:paddingEnd="16dp"
-                    android:paddingVertical="12dp"
-                    android:background="#FFFFFF">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Comments"
-                        android:textColor="#000000"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.02"
-                        android:paddingTop="4dp" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/addCommentButton"
+                        android:id="@+id/badge"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:minWidth="100dp"
-                        android:background="@drawable/dtd_btn_add_cmt"
-                        android:drawableStart="@drawable/dtd_ic_add_comment"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_badge_iba"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:text="IBA Official"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:gravity="center_vertical"
                         android:drawablePadding="8dp"
+                        app:drawableStartCompat="@drawable/dtd_ic_badge" />
+
+                    <!-- Title and actions -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:text="Add"
-                        android:textColor="#000000"
-                        android:textSize="14sp"
-                        android:textAllCaps="false"
-                        android:stateListAnimator="@null"
-                        android:elevation="1dp"
-                        android:layout_marginStart="8dp" />
+                        android:paddingTop="16dp"
+                        android:paddingBottom="0dp">
+
+                        <TextView
+                            android:id="@+id/drink_title"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Mojito"
+                            android:textColor="@color/black"
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
+
+                        <ImageButton
+                            android:id="@+id/btnEditOrCopy"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_marginStart="8dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Edit or Copy"
+                            android:src="@drawable/ic_edit"
+                            android:visibility="visible"
+                            app:tint="@color/secondary" />
+
+                        <ImageButton
+                            android:id="@+id/favorite_button"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_marginStart="8dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Favorite"
+                            android:src="@drawable/dtd_ic_favorite_outline"
+                            app:tint="@color/secondary" />
+
+                        <ImageButton
+                            android:id="@+id/share_button"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_marginStart="8dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Share"
+                            android:src="@drawable/dtd_ic_share"
+                            app:tint="@color/ripple_dark" />
+                    </LinearLayout>
+
+                    <!-- Drink description -->
+                    <TextView
+                        android:id="@+id/drink_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Mojito variations can be made using different fruits such as strawberries, raspberries, or watermelon."
+                        android:textColor="@color/gray"
+                        android:textSize="16sp" />
+
+                    <!-- Ingredients section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:text="Ingredients"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/ingredients_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/dtd_ic_bullet"
+                            android:drawablePadding="8dp"
+                            android:padding="4dp"
+                            android:text="Soda water"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/dtd_ic_bullet"
+                            android:drawablePadding="8dp"
+                            android:padding="4dp"
+                            android:text="Light/white rum (45 ml)"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/dtd_ic_bullet"
+                            android:drawablePadding="8dp"
+                            android:padding="4dp"
+                            android:text="Fresh lime juice (20 ml)"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/dtd_ic_bullet"
+                            android:drawablePadding="8dp"
+                            android:padding="4dp"
+                            android:text="Sugar (2 tsp)"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/dtd_ic_bullet"
+                            android:drawablePadding="8dp"
+                            android:padding="4dp"
+                            android:text="Mint (6 pcs)"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Instructions section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:text="Instructions"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/instructions_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/dtd_ic_bullet"
+                            android:drawablePadding="8dp"
+                            android:padding="4dp"
+                            android:text="Muddle mint leaves with sugar and lime juice"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/dtd_ic_bullet"
+                            android:drawablePadding="8dp"
+                            android:padding="4dp"
+                            android:text="Add a splash of soda water and fill the glass with ice"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/dtd_ic_bullet"
+                            android:drawablePadding="8dp"
+                            android:padding="4dp"
+                            android:text="Pour the rum and top with soda water"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/dtd_ic_bullet"
+                            android:drawablePadding="8dp"
+                            android:padding="4dp"
+                            android:text="Garnish with mint leaves and lime wedge"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Similar Taste section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:text="Similar Taste"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/similar_drinks_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:clipToPadding="false"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="16dp"
+                        android:orientation="horizontal"
+                        android:overScrollMode="never" />
+
+
+                    <!--Comment-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="16dp"
+                        android:paddingVertical="12dp"
+                        android:background="#FFFFFF">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Comments"
+                            android:textColor="#000000"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.02"
+                            android:paddingTop="4dp" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/addCommentButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:minWidth="100dp"
+                            android:background="@drawable/dtd_btn_add_cmt"
+                            android:drawableStart="@drawable/dtd_ic_add_comment"
+                            android:drawablePadding="8dp"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:text="Add"
+                            android:textColor="#000000"
+                            android:textSize="14sp"
+                            android:textAllCaps="false"
+                            android:stateListAnimator="@null"
+                            android:elevation="1dp"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/commentsRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:visibility="visible"
+                        android:paddingBottom="16dp" />
+
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/commentsRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:visibility="visible"
-                    android:paddingBottom="16dp" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-    </LinearLayout>
-</ScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -38,6 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,10 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
     private List<Ingredient> ingredients;
     private List<Category> categories;
     private Dialog dialog;
+    private String mode = "create"; // default
+    private Drink editingDrink = null;
+    private ArrayList<Recipe> incomingRecipes = null;
+    private String incomingCategoryId = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,13 +108,34 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
             }
         );
 
-        // Load danh mục
+        // Load danh mục trước
         loadCategories();
 
         // Xử lý sự kiện
         btnAddImage.setOnClickListener(v -> openImagePicker());
         btnAddIngredient.setOnClickListener(v -> showAddIngredientDialog());
         btnSave.setOnClickListener(v -> saveDrink());
+
+        // Nhận intent sau khi đã load categories
+        Intent intent = getIntent();
+        if (intent != null) {
+            mode = intent.getStringExtra("mode");
+            editingDrink = (Drink) intent.getSerializableExtra("drink");
+            incomingCategoryId = intent.getStringExtra("categoryId");
+            incomingRecipes = (ArrayList<Recipe>) intent.getSerializableExtra("recipes");
+            if (editingDrink != null) {
+                // Đợi categories load xong mới fill form
+                if (categories != null) {
+                    fillFormWithDrink(editingDrink);
+                }
+                if ("edit".equals(mode)) {
+                    if (editingDrink.getImage() != null) {
+                        Glide.with(this).load(editingDrink.getImage()).into(ivDrinkImage);
+                    }
+                    selectedImageUri = null;
+                }
+            }
+        }
     }
 
     private void loadCategories() {
@@ -129,6 +155,11 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
                 );
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spCategory.setAdapter(adapter);
+
+                // Sau khi load xong categories, fill form nếu có editingDrink
+                if (editingDrink != null) {
+                    fillFormWithDrink(editingDrink);
+                }
             }
 
             @Override
@@ -309,63 +340,155 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         });
     }
 
+    private void fillFormWithDrink(Drink drink) {
+        etDrinkName.setText(drink.getName());
+        etDescription.setText(drink.getDescription());
+        etInstruction.setText(drink.getInstruction());
+        ratingBar.setRating((float) drink.getRate());
+
+        // Set category
+        String catId = incomingCategoryId != null ? incomingCategoryId : drink.getCategoryId();
+        if (categories != null && catId != null) {
+            for (int i = 0; i < categories.size(); i++) {
+                if (categories.get(i).getUuid().equals(catId)) {
+                    spCategory.setSelection(i + 1);
+                    break;
+                }
+            }
+        }
+
+        // Set ingredients
+        if (incomingRecipes != null && !incomingRecipes.isEmpty()) {
+            recipeList.clear();
+            for (Recipe recipe : incomingRecipes) {
+                Recipe newRecipe = new Recipe();
+                newRecipe.setIngredientId(recipe.getIngredientId());
+                newRecipe.setAmount(recipe.getAmount());
+                newRecipe.generateUUID();
+                recipeList.add(newRecipe);
+            }
+            ingredientAdapter.notifyDataSetChanged();
+        }
+    }
+
     private void saveDrink() {
-        btnSave.setEnabled(false); // Disable nút lưu ngay khi bắt đầu
+        btnSave.setEnabled(false);
         String name = etDrinkName.getText().toString().trim();
         String description = etDescription.getText().toString().trim();
         String instructions = etInstruction.getText().toString().trim();
         float rating = ratingBar.getRating();
         int categoryPosition = spCategory.getSelectedItemPosition();
 
-        if (name.isEmpty() || description.isEmpty() || instructions.isEmpty() || selectedImageUri == null) {
-            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
-            btnSave.setEnabled(true); // Enable lại nếu lỗi
+        if (name.isEmpty() || description.isEmpty() || instructions.isEmpty() ||
+            (selectedImageUri == null && ("copy".equals(mode) || ("edit".equals(mode) && (editingDrink == null || editingDrink.getImage() == null))))) {
+            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin và chọn ảnh", Toast.LENGTH_SHORT).show();
+            btnSave.setEnabled(true);
             return;
         }
 
         if (categoryPosition <= 0) {
             Toast.makeText(this, "Vui lòng chọn danh mục", Toast.LENGTH_SHORT).show();
-            btnSave.setEnabled(true); // Enable lại nếu lỗi
+            btnSave.setEnabled(true);
             return;
         }
 
-        // Kiểm tra người dùng đã đăng nhập chưa
         User currentUser = SessionManager.getInstance().getUser();
         if (currentUser == null) {
             Toast.makeText(this, "Vui lòng đăng nhập để thêm đồ uống", Toast.LENGTH_SHORT).show();
-            btnSave.setEnabled(true); // Enable lại nếu lỗi
+            btnSave.setEnabled(true);
             return;
         }
 
-        // Get the selected category
         Category selectedCategory = categories.get(categoryPosition - 1);
         if (selectedCategory == null) {
             Toast.makeText(this, "Lỗi: Không tìm thấy danh mục đã chọn", Toast.LENGTH_SHORT).show();
-            btnSave.setEnabled(true); // Enable lại nếu lỗi
+            btnSave.setEnabled(true);
             return;
         }
 
-        // Tạo đối tượng Drink
-        Drink drink = new Drink();
-        drink.generateUUID();
-        drink.setName(name);
-        drink.setDescription(description);
-        drink.setInstruction(instructions);
-        drink.setRate(rating);
-        drink.setCategoryId(selectedCategory.getUuid());
-        drink.setUserId(currentUser.getUuid());
+        if ("edit".equals(mode) && editingDrink != null) {
+            editingDrink.setName(name);
+            editingDrink.setDescription(description);
+            editingDrink.setInstruction(instructions);
+            editingDrink.setRate(rating);
+            editingDrink.setCategoryId(selectedCategory.getUuid());
+            if (selectedImageUri != null) {
+                drinkDAO.updateDrinkWithImage(this, editingDrink, selectedImageUri,
+                    aVoid -> {
+                        deleteOldRecipesAndSaveNew(editingDrink.getUuid());
+                    },
+                    e -> {
+                        Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        btnSave.setEnabled(true);
+                    });
+            } else {
+                drinkDAO.updateDrink(editingDrink,
+                    aVoid -> {
+                        deleteOldRecipesAndSaveNew(editingDrink.getUuid());
+                    },
+                    e -> {
+                        Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        btnSave.setEnabled(true);
+                    });
+            }
+        } else {
+            Drink drink = new Drink();
+            drink.generateUUID();
+            drink.setName(name);
+            drink.setDescription(description);
+            drink.setInstruction(instructions);
+            drink.setRate(rating);
+            drink.setCategoryId(selectedCategory.getUuid());
+            drink.setUserId(currentUser.getUuid());
 
-        // Sử dụng DrinkDAO để lưu đồ uống và ảnh
-        drinkDAO.addDrinkWithImage(this, drink, selectedImageUri,
-            aVoid -> {
-                // Lưu các công thức
-                saveRecipes(drink.getUuid());
-                // Không enable lại vì sẽ đóng màn hình khi thành công
-            },
-            e -> {
-                Toast.makeText(CreateDrinkActivity.this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                btnSave.setEnabled(true); // Enable lại nếu lỗi
-            });
+            drinkDAO.addDrinkWithImage(this, drink, selectedImageUri,
+                aVoid -> {
+                    saveRecipes(drink.getUuid());
+                },
+                e -> {
+                    Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    btnSave.setEnabled(true);
+                });
+        }
+    }
+
+    private void deleteOldRecipesAndSaveNew(String drinkId) {
+        RecipeDAO recipeDAO = new RecipeDAO();
+        // Xóa hết recipe cũ
+        recipeDAO.getRecipesByDrinkId(drinkId, new RecipeDAO.RecipeListCallback() {
+            @Override
+            public void onRecipeListLoaded(List<Recipe> oldRecipes) {
+                AtomicInteger deleteCount = new AtomicInteger(0);
+                int totalOldRecipes = oldRecipes.size();
+                
+                if (totalOldRecipes == 0) {
+                    // Không có recipe cũ, lưu recipe mới
+                    saveRecipes(drinkId);
+                    return;
+                }
+
+                for (Recipe oldRecipe : oldRecipes) {
+                    recipeDAO.deleteRecipe(oldRecipe.getUuid(),
+                        aVoid -> {
+                            int currentCount = deleteCount.incrementAndGet();
+                            if (currentCount == totalOldRecipes) {
+                                // Đã xóa hết recipe cũ, lưu recipe mới
+                                saveRecipes(drinkId);
+                            }
+                        },
+                        e -> {
+                            Toast.makeText(CreateDrinkActivity.this, 
+                                "Lỗi khi xóa công thức cũ: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(CreateDrinkActivity.this, 
+                    "Lỗi khi lấy công thức cũ: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void saveRecipes(String drinkId) {
@@ -375,6 +498,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
 
         if (totalRecipes == 0) {
             Toast.makeText(this, "Thêm đồ uống thành công", Toast.LENGTH_SHORT).show();
+            setResult(RESULT_OK);
             finish();
             return;
         }
@@ -387,6 +511,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
                     if (currentCount == totalRecipes) {
                         Toast.makeText(CreateDrinkActivity.this, 
                             "Thêm đồ uống thành công", Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
                         finish();
                     }
                 },
