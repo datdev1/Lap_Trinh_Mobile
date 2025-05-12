@@ -19,7 +19,7 @@ import java.util.List;
 public class FavoriteCreateAdapter extends RecyclerView.Adapter<FavoriteCreateAdapter.FavoriteCreateViewHolder> {
     private final List<Drink> favoriteCreateList;
     private final Context context;
-    public FavoriteCreateAdapter(List<Drink> favoriteCreateList, Context context) {
+    public FavoriteCreateAdapter(Context context, List<Drink> favoriteCreateList) {
         this.favoriteCreateList = favoriteCreateList;
         this.context = context;
     }

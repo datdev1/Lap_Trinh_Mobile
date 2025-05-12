@@ -39,7 +39,7 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
     public void onCreate(){
         super.onCreate();
         getAllFavoriteByUserId();
-        getAllDrinkCreateByUserId();
+        getAllDrinksCreatedByCurrentUser();
     }
 
     public void getAllFavoriteByUserId() {
@@ -77,8 +77,21 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
         });
     }
 
-    private void getAllDrinkCreateByUserId() {
+    public void getAllDrinksCreatedByCurrentUser() {
+        Log.d("drink", "currentUserId: " + currentUserId);
+        drinkDAO.getDrinksByUserId(currentUserId, new DrinkDAO.DrinkListCallback() {
+            @Override
+            public void onDrinkListLoaded(List<Drink> drinks) {
+                Log.d("drink", "Drinks created by user: " + drinks.size());
+                view.showFavoriteDrinkCreateByUserId(drinks); // Hiển thị lên UI
+            }
+
+            @Override
+            public void onError(Exception e) {
+                DialogHelper.showAlertDialog(((Fragment) view).requireActivity(),
+                        "Error", e.getMessage(),
+                        HelperDialog.DialogType.ERROR);
+            }
+        });
     }
-
-
 }
