@@ -34,6 +34,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
 
 
     private boolean isFavorite = false;
+    private boolean isFavoriteProcessing = false;
     private Favorite currentFavorite;
     private final String currentUserId;
     private final List<String> commentList = new ArrayList<>();
@@ -161,16 +162,23 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         });
     }
 
+
     @Override
     public void toggleFavorite(Drink drink) {
-        if (drink == null || view == null) return;
+        if (drink == null || view == null || isFavoriteProcessing) return;
+
+        isFavoriteProcessing = true;
 
         if (isFavorite && currentFavorite != null) {
             favoriteDAO.deleteFavorite(currentFavorite.getUuid(), unused -> {
                 isFavorite = false;
                 currentFavorite = null;
+                isFavoriteProcessing = false;
                 view.updateFavoriteIcon(false);
-            }, e -> view.showError(e.getMessage()));
+            }, e -> {
+                isFavoriteProcessing = false;
+                view.showError(e.getMessage());
+            });
         } else {
             Favorite favorite = new Favorite();
             favorite.setUserId(currentUserId);
@@ -180,10 +188,15 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
             favoriteDAO.addFavorite(favorite, unused -> {
                 isFavorite = true;
                 currentFavorite = favorite;
+                isFavoriteProcessing = false;
                 view.updateFavoriteIcon(true);
-            }, e -> view.showError(e.getMessage()));
+            }, e -> {
+                isFavoriteProcessing = false;
+                view.showError(e.getMessage());
+            });
         }
     }
+
 
     @Override
     public void shareDrink(Drink drink) {
