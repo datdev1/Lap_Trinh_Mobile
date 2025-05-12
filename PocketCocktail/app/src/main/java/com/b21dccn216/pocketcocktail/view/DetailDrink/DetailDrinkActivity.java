@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -18,6 +19,7 @@ import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.databinding.ActivityDetailDrinkBinding;
 import com.b21dccn216.pocketcocktail.databinding.DialogAddReviewBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.model.Review;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.ReviewAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.SimilarDrinkAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
@@ -129,6 +131,18 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     @Override
     public void showReviews(List<ReviewWithUserDTO> reviews) {
         reviewAdapter = new ReviewAdapter(reviews);
+        reviewAdapter.setOnReviewLongClickListener((review, user) -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Review options")
+                    .setItems(new String[]{"Edit", "Delete"}, (dialog, which) -> {
+                        if (which == 0) {
+                            presenter.onEditReviewClicked(review);
+                        } else {
+                            presenter.onDeleteReviewClicked(review);
+                        }
+                    })
+                    .show();
+        });
         binding.commentsRecyclerView.setAdapter(reviewAdapter);
         binding.commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -144,12 +158,22 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     }
 
     @Override
-    public void showAddReviewDialog(String drinkId) {
+    public void showAddReviewDialog(String drinkId, @Nullable Review review) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(this);
         DialogAddReviewBinding dialogBinding = DialogAddReviewBinding.inflate(inflater);
         builder.setView(dialogBinding.getRoot());
         AlertDialog dialog = builder.create();
+
+        if (review != null) {
+            dialogBinding.commentEditText.setText(review.getComment());
+            dialogBinding.commentRatingBar.setRating((float) review.getRate());
+            dialogBinding.submitButton.setText("Update");
+        }
+
+        dialogBinding.characterCount.setText(
+                dialogBinding.commentEditText.getText().length() + " / 4000"
+        );
 
         dialogBinding.commentEditText.addTextChangedListener(new TextWatcher() {
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -170,10 +194,20 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
                 return;
             }
 
-            presenter.submitReview(comment, drinkId, rating);
+            if (review == null) {
+                presenter.submitReview(comment, drinkId, rating);
+            } else {
+                presenter.updateReview(comment, drinkId, rating, review);
+            }
+
             dialog.dismiss();
         });
 
         dialog.show();
+    }
+
+    @Override
+    public void showMessage(String message) {
+
     }
 }
