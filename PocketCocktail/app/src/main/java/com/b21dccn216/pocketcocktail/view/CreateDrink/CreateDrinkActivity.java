@@ -31,6 +31,8 @@ import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.b21dccn216.pocketcocktail.model.Recipe;
+import com.b21dccn216.pocketcocktail.model.User;
+import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -244,6 +246,13 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
             return;
         }
 
+        // Kiểm tra người dùng đã đăng nhập chưa
+        User currentUser = SessionManager.getInstance().getUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "Vui lòng đăng nhập để thêm đồ uống", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // Tạo đối tượng Drink
         Drink drink = new Drink();
         drink.generateUUID();
@@ -252,6 +261,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         drink.setInstruction(instructions);
         drink.setRate(rating);
         drink.setCategoryId(category);
+        drink.setUserId(currentUser.getUuid()); // Lấy userId từ user hiện tại trong SessionManager
 
         // Sử dụng DrinkDAO để lưu đồ uống và ảnh
         drinkDAO.addDrinkWithImage(this, drink, selectedImageUri,
