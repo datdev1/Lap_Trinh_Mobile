@@ -42,6 +42,9 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     private IngredientAdapter ingredientAdapter;
 
     private Category choosenCategory;
+
+    private Ingredient ingredient;
+
     private List<Ingredient> choosenIngredientList = new ArrayList<>();
     private String searchName = "";
 
@@ -71,8 +74,9 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             Log.e("Category", category.toString());
             presenter.loadDrinksByCategory(category.getUuid());
             presenter.loadIngredients();
+
             choosenCategory = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
-            Ingredient ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
+            ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
             if (ingredient != null) {
                 choosenIngredientList.add(ingredient);
             }
@@ -153,6 +157,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             }
         });
     }
+
     private void setUpDrinkRecycler(){
         drinkAdapter = new DrinkAdapter(this, drink -> {
             Intent intent = new Intent(this, DetailDrinkActivity.class);
@@ -184,7 +189,11 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             String query = binding.searchEditText.getText().toString();
             Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
             if (category != null) {
-                presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
+                if (selectedIngredients == null || selectedIngredients.isEmpty()) {
+                    presenter.loadDrinksByCategory(category.getUuid());
+                } else {
+                    presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
+                }
             }
         });
 
