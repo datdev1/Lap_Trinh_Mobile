@@ -1,5 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Search;
 
+import android.util.Log;
+
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
 import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.dao.IngredientDAO;
