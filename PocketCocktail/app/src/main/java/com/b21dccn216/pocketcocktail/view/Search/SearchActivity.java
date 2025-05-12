@@ -88,6 +88,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         int horizontalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_spacing);
         int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
 
+
         binding.drinksRecyclerView.addItemDecoration(
                 new GridSpacingItemDecoration(2, horizontalSpacing, verticalSpacing, true)
         );
