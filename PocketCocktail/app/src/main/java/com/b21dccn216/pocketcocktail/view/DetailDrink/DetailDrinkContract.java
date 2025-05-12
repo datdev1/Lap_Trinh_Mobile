@@ -20,10 +20,12 @@ public interface DetailDrinkContract {
         void showAddReviewSuccess();
         void showAddReviewError(String message);
         void showAddReviewDialog(String drinkId, Review review);
+        void showError(String message);
     }
 
     interface Presenter extends BaseContract.Presenter<View> {
         void loadDrinkDetails(Drink drink);
+        void loadDrinkById(String drinkId);
         void checkFavorite(String drinkId);
         void toggleFavorite(Drink drink);
         void shareDrink(Drink drink);

@@ -1,5 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Search;
 
+import android.util.Log;
+
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
 import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.dao.IngredientDAO;
@@ -59,7 +61,7 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
     }
     @Override
     public void searchDrinks(String categoryId, String query, List<String> ingredientIds) {
-        view.showLoading(); // Gợi ý: luôn show loading trước khi xử lý
+        view.showLoading();
         drinkDAO.searchDrinkTotal(query, categoryId, ingredientIds, 100, new DrinkDAO.DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinks) {
