@@ -28,16 +28,13 @@ public class ImageDAO {
     public static String ImageDaoFolderForCategory = "ingredient";
 
     private static final String IMGUR_CLIENT_ID = "af84fe7b3e738e6";
-    private static final String IMGUR_CLIENT_SECRET = "1e5be60ad5fc5ed7e2e26f1f6970a69c24ce3d9a";
+    private static final String IMGUR_CLIENT_SECRET = "1e5be60ad5fc5ed7e2e26f1f6970a69c24ce3d9a"; // Add your client secret here
     private static final String IMGUR_UPLOAD_URL = "https://api.imgur.com/3/image";
     private static final String IMGUR_DELETE_URL = "https://api.imgur.com/3/image/";
     private static final String IMGUR_TOKEN_URL = "https://api.imgur.com/oauth2/token";
-    private static final String IMGUR_ALBUM_URL = "https://api.imgur.com/3/album/";
-    private static final String IMGUR_ALBUM_CREATE_URL = "https://api.imgur.com/3/album";
     
     private String accessToken;
     private final OkHttpClient client;
-    private String albumId; // Store the album ID
 
     public interface UploadCallback {
         void onSuccess(String imageUrl);
@@ -54,54 +51,8 @@ public class ImageDAO {
         void onFailure(Exception e);
     }
 
-    public interface AlbumCallback {
-        void onSuccess(String albumId);
-        void onFailure(Exception e);
-    }
-
     public ImageDAO() {
         client = new OkHttpClient();
-    }
-
-    public void createAlbum(String title, String description, AlbumCallback callback) {
-        if (accessToken == null) {
-            callback.onFailure(new IllegalStateException("Not authenticated. Call authenticate() first."));
-            return;
-        }
-
-        RequestBody requestBody = new FormBody.Builder()
-                .add("title", title)
-                .add("description", description)
-                .build();
-
-        Request request = new Request.Builder()
-                .url(IMGUR_ALBUM_CREATE_URL)
-                .header("Authorization", "Bearer " + accessToken)
-                .post(requestBody)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    callback.onFailure(new IOException("Album creation failed: " + response));
-                    return;
-                }
-
-                try {
-                    JSONObject json = new JSONObject(response.body().string());
-                    albumId = json.getJSONObject("data").getString("id");
-                    callback.onSuccess(albumId);
-                } catch (JSONException e) {
-                    callback.onFailure(e);
-                }
-            }
-        });
     }
 
     public void authenticate(String refreshToken, AuthCallback callback) {
@@ -152,17 +103,11 @@ public class ImageDAO {
             byte[] imageBytes = getBytes(inputStream);
             String base64Image = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 
-            FormBody.Builder formBuilder = new FormBody.Builder()
+            RequestBody requestBody = new FormBody.Builder()
                     .add("image", base64Image)
                     .add("type", "base64")
-                    .add("title", title);
-
-            // Add album ID if available
-            if (albumId != null) {
-                formBuilder.add("album", albumId);
-            }
-
-            RequestBody requestBody = formBuilder.build();
+                    .add("title", title)
+                    .build();
 
             Request request = new Request.Builder()
                     .url(IMGUR_UPLOAD_URL)
@@ -253,12 +198,5 @@ public class ImageDAO {
         }
 
         return byteBuffer.toByteArray();
-    }
-
-    public String getAlbumUrl() {
-        if (albumId != null) {
-            return "https://imgur.com/a/" + albumId;
-        }
-        return null;
     }
 }

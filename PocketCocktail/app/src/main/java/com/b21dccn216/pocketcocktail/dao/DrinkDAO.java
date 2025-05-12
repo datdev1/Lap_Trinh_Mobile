@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 public class DrinkDAO {
     private static final String COLLECTION_NAME = "drink";
@@ -30,6 +31,10 @@ public class DrinkDAO {
     private final CollectionReference drinkRef;
 
     private final ImageDAO imageDAO;
+    private static final String IMGUR_REFRESH_TOKEN = "2396b095b3402713d6dd7895146265c06f22fc71";
+    private boolean isAuthenticated = false;
+    private final CountDownLatch authLatch = new CountDownLatch(1);
+
     public static final String ERROR_USER_NOT_AUTH = "User not authenticated";
 
     public DrinkDAO() {
@@ -37,6 +42,33 @@ public class DrinkDAO {
         drinkRef = db.collection(COLLECTION_NAME);
         Log.d("DrinkDAO", "Initialized with collection: " + COLLECTION_NAME);
         imageDAO = new ImageDAO();
+        authenticateImgur();
+    }
+
+    private void authenticateImgur() {
+        imageDAO.authenticate(IMGUR_REFRESH_TOKEN, new ImageDAO.AuthCallback() {
+            @Override
+            public void onSuccess() {
+                Log.d("DrinkDAO", "Imgur authentication successful");
+                isAuthenticated = true;
+                authLatch.countDown();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("DrinkDAO", "Imgur authentication failed: " + e.getMessage());
+                isAuthenticated = false;
+                authLatch.countDown();
+            }
+        });
+    }
+
+    private void waitForAuthentication() {
+        try {
+            authLatch.await();
+        } catch (InterruptedException e) {
+            Log.e("DrinkDAO", "Authentication wait interrupted", e);
+        }
     }
 
     private Map<String, Object> convertDrinkToMap(Drink drink) {
@@ -105,8 +137,14 @@ public class DrinkDAO {
     public void addDrinkWithImage(Context context, Drink drink, Uri imageUri,
                                   OnSuccessListener<Void> onSuccess,
                                   OnFailureListener onFailure) {
+        waitForAuthentication();
+        if (!isAuthenticated) {
+            onFailure.onFailure(new Exception("Imgur authentication failed"));
+            return;
+        }
+
         String title = ImageDAO.ImageDaoFolderForDrink + "_" + drink.getName() + "_" + drink.getUuid();
-        new ImageDAO().uploadImageToImgur(context, imageUri, title, new ImageDAO.UploadCallback() {
+        imageDAO.uploadImageToImgur(context, imageUri, title, new ImageDAO.UploadCallback() {
             @Override
             public void onSuccess(String imageUrl) {
                 drink.generateUUID();
@@ -136,31 +174,96 @@ public class DrinkDAO {
 
     public void updateDrinkWithImage(Context context, Drink updatedDrink, @Nullable Uri newImageUri,
                                      OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        waitForAuthentication();
+        if (!isAuthenticated) {
+            onFailure.onFailure(new Exception("Imgur authentication failed"));
+            return;
+        }
+
         if (newImageUri != null) {
-            String title = ImageDAO.ImageDaoFolderForDrink + "_" + updatedDrink.getName() + "_" + updatedDrink.getUuid();
-            new ImageDAO().uploadImageToImgur(context, newImageUri, title, new ImageDAO.UploadCallback() {
-                @Override
-                public void onSuccess(String imageUrl) {
-                    updatedDrink.setImage(imageUrl);
-                    Map<String, Object> data = convertDrinkToMap(updatedDrink);
+            // First delete the old image if it exists
+            if (updatedDrink.getImage() != null && !updatedDrink.getImage().isEmpty()) {
+                imageDAO.deleteImageFromImgur(updatedDrink.getImage(), new ImageDAO.DeleteCallback() {
+                    @Override
+                    public void onSuccess() {
+                        // After deleting old image, upload new one
+                        uploadNewImage(context, updatedDrink, newImageUri, onSuccess, onFailure);
+                    }
 
-                    drinkRef.document(updatedDrink.getUuid())
-                            .set(data)
-                            .addOnSuccessListener(onSuccess)
-                            .addOnFailureListener(onFailure);
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-                    onFailure.onFailure(e);
-                }
-            });
+                    @Override
+                    public void onFailure(Exception e) {
+                        // Even if delete fails, continue with new image upload
+                        Log.e("DrinkDAO", "Failed to delete old image for drink " + updatedDrink.getUuid() + ": " + e.getMessage());
+                        uploadNewImage(context, updatedDrink, newImageUri, onSuccess, onFailure);
+                    }
+                });
+            } else {
+                // If no old image, just upload new one
+                uploadNewImage(context, updatedDrink, newImageUri, onSuccess, onFailure);
+            }
         } else {
             updateDrink(updatedDrink, onSuccess, onFailure);
         }
     }
 
+    private void uploadNewImage(Context context, Drink updatedDrink, Uri newImageUri,
+                              OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        String title = ImageDAO.ImageDaoFolderForDrink + "_" + updatedDrink.getName() + "_" + updatedDrink.getUuid();
+        imageDAO.uploadImageToImgur(context, newImageUri, title, new ImageDAO.UploadCallback() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                updatedDrink.setImage(imageUrl);
+                Map<String, Object> data = convertDrinkToMap(updatedDrink);
+
+                drinkRef.document(updatedDrink.getUuid())
+                        .set(data)
+                        .addOnSuccessListener(onSuccess)
+                        .addOnFailureListener(onFailure);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
+    }
+
     public void deleteDrink(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        waitForAuthentication();
+        if (!isAuthenticated) {
+            onFailure.onFailure(new Exception("Imgur authentication failed"));
+            return;
+        }
+
+        // First get the drink to get its image URL
+        drinkRef.document(uuid).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Drink drink = convertDocumentToDrink(documentSnapshot);
+                    if (drink != null && drink.getImage() != null && !drink.getImage().isEmpty()) {
+                        // Delete the image first
+                        imageDAO.deleteImageFromImgur(drink.getImage(), new ImageDAO.DeleteCallback() {
+                            @Override
+                            public void onSuccess() {
+                                // After image is deleted, delete the drink document
+                                deleteDrinkDocument(uuid, onSuccess, onFailure);
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                // Even if image deletion fails, continue with drink deletion
+                                Log.e("DrinkDAO", "Failed to delete image for drink " + uuid + ": " + e.getMessage());
+                                deleteDrinkDocument(uuid, onSuccess, onFailure);
+                            }
+                        });
+                    } else {
+                        // If no image, just delete the drink
+                        deleteDrinkDocument(uuid, onSuccess, onFailure);
+                    }
+                })
+                .addOnFailureListener(onFailure);
+    }
+
+    private void deleteDrinkDocument(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         drinkRef.document(uuid)
                 .delete()
                 .addOnSuccessListener(onSuccess)

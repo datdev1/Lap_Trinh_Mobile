@@ -44,8 +44,6 @@ public class UserDAO {
             public void onSuccess() {
                 Log.d("UserDAO", "Imgur authentication successful");
                 isAuthenticated = true;
-                // Create album after successful authentication
-                createImgurAlbum();
                 authLatch.countDown();
             }
 
@@ -54,21 +52,6 @@ public class UserDAO {
                 Log.e("UserDAO", "Imgur authentication failed: " + e.getMessage());
                 isAuthenticated = false;
                 authLatch.countDown();
-            }
-        });
-    }
-
-    private void createImgurAlbum() {
-        imageDAO.createAlbum("PocketCocktail Images", "Images uploaded from PocketCocktail app", new ImageDAO.AlbumCallback() {
-            @Override
-            public void onSuccess(String albumId) {
-                Log.d("UserDAO", "Album created successfully. Album ID: " + albumId);
-                Log.d("UserDAO", "Album URL: " + imageDAO.getAlbumUrl());
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Log.e("UserDAO", "Failed to create album: " + e.getMessage());
             }
         });
     }
