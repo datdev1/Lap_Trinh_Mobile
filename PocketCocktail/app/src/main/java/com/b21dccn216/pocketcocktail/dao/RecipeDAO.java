@@ -42,7 +42,9 @@ public class RecipeDAO {
         recipe.setUuid(doc.getString("uuid"));
         recipe.setDrinkId(doc.getString("drinkId"));
         recipe.setIngredientId(doc.getString("ingredientId"));
-        recipe.setAmount(doc.getDouble("amount"));
+
+        Double amount = doc.getDouble("amount");
+        recipe.setAmount(amount != null ? amount.floatValue() : 0);
         
         Timestamp createdAt = doc.getTimestamp("createdAt");
         if (createdAt != null) {
@@ -177,4 +179,6 @@ public class RecipeDAO {
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
     }
+
+
 } 

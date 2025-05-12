@@ -95,7 +95,9 @@ public class DrinkDAO {
         drink.setCategoryId(doc.getString("categoryId"));
         drink.setInstruction(doc.getString("instruction"));
         drink.setDescription(doc.getString("description"));
-        drink.setRate(doc.getDouble("rate"));
+
+        Double rate = doc.getDouble("rate");
+        drink.setRate(rate != null ? rate : 0.0);
         
         Timestamp createdAt = doc.getTimestamp("createdAt");
         if (createdAt != null) {
@@ -318,6 +320,22 @@ public class DrinkDAO {
                 .addOnFailureListener(callback::onError);
     }
 
+    public void getDrinksByUserId(String userId, DrinkListCallback callback) {
+        drinkRef.whereEqualTo("userId", userId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Drink> drinks = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Drink drink = convertDocumentToDrink(doc);
+                        if (drink != null) {
+                            drinks.add(drink);
+                        }
+                    }
+                    Log.e("load Drink", "getAllDrinks: " + drinks);
+                    callback.onDrinkListLoaded(drinks);
+                })
+                .addOnFailureListener(callback::onError);
+    }
 
     public void getDrinksByCategoryIdWithLimit(String categoryId, int limit, DrinkListCallback callback) {
         drinkRef.whereEqualTo("categoryId", categoryId)
@@ -534,6 +552,31 @@ public class DrinkDAO {
 
         return matches;
     }
+
+    public void searchDrinksByCategory(String query, @Nullable String categoryId, DrinkListCallback callback) {
+        String searchQuery = query.toLowerCase();
+        Log.d("DrinkDAO", "Searching with query: " + searchQuery);
+
+        drinkRef.whereEqualTo("categoryId", categoryId)
+                .whereArrayContains("name", query)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Drink> filteredDrinks = new ArrayList<>();
+
+                    Log.d("DrinkDAO", "Total documents: " + queryDocumentSnapshots.size());
+
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        Drink drink = convertDocumentToDrink(document);
+                        filteredDrinks.add(drink);
+                    }
+                    callback.onDrinkListLoaded(filteredDrinks);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("DrinkDAO", "Error searching drinks", e);
+                    callback.onError(e);
+                });
+    }
+
 
     public enum DRINK_FIELD {
         NAME("name"),
