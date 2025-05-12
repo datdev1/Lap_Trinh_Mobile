@@ -59,6 +59,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
     private DrinkDAO drinkDAO;
     private IngredientDAO ingredientDAO;
     private List<Ingredient> ingredients;
+    private List<Category> categories;
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +114,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         categoryDAO.getAllCategorys(new CategoryDAO.CategoryListCallback() {
             @Override
             public void onCategoryListLoaded(List<Category> categories) {
+                CreateDrinkActivity.this.categories = categories;
                 List<String> categoryNames = new ArrayList<>();
                 for (Category category : categories) {
                     categoryNames.add(category.getName());
@@ -239,10 +241,15 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         String description = etDescription.getText().toString().trim();
         String instructions = etInstruction.getText().toString().trim();
         float rating = ratingBar.getRating();
-        String category = spCategory.getSelectedItem().toString();
+        int categoryPosition = spCategory.getSelectedItemPosition();
 
         if (name.isEmpty() || description.isEmpty() || instructions.isEmpty() || selectedImageUri == null) {
             Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (categoryPosition <= 0) {
+            Toast.makeText(this, "Vui lòng chọn danh mục", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -253,6 +260,9 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
             return;
         }
 
+        // Get the selected category
+        Category selectedCategory = categories.get(categoryPosition - 1);
+
         // Tạo đối tượng Drink
         Drink drink = new Drink();
         drink.generateUUID();
@@ -260,8 +270,8 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         drink.setDescription(description);
         drink.setInstruction(instructions);
         drink.setRate(rating);
-        drink.setCategoryId(category);
-        drink.setUserId(currentUser.getUuid()); // Lấy userId từ user hiện tại trong SessionManager
+        drink.setCategoryId(selectedCategory.getUuid()); // Sử dụng UUID của category
+        drink.setUserId(currentUser.getUuid());
 
         // Sử dụng DrinkDAO để lưu đồ uống và ảnh
         drinkDAO.addDrinkWithImage(this, drink, selectedImageUri,
