@@ -90,24 +90,13 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String query = s.toString().trim();
 
-                if(category.getUuid() != null){
-                    if (!query.isEmpty()) {
-                        presenter.searchDrinks(category.getUuid(),query,null);
-                        binding.clearButton.setVisibility(View.VISIBLE);
-                    } else {
-                        presenter.loadIngredients();
-                        binding.clearButton.setVisibility(View.GONE);
-                    }
+                List<String> selectedIngredientIds = ingredientAdapter.getSelectedIngredientIds();
+                if (category != null) {
+                    presenter.searchDrinks(category.getUuid(), query, selectedIngredientIds);
+                } else {
+                    presenter.searchDrinks(null, query, selectedIngredientIds);
                 }
-                else{
-                    if (!query.isEmpty()) {
-                        presenter.searchDrinks(null,query,null);
-                        binding.clearButton.setVisibility(View.VISIBLE);
-                    } else {
-                        presenter.loadIngredients();
-                        binding.clearButton.setVisibility(View.GONE);
-                    }
-                }
+                binding.clearButton.setVisibility(query.isEmpty() ? View.GONE : View.VISIBLE);
             }
 
             @Override
@@ -116,7 +105,11 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
         binding.clearButton.setOnClickListener(v -> {
             binding.searchEditText.setText("");
-            presenter.loadDrinksByCategory(category.getUuid());
+            if (category != null) {
+                presenter.loadDrinksByCategory(category.getUuid());
+            } else {
+                presenter.loadDrinks();
+            }
             // Hide keyboard
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
@@ -135,13 +128,12 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
                 String query = s.toString().trim();
                 if (!query.isEmpty()) {
                     presenter.searchIngredients(query);
-                    binding.clearIngredientSearch.setVisibility(View.VISIBLE);
-
-
+//                    binding.clearIngredientSearch.setVisibility(View.VISIBLE);
                 } else {
                     presenter.loadIngredients();
-                    binding.clearIngredientSearch.setVisibility(View.GONE);
+//                    binding.clearIngredientSearch.setVisibility(View.GONE);
                 }
+                binding.clearIngredientSearch.setVisibility(query.isEmpty() ? View.GONE : View.VISIBLE);
             }
 
             @Override
@@ -187,14 +179,12 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
     private void setUpIngredientRecycler() {
         ingredientAdapter = new IngredientAdapter(this, selectedIngredients -> {
-            String query = binding.searchEditText.getText().toString();
+            String query = binding.searchEditText.getText().toString().trim();
+
             if (category != null) {
-                if(query.isEmpty() && selectedIngredients.isEmpty()){
-                    presenter.loadDrinksByCategory(category.getUuid());
-                }
-                else {
-                    presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
-                }
+                presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
+            } else {
+                presenter.searchDrinks(null, query, selectedIngredients);
             }
         });
 
