@@ -16,6 +16,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
 import com.b21dccn216.pocketcocktail.databinding.FragmentProfileBinding;
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.User;
 import com.bumptech.glide.Glide;
@@ -168,7 +170,8 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
         setViewCurrentUser();
         isEditting = false;
         setVisibilityEditing(isEditting);
-        Toast.makeText(requireActivity(), "Update success", Toast.LENGTH_SHORT).show();
+        DialogHelper.showAlertDialog(requireContext(),
+                "Update success", "Update information success", HelperDialog.DialogType.SUCCESS  );
     }
 
     @Override
