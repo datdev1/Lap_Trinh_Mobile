@@ -2,6 +2,7 @@ package com.b21dccn216.pocketcocktail.test_database.fragment;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,7 +31,7 @@ public class UserFragment extends BaseModelFragment {
 
     private EditText etUuid, etSaveUuidFromAuthen, etCreatedAt, etUpdatedAt, etName, etEmail, etPassword;
     private Spinner spinnerRole;
-    private Button btnChooseImage, btnSave, btnUpdate, btnDelete;
+    private Button btnChooseImage, btnSave, btnUpdate, btnDelete, btnClear;
     private ImageView ivPreview;
     private ListView lvUsers;
     private UserAdapter adapter;
@@ -72,8 +73,12 @@ public class UserFragment extends BaseModelFragment {
         btnSave = rootView.findViewById(R.id.btnSave);
         btnUpdate = rootView.findViewById(R.id.btnUpdate);
         btnDelete = rootView.findViewById(R.id.btnDelete);
+        btnClear = rootView.findViewById(R.id.btnClear);
         ivPreview = rootView.findViewById(R.id.ivPreview);
         lvUsers = rootView.findViewById(R.id.lvUsers);
+
+        // Initially enable email and password for new user creation
+        setEmailPasswordEnabled(true);
 
         users = new ArrayList<>();
         adapter = new UserAdapter(getContext(), users);
@@ -99,17 +104,24 @@ public class UserFragment extends BaseModelFragment {
         spinnerRole.setAdapter(roleAdapter);
     }
 
+    private void setEmailPasswordEnabled(boolean enabled) {
+        etEmail.setEnabled(enabled);
+        etPassword.setEnabled(enabled);
+    }
+
     private void setupListeners() {
         btnChooseImage.setOnClickListener(v -> openImagePicker());
         btnSave.setOnClickListener(v -> saveItem());
         btnUpdate.setOnClickListener(v -> updateItem());
         btnDelete.setOnClickListener(v -> deleteItem());
+        btnClear.setOnClickListener(v -> clearInputs());
 
         lvUsers.setOnItemClickListener((parent, view, position, id) -> {
             selectedUser = users.get(position);
             fillInputs(selectedUser);
             btnUpdate.setEnabled(true);
             btnDelete.setEnabled(true);
+            setEmailPasswordEnabled(false); // Disable email and password when user is selected
         });
     }
 
@@ -168,6 +180,9 @@ public class UserFragment extends BaseModelFragment {
         ivPreview.setImageResource(R.drawable.cocktail_logo);
         btnUpdate.setEnabled(false);
         btnDelete.setEnabled(false);
+        setEmailPasswordEnabled(true); // Enable email and password for new user
+        lvUsers.clearChoices(); // Clear selection in list
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -224,7 +239,10 @@ public class UserFragment extends BaseModelFragment {
                         clearInputs();
                         loadData();
                     },
-                    e -> showToast("Error adding user: " + e.getMessage()));
+                    e -> {
+                        showToast("Error adding user: " + e.getMessage());
+                        Log.d("UserDAO", "Error adding user: " + e.getMessage());
+                    });
         } else {
             userDAO.addUser(user,
                     aVoid -> {
@@ -232,7 +250,10 @@ public class UserFragment extends BaseModelFragment {
                         clearInputs();
                         loadData();
                     },
-                    e -> showToast("Error adding user: " + e.getMessage()));
+                    e -> {
+                        showToast("Error adding user: " + e.getMessage());
+                        Log.d("UserDAO", "Error adding user: " + e.getMessage());
+                    });
         }
     }
 
