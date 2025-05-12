@@ -19,16 +19,12 @@ import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.databinding.ActivityDetailDrinkBinding;
 import com.b21dccn216.pocketcocktail.databinding.DialogAddReviewBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
-import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.b21dccn216.pocketcocktail.model.Review;
-import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.IngredientAmountAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.ReviewAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.SimilarDrinkAdapter;
-import com.b21dccn216.pocketcocktail.view.DetailDrink.model.IngredientWithAmountDTO;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,9 +32,6 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     private ActivityDetailDrinkBinding binding;
     private ReviewAdapter reviewAdapter;
     private SimilarDrinkAdapter similarDrinkAdapter;
-    private IngredientAmountAdapter ingredientAmountAdapter;
-    private List<IngredientWithAmountDTO> ingredientWithAmountDTOList = new ArrayList<>();
-
     public static final String EXTRA_DRINK_OBJECT = "drink_id";
 
     @Override
@@ -58,15 +51,9 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         binding = ActivityDetailDrinkBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        ingredientAmountAdapter = new IngredientAmountAdapter(
-                getApplicationContext(), ingredientWithAmountDTOList
-        );
-
-        binding.ingredientRecycler.setAdapter(ingredientAmountAdapter);
-        binding.ingredientRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
-
 
         binding.instructionsLayout.removeAllViews();
+        binding.ingredientsLayout.removeAllViews();
         Drink drink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_OBJECT);
         if (drink != null) {
             presenter.loadDrinkDetails(drink);
@@ -105,10 +92,9 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     }
 
     @Override
-    public void showIngredient(List<IngredientWithAmountDTO> list) {
-        ingredientWithAmountDTOList.clear();
-        ingredientWithAmountDTOList.addAll(list);
-        ingredientAmountAdapter.notifyDataSetChanged();
+    public void showIngredient(String ingredientText) {
+        TextView textView = createBulletTextView(ingredientText);
+        binding.ingredientsLayout.addView(textView);
     }
 
     @Override
