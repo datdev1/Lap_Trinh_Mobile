@@ -44,7 +44,7 @@ public class IngredientSelectionAdapter extends RecyclerView.Adapter<IngredientS
         Ingredient ingredient = ingredients.get(position);
         holder.tvName.setText(ingredient.getName());
         holder.tvDescription.setText(ingredient.getDescription());
-        holder.tvUnit.setText("Đơn vị: " + ingredient.getUnit());
+        holder.tvUnit.setText("Unit: " + ingredient.getUnit());
 
         if (ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
             Glide.with(holder.itemView.getContext())

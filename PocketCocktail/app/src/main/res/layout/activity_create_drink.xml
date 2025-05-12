@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tạo công thức mới"
+            android:text="Create New Recipe"
             android:textSize="24sp"
             android:textStyle="bold"
             android:fontFamily="@font/poppins_bold"
@@ -28,7 +28,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tên đồ uống"
+            android:text="Drink Name"
             android:textColor="@color/brown"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
@@ -49,15 +49,15 @@
                 android:id="@+id/etDrinkName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nhập tên đồ uống"
+                android:hint="Enter drink name"
                 android:textColor="@color/brown"
-                android:fontFamily="@font/poppins_regular"/>
+                android:fontFamily="@font/poppins_medium"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ảnh đồ uống"
+            android:text="Drink Image"
             android:textColor="@color/brown"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
@@ -75,6 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
+                android:src="@drawable/cocktail_logo"
                 android:background="@drawable/border_image"/>
         </androidx.cardview.widget.CardView>
 
@@ -82,7 +83,7 @@
             android:id="@+id/btnAddImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chọn ảnh"
+            android:text="Choose Image"
             android:textColor="@color/brown"
             android:fontFamily="@font/poppins_medium"
             app:cornerRadius="16dp"
@@ -93,7 +94,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Danh mục"
+            android:text="Category"
             android:textColor="@color/brown"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
@@ -102,7 +103,7 @@
             android:id="@+id/spCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/poppins_medium"
             android:background="@drawable/spinner_background"
             android:padding="12dp"
             android:layout_marginBottom="16dp"/>
@@ -110,7 +111,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Đánh giá"
+            android:text="Rating"
             android:textColor="@color/brown"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
@@ -128,7 +129,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mô tả"
+            android:text="Description"
             android:textColor="@color/brown"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
@@ -149,12 +150,12 @@
                 android:id="@+id/etDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nhập mô tả"
+                android:hint="Enter description"
                 android:inputType="textMultiLine"
                 android:minLines="2"
                 android:gravity="top"
                 android:textColor="@color/brown"
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/poppins_medium"
                 android:scrollbars="vertical"
                 android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -162,7 +163,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hướng dẫn pha chế"
+            android:text="Instructions"
             android:textColor="@color/brown"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
@@ -183,12 +184,12 @@
                 android:id="@+id/etInstruction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nhập hướng dẫn pha chế"
+                android:hint="Enter mixing instructions"
                 android:inputType="textMultiLine"
                 android:minLines="3"
                 android:gravity="top"
                 android:textColor="@color/brown"
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/poppins_medium"
                 android:scrollbars="vertical"
                 android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -196,7 +197,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nguyên liệu"
+            android:text="Ingredients"
             android:textColor="@color/brown"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
@@ -220,7 +221,7 @@
             android:id="@+id/btnAddIngredient"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thêm nguyên liệu"
+            android:text="Add Ingredient"
             android:textColor="@color/brown"
             android:fontFamily="@font/poppins_medium"
             app:cornerRadius="16dp"
@@ -232,7 +233,7 @@
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lưu công thức"
+            android:text="Save Recipe"
             android:textColor="@color/brown"
             android:fontFamily="@font/poppins_medium"
             app:cornerRadius="16dp"
