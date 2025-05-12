@@ -127,7 +127,7 @@ public class DrinkCntFavDAO {
                 .addOnFailureListener(callback::onError);
     }
 
-    public void getTopDrinkCntFavs(int limit, DrinkCntFavListCallback callback) {
+    public void getTopDrinkCntFavourite(int limit, DrinkCntFavListCallback callback) {
         drinkCntFavRef.orderBy("count", Query.Direction.DESCENDING)
                 .limit(limit)
                 .get()

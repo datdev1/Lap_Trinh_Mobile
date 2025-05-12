@@ -2,7 +2,7 @@ package com.b21dccn216.pocketcocktail.view.Main.model;
 
 import com.b21dccn216.pocketcocktail.model.Drink;
 
-public class DrinkWithCategoryDTO{
+public class DrinkWithCategoryDTO {
     private String categoryName;
     private Drink drink;
 

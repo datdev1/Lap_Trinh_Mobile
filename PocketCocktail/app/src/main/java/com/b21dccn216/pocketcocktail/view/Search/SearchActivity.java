@@ -56,10 +56,10 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         if (category != null) {
             Log.e("Category", category.toString());
             presenter.loadDrinksByCategory(category.getUuid());
+            presenter.loadIngredients();
         } else {
             Log.e("Category", "Category is null");
         }
-//        presenter.loadAllIngredients();
     }
 
     private void setupDrinkRecycler() {
@@ -81,25 +81,53 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         });
         drinkAdapter.setDrinks(drinks);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         binding.drinksRecyclerView.setLayoutManager(layoutManager);
         binding.drinksRecyclerView.setAdapter(drinkAdapter);
 
         int horizontalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_spacing);
         int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
 
+
         binding.drinksRecyclerView.addItemDecoration(
-                new GridSpacingItemDecoration(2, horizontalSpacing, verticalSpacing, true)
+                new GridSpacingItemDecoration(3, horizontalSpacing, verticalSpacing, true)
         );
 
-        // Thêm padding để không bị cắt khi scroll
         binding.drinksRecyclerView.setClipToPadding(false);
-        binding.drinksRecyclerView.setPadding(0, 0, 0, verticalSpacing);
+        binding.drinksRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);
     }
 
     @Override
     public void showIngredients(List<Ingredient> ingredients) {
+        ingredientAdapter = new IngredientAdapter(this, selectedIngredients -> {
+            String query = binding.searchEditText.getText().toString();
+            Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
+            if (category != null) {
+                if(ingredients != null){
+                    Log.e("Ingredients",ingredients.toString());
+                }
+                else{
+                    Log.e("Ingredients","ingredients null");
+                }
+//                presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
+            }
+        });
 
+
+        ingredientAdapter.setIngredients(ingredients);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        binding.ingredientsRecyclerView.setLayoutManager(layoutManager);
+        binding.ingredientsRecyclerView.setAdapter(ingredientAdapter);
+
+        int horizontalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_spacing);
+        int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
+
+        binding.ingredientsRecyclerView.addItemDecoration(
+                new GridSpacingItemDecoration(3, horizontalSpacing, verticalSpacing, true)
+        );
+
+        binding.ingredientsRecyclerView.setClipToPadding(false);
+        binding.ingredientsRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);
     }
 
     @Override

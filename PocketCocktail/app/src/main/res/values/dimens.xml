@@ -12,5 +12,6 @@
     <dimen name="margin_8">8dp</dimen>
     <dimen name="recycler_spacing">8dp</dimen>
     <dimen name="recycler_vertical_spacing">12dp</dimen>
+    <dimen name="selected_stroke_width">2dp</dimen>
 
 </resources>
