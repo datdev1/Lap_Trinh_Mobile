@@ -1,8 +1,15 @@
 package com.b21dccn216.pocketcocktail.view.Search;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -52,6 +59,8 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        setUpIngredientRecycler();
+
         Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
         if (category != null) {
             Log.e("Category", category.toString());
@@ -60,10 +69,95 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         } else {
             Log.e("Category", "Category is null");
         }
+
+        //Search drink
+        binding.searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().trim();
+
+                if (!query.isEmpty()) {
+                    presenter.searchIngredients(query);
+                    binding.clearButton.setVisibility(View.VISIBLE);
+                } else {
+                    presenter.loadIngredients(); // Nếu không có gì, load lại toàn bộ
+                    binding.clearButton.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        binding.clearButton.setOnClickListener(v -> {
+            binding.searchEditText.setText("");
+            presenter.loadIngredients();
+            // Hide keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(binding.searchEditText.getWindowToken(), 0);
+            }
+        });
+
+
+        //Search ingredient
+        binding.ingredientSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().trim();
+                if (!query.isEmpty()) {
+                    presenter.searchIngredients(query);
+                    binding.clearIngredientSearch.setVisibility(View.VISIBLE);
+
+
+                } else {
+                    presenter.loadIngredients();
+                    binding.clearIngredientSearch.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        binding.clearIngredientSearch.setOnClickListener(v -> {
+            binding.ingredientSearch.setText("");
+            presenter.loadIngredients();
+            // Hide keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(binding.ingredientSearch.getWindowToken(), 0);
+            }
+        });
     }
 
-    private void setupDrinkRecycler() {
+    private void setUpIngredientRecycler() {
+        ingredientAdapter = new IngredientAdapter(this, selectedIngredients -> {
+            String query = binding.searchEditText.getText().toString();
+            Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
+            if (category != null) {
+//                presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
+            }
+        });
 
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        binding.ingredientsRecyclerView.setLayoutManager(layoutManager);
+        binding.ingredientsRecyclerView.setAdapter(ingredientAdapter);
+        binding.ingredientsRecyclerView.setItemAnimator(null);
+
+        int horizontalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_spacing);
+        int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
+        binding.ingredientsRecyclerView.addItemDecoration(
+                new GridSpacingItemDecoration(3, horizontalSpacing, verticalSpacing, true)
+        );
+        binding.ingredientsRecyclerView.setClipToPadding(false);
+        binding.ingredientsRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);
     }
 
 
@@ -99,35 +193,12 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
     @Override
     public void showIngredients(List<Ingredient> ingredients) {
-        ingredientAdapter = new IngredientAdapter(this, selectedIngredients -> {
-            String query = binding.searchEditText.getText().toString();
-            Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
-            if (category != null) {
-                if(ingredients != null){
-                    Log.e("Ingredients",ingredients.toString());
-                }
-                else{
-                    Log.e("Ingredients","ingredients null");
-                }
-//                presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
-            }
-        });
-
-
+        if (ingredients != null) {
+            Log.e("Ingredients", ingredients.toString());
+        } else {
+            Log.e("Ingredients", "ingredients null");
+        }
         ingredientAdapter.setIngredients(ingredients);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
-        binding.ingredientsRecyclerView.setLayoutManager(layoutManager);
-        binding.ingredientsRecyclerView.setAdapter(ingredientAdapter);
-
-        int horizontalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_spacing);
-        int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
-
-        binding.ingredientsRecyclerView.addItemDecoration(
-                new GridSpacingItemDecoration(3, horizontalSpacing, verticalSpacing, true)
-        );
-
-        binding.ingredientsRecyclerView.setClipToPadding(false);
-        binding.ingredientsRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);
     }
 
     @Override
