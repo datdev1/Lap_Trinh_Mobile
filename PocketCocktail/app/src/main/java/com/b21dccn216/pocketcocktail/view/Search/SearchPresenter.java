@@ -140,20 +140,8 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
             if(!ingredientList.isEmpty()){
 
             }else{
-                //TODO:: Change to get drink by categoryId and search name
-                drinkDAO.getDrinksByCategoryId(choosenCategory.getUuid(), new DrinkDAO.DrinkListCallback() {
-                    @Override
-                    public void onDrinkListLoaded(List<Drink> drinks) {
-                        view.hideLoading();
-                        view.showDrinks(drinks);
-                    }
+                //TODO:: Call drink dao get drink by categoryId and search name
 
-                    @Override
-                    public void onError(Exception e) {
-                        view.hideLoading();
-                        view.showError("Failed to load drinks: " + e.getMessage());
-                    }
-                });
             }
         }else{
             if(!ingredientList.isEmpty()){

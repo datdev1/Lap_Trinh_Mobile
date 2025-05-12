@@ -9,6 +9,7 @@
     android:background="@drawable/s_bottom_sheet_background"
     tools:context=".view.Search.SearchActivity">
 
+    <!-- Main Content Area -->
     <androidx.core.widget.NestedScrollView
         android:layout_marginBottom="80dp"
         android:layout_width="match_parent"
@@ -23,6 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <!-- Title -->
                 <TextView
                     android:id="@+id/title_text"
                     android:layout_width="wrap_content"
@@ -36,6 +38,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <!-- Drinks Search -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/search_card"
                     android:layout_width="match_parent"
@@ -84,6 +87,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
                             android:src="@drawable/s_ic_close"
                             android:visibility="gone"
                             android:contentDescription="@string/clear_search"
@@ -91,6 +95,7 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Drinks RecyclerView -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/drinksRecyclerView"
                     android:layout_width="0dp"
@@ -108,9 +113,7 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-
-
-
+    <!-- Bottom Sheet for Ingredients -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
@@ -125,6 +128,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Pull Indicator -->
             <View
                 android:id="@+id/pull_indicator"
                 android:layout_width="40dp"
@@ -133,6 +137,7 @@
                 android:layout_marginTop="12dp"
                 android:background="@color/text_hint" />
 
+            <!-- Ingredients Title -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -144,6 +149,7 @@
                 android:textSize="32sp"
                 android:textStyle="bold|italic" />
 
+            <!-- Ingredients Search -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/ingredients_search_card"
                 android:layout_width="match_parent"
@@ -182,9 +188,21 @@
                         android:textColor="@color/text_primary_y"
                         android:textColorHint="@color/text_hint"
                         android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/clear_ingredient_search"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="16dp"
+                        android:src="@drawable/s_ic_close"
+                        android:layout_marginEnd="16dp"
+                        android:visibility="gone"
+                        android:contentDescription="@string/clear_search"
+                        app:tint="@color/text_primary_y" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Ingredients RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/ingredients_recycler_view"
                 android:layout_width="match_parent"
@@ -195,13 +213,14 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="16dp" />
 
+            <!-- Shaker Text -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="24dp"
                 android:gravity="center"
-                android:text="SHAKER"
+                android:text="DUC LOC"
                 android:textColor="@color/text_primary_y"
                 android:textSize="24sp"
                 android:letterSpacing="0.2" />
