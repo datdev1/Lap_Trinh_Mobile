@@ -286,6 +286,7 @@ public class DrinkDAO {
 //                .addOnFailureListener(onFailure);
 //    }
     public void getDrink(String drinkUuid, DrinkDAO.DrinkCallback callback) {
+
         drinkRef.document(drinkUuid).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if(documentSnapshot == null) {

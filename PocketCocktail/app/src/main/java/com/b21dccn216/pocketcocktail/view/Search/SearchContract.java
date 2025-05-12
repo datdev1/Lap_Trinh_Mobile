@@ -1,6 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Search;
 
 import com.b21dccn216.pocketcocktail.base.BaseContract;
+import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
 
@@ -24,5 +25,7 @@ public interface SearchContract {
         void searchDrinks(String categoryId, String query, List<String> ingredientIds);
         void searchIngredients(String query);
         void onDestroy();
+
+        void updateDrinkList(Category choosenCategory, List<Ingredient> ingredientList, String searchName);
     }
 }

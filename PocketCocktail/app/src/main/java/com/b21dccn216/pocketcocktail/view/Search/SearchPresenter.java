@@ -4,6 +4,7 @@ import com.b21dccn216.pocketcocktail.base.BasePresenter;
 import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.dao.IngredientDAO;
 import com.b21dccn216.pocketcocktail.dao.RecipeDAO;
+import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.b21dccn216.pocketcocktail.model.Recipe;
@@ -24,7 +25,6 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
         this.ingredientDAO = new IngredientDAO();
         this.recipeDAO = new RecipeDAO();
     }
-
 
     @Override
     public void loadDrinksByCategory(String categoryId) {
@@ -134,4 +134,21 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
         });
     }
 
+    @Override
+    public void updateDrinkList(Category choosenCategory, List<Ingredient> ingredientList, String searchName) {
+        if(choosenCategory != null && searchName != null){
+            if(!ingredientList.isEmpty()){
+
+            }else{
+                //TODO:: Call drink dao get drink by categoryId and search name
+
+            }
+        }else{
+            if(!ingredientList.isEmpty()){
+
+            }else{
+
+            }
+        }
+    }
 }

@@ -64,8 +64,10 @@ public class CenterTopCropImageView extends androidx.appcompat.widget.AppCompatI
         if (drawableWidth * viewHeight > drawableHeight * viewWidth) {
             scale = (float) viewHeight / (float) drawableHeight;
             dx = (viewWidth - drawableWidth * scale) * 0.5f;
+            dy = (viewHeight - drawableHeight * scale) * 0.2f;
         } else {
             scale = (float) viewWidth / (float) drawableWidth;
+            dy = (viewHeight - drawableHeight * scale) * 0.2f;
         }
 
         matrix.setScale(scale, scale);

@@ -147,9 +147,11 @@ public class HomePresenter
             public void onDrinkCntFavListLoaded(List<DrinkCntFav> drinkCntFavs) {
                 List<DrinkWithFavCount> list = new ArrayList<>();
                 for (DrinkCntFav drinkCntFav : drinkCntFavs) {
+                    Log.d("datdev1", "1. getRecommendDrinkList: " + drinkCntFav.getDrinkId());
                     drinkDAO.getDrink(drinkCntFav.getDrinkId(), new DrinkDAO.DrinkCallback() {
                         @Override
                         public void onDrinkLoaded(Drink drink) {
+                            Log.d("datdev1", "2. onDrinkLoaded: " + drink.getUuid() + " Name: " + drink.getName());
                             list.add(new DrinkWithFavCount(drink, drinkCntFav.getCount()));
                             view.showRecommendDrinkList(list);
                         }
