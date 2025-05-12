@@ -32,6 +32,7 @@
     <color name="background_secondary">#F7F7F7</color>    <!-- Nền phụ -->
     <color name="card_background">#FFFFFF</color>         <!-- Nền card -->
     <color name="dialog_background">#FFFFFF</color>       <!-- Nền dialog -->
+
     
     <!-- Màu nút bấm -->
     <color name="button_primary">#4ECCA3</color>          <!-- Nút chính -->
@@ -84,6 +85,15 @@
 
 
     <color name="brown">#8B4513</color>
+
+    <!--Search-->
+    <color name="pink_background">#FFF0F4</color>
+    <color name="pink_primary">#F8BBD0</color>
+    <color name="pink_secondary">#F48FB1</color>
+    <color name="pink_light">#FFE0EB</color>
+    <color name="text_primary_y">#4A4A4A</color>
+    <color name="text_hint">#9E9E9E</color>
+    <color name="transparent_t">#00000000</color>
 
     <color name="actionBarColor">#FFD5E5</color>
 

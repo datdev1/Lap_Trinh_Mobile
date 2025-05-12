@@ -22,7 +22,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View> implements DetailDrinkContract.Presenter {
+public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View>
+        implements DetailDrinkContract.Presenter {
 
     //DAO
     private final FavoriteDAO favoriteDAO;

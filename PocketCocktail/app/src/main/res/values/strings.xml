@@ -16,4 +16,5 @@
     <string name="ng_ky">Sign up</string>
     <string name="login">Login</string>
     <string name="signup">Sign up</string>
+    <string name="clear_search">Clear search</string>
 </resources>
