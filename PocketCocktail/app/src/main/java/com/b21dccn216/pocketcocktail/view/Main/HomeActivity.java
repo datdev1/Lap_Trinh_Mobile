@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -29,6 +31,7 @@ import com.b21dccn216.pocketcocktail.view.Login.LoginContract;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.CocktailHomeItemAdapter;
 import com.b21dccn216.pocketcocktail.databinding.ActivityHomeBinding;
 import com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity;
+import com.b21dccn216.pocketcocktail.view.Search.SearchActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -109,10 +112,11 @@ public class HomeActivity extends BaseAppCompatActivity<BaseContract.View, BaseC
         binding.bottomNavigationView.getMenu().findItem(R.id.nav_admin).setVisible(isAdmin);
 
         //toolbar
-        setSupportActionBar(binding.toolbar);
+        //setSupportActionBar(binding.toolbar);
         appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_discover, R.id.nav_favorite, R.id.nav_profile
-        ).build();
+                R.id.nav_home, R.id.nav_discover, R.id.nav_favorite, R.id.nav_profile)
+                .build();
+
         //bottom navigation
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_container);
@@ -130,20 +134,22 @@ public class HomeActivity extends BaseAppCompatActivity<BaseContract.View, BaseC
                 startActivity(intent);
                 return false;
             }else{
-                if(item.getItemId() != R.id.nav_home){
-                    binding.fabCreateDrink.setVisibility(View.GONE);
-                }else{
-                    binding.fabCreateDrink.setVisibility(View.VISIBLE);
-                }
                 NavigationUI.onNavDestinationSelected(item, navController);
                 return true;
             }
         });
-
-        // Set up FAB click listener
-        binding.fabCreateDrink.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CreateDrinkActivity.class);
-            startActivity(intent);
+        binding.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId() == R.id.nav_add){
+                    Intent intent = new Intent(HomeActivity.this, CreateDrinkActivity.class);
+                    startActivity(intent);
+                }else if(item.getItemId() == R.id.nav_search){
+                    Intent intent = new Intent(HomeActivity.this, SearchActivity.class);
+                    startActivity(intent);
+                }
+                return false;
+            }
         });
     }
 
