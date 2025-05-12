@@ -9,22 +9,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:theme="@style/MyThemeOverlay_Toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:stateListAnimator="@animator/appbar_elevation"
-        app:liftOnScroll="true">
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:theme="@style/MyThemeOverlay_Toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="4dp"
-            app:title="Home"
-            app:menu="@menu/main_toolbar_menu"
-            android:background="@color/actionBarColor"
-            app:titleTextColor="@color/text_on_secondary"/>
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        app:title="Home"
+        app:menu="@menu/main_toolbar_menu"
+        android:background="@color/actionBarColor"
+        app:titleTextColor="@color/text_on_secondary"/>
 
 
     <!-- Fragment Container -->
