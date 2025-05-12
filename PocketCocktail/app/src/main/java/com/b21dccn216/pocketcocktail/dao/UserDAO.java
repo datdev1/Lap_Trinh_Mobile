@@ -123,7 +123,7 @@ public class UserDAO {
     public void addUserWithImage(Context context, User user, Uri imageUri,
                                 OnSuccessListener<Void> onSuccess,
                                 OnFailureListener onFailure) {
-        waitForAuthentication();
+        //waitForAuthentication();
         if (!isAuthenticated) {
             onFailure.onFailure(new Exception("Imgur authentication failed"));
             return;
@@ -247,7 +247,7 @@ public class UserDAO {
 
     public void updateUserWithImage(Context context, User updatedUser, Uri newImageUri,
                                   OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        waitForAuthentication();
+        //waitForAuthentication();
         if (!isAuthenticated) {
             onFailure.onFailure(new Exception("Imgur authentication failed"));
             return;
@@ -297,7 +297,7 @@ public class UserDAO {
     }
 
     public void deleteUser(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        waitForAuthentication();
+        //waitForAuthentication();
         if (!isAuthenticated) {
             onFailure.onFailure(new Exception("Imgur authentication failed"));
             return;

@@ -117,7 +117,7 @@ public class CategoryDAO {
     public void addCategoryWithImage(Context context, Category category, Uri imageUri,
                                      OnSuccessListener<Void> onSuccess,
                                      OnFailureListener onFailure) {
-        waitForAuthentication();
+        //waitForAuthentication();
         if (!isAuthenticated) {
             onFailure.onFailure(new Exception("Imgur authentication failed"));
             return;
@@ -154,7 +154,7 @@ public class CategoryDAO {
 
     public void updateCategoryWithImage(Context context, Category updatedCategory, @Nullable Uri newImageUri,
                                         OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        waitForAuthentication();
+        //waitForAuthentication();
         if (!isAuthenticated) {
             onFailure.onFailure(new Exception("Imgur authentication failed"));
             return;
@@ -209,7 +209,7 @@ public class CategoryDAO {
     }
 
     public void deleteCategory(String id, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        waitForAuthentication();
+        //waitForAuthentication();
         if (!isAuthenticated) {
             onFailure.onFailure(new Exception("Imgur authentication failed"));
             return;

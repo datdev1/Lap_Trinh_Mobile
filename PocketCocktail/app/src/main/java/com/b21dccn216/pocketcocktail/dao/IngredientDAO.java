@@ -118,7 +118,7 @@ public class IngredientDAO {
     public void addIngredientWithImage(Context context, Ingredient ingredient, Uri imageUri,
                                      OnSuccessListener<Void> onSuccess,
                                      OnFailureListener onFailure) {
-        waitForAuthentication();
+        //waitForAuthentication();
         if (!isAuthenticated) {
             onFailure.onFailure(new Exception("Imgur authentication failed"));
             return;
@@ -216,7 +216,7 @@ public class IngredientDAO {
 
     public void updateIngredientWithImage(Context context, Ingredient updatedIngredient, @Nullable Uri newImageUri,
                                      OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        waitForAuthentication();
+        //waitForAuthentication();
         if (!isAuthenticated) {
             onFailure.onFailure(new Exception("Imgur authentication failed"));
             return;
@@ -271,7 +271,7 @@ public class IngredientDAO {
     }
 
     public void deleteIngredient(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        waitForAuthentication();
+        //waitForAuthentication();
         if (!isAuthenticated) {
             onFailure.onFailure(new Exception("Imgur authentication failed"));
             return;

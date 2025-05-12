@@ -137,7 +137,7 @@ public class DrinkDAO {
     public void addDrinkWithImage(Context context, Drink drink, Uri imageUri,
                                   OnSuccessListener<Void> onSuccess,
                                   OnFailureListener onFailure) {
-        waitForAuthentication();
+        //waitForAuthentication();
         if (!isAuthenticated) {
             onFailure.onFailure(new Exception("Imgur authentication failed"));
             return;
@@ -174,7 +174,7 @@ public class DrinkDAO {
 
     public void updateDrinkWithImage(Context context, Drink updatedDrink, @Nullable Uri newImageUri,
                                      OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        waitForAuthentication();
+        //waitForAuthentication();
         if (!isAuthenticated) {
             onFailure.onFailure(new Exception("Imgur authentication failed"));
             return;
@@ -229,7 +229,7 @@ public class DrinkDAO {
     }
 
     public void deleteDrink(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        waitForAuthentication();
+        //waitForAuthentication();
         if (!isAuthenticated) {
             onFailure.onFailure(new Exception("Imgur authentication failed"));
             return;
