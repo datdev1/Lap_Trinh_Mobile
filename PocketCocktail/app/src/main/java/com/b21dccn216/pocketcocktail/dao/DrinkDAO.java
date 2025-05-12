@@ -559,7 +559,7 @@ public class DrinkDAO {
                     callback.onDrinkListLoaded(filteredDrinks);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DrinkDAO", "searchDrinksByCategory", e);
+                    Log.e("DrinkDAO", "searchDrinksByCategory" + e.toString());
                     callback.onError(e);
                 });
     }
@@ -622,7 +622,7 @@ public class DrinkDAO {
                     callback.onDrinkListLoaded(drinks);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DrinkDAO", "Error getting drinks by IDs", e);
+                    Log.e("DrinkDAO", "Error getting drinks by IDs" +  e.toString());
                     callback.onError(e);
                 });
     }
@@ -642,7 +642,7 @@ public class DrinkDAO {
 
                     @Override
                     public void onError(Exception e) {
-                        Log.e("Trường hợp 3, giai đoạn 1: Nếu không có Category / Name và có list IngredientID", e.toString());
+                        Log.e("DrinkDAO"," Trường hợp 3, giai đoạn 1: Nếu không có Category / Name và có list IngredientID" + e.toString());
                         callback.onError(e);
                     }
                 });
@@ -650,7 +650,7 @@ public class DrinkDAO {
 
             @Override
             public void onError(Exception e) {
-                Log.e("Trường hợp 3,giai đoạn 2: Nếu không có Category / Name và có list IngredientID", e.toString());
+                Log.e("DrinkDAO","Trường hợp 3,giai đoạn 2: Nếu không có Category / Name và có list IngredientID" + e.toString());
                 callback.onError(e);
             }
         });
@@ -674,7 +674,7 @@ public class DrinkDAO {
                     callback.onDrinkListLoaded(drinks);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DrinkDAO", "Trường hợp 4: Nếu không có Category / Name và không có list IngredientID", e);
+                    Log.e("DrinkDAO", "Trường hợp 4: Nếu không có Category / Name và không có list IngredientID" + e.toString());
                     callback.onError(e);
                 });
     }
