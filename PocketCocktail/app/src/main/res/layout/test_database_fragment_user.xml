@@ -130,6 +130,15 @@
                     android:background="@drawable/bg_btn_see_all" />
             </LinearLayout>
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnClear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Clear"
+                android:textColor="@color/text_on_secondary"
+                android:background="@drawable/bg_btn_see_all" />
+
             <ImageView
                 android:id="@+id/ivPreview"
                 android:layout_width="200dp"

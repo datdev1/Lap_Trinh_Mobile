@@ -18,27 +18,35 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Thêm nguyên liệu mới"
+            android:text="Add New Ingredient"
             android:textSize="24sp"
             android:textStyle="bold"
             android:fontFamily="@font/poppins_bold"
             android:textColor="@color/brown"
             android:layout_marginBottom="24dp"/>
 
-        <ImageView
-            android:id="@+id/ivImage"
+        <androidx.cardview.widget.CardView
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center_horizontal"
-            android:scaleType="centerCrop"
-            android:src="@drawable/cocktail_logo"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <ImageView
+                android:id="@+id/ivImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cocktail_logo"
+                android:background="@drawable/border_image"/>
+        </androidx.cardview.widget.CardView>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chọn ảnh"
+            android:text="Choose Image"
             android:textColor="@color/brown"
             android:fontFamily="@font/poppins_medium"
             app:cornerRadius="16dp"
@@ -62,7 +70,7 @@
                 android:id="@+id/etName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tên nguyên liệu"
+                android:hint="Ingredient Name"
                 android:inputType="text"
                 android:textColor="@color/brown"
                 android:fontFamily="@font/poppins_regular"/>
@@ -84,7 +92,7 @@
                 android:id="@+id/etDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Mô tả"
+                android:hint="Description"
                 android:inputType="textMultiLine"
                 android:minLines="2"
                 android:textColor="@color/brown"
@@ -107,7 +115,7 @@
                 android:id="@+id/etUnit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Đơn vị (ml, g, piece,...)"
+                android:hint="Unit (ml, g, piece,...)"
                 android:inputType="text"
                 android:textColor="@color/brown"
                 android:fontFamily="@font/poppins_regular"/>
@@ -117,7 +125,7 @@
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lưu"
+            android:text="Save"
             android:textColor="@color/brown"
             android:fontFamily="@font/poppins_medium"
             app:cornerRadius="16dp"

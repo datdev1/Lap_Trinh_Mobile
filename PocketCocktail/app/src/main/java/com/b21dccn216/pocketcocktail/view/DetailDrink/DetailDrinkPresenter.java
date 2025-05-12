@@ -16,14 +16,14 @@ import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.b21dccn216.pocketcocktail.model.Recipe;
 import com.b21dccn216.pocketcocktail.model.Review;
 import com.b21dccn216.pocketcocktail.model.User;
-import com.b21dccn216.pocketcocktail.view.DetailDrink.model.IngredientWithAmountDTO;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View> implements DetailDrinkContract.Presenter {
+public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View>
+        implements DetailDrinkContract.Presenter {
 
     //DAO
     private final FavoriteDAO favoriteDAO;
@@ -87,14 +87,12 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         recipeDAO.getRecipesByDrinkId(drink.getUuid(), new RecipeDAO.RecipeListCallback() {
             @Override
             public void onRecipeListLoaded(List<Recipe> recipes) {
-                List<IngredientWithAmountDTO> ingredientList = new ArrayList<>();
                 for (Recipe recipe : recipes) {
                     ingredientDAO.getIngredient(recipe.getIngredientId(), new IngredientDAO.IngredientCallback() {
                         @Override
                         public void onIngredientLoaded(Ingredient ingredient) {
-                            ingredientList.add(new IngredientWithAmountDTO(ingredient, recipe.getAmount()));
-                            //String line = ingredient.getName() + " (" + recipe.getAmount() + " " + ingredient.getUnit() + ")";
-                            view.showIngredient(ingredientList);
+                            String line = ingredient.getName() + " (" + recipe.getAmount() + " " + ingredient.getUnit() + ")";
+                            view.showIngredient(line);
                         }
 
                         @Override
