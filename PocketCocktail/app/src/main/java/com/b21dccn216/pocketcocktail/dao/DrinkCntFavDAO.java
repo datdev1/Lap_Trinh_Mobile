@@ -51,7 +51,9 @@ public class DrinkCntFavDAO {
         DrinkCntFav drinkCntFav = new DrinkCntFav();
         drinkCntFav.setUuid(doc.getString("uuid"));
         drinkCntFav.setDrinkId(doc.getString("drinkId"));
-        drinkCntFav.setCount(doc.getLong("count").intValue());
+        
+        Long count = doc.getLong("count");
+        drinkCntFav.setCount(count != null ? count.intValue() : 0);
         
         Timestamp createdAt = doc.getTimestamp("createdAt");
         if (createdAt != null) {

@@ -5,13 +5,14 @@ import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.UUID;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -70,18 +71,19 @@ public class ImageDAO {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 callback.onFailure(e);
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (!response.isSuccessful()) {
                     callback.onFailure(new IOException("Authentication failed: " + response));
                     return;
                 }
 
                 try {
+                    assert response.body() != null;
                     JSONObject json = new JSONObject(response.body().string());
                     accessToken = json.getString("access_token");
                     callback.onSuccess();
@@ -100,6 +102,7 @@ public class ImageDAO {
 
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
+            assert inputStream != null;
             byte[] imageBytes = getBytes(inputStream);
             String base64Image = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 
@@ -117,18 +120,19 @@ public class ImageDAO {
 
             client.newCall(request).enqueue(new Callback() {
                 @Override
-                public void onFailure(Call call, IOException e) {
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     callback.onFailure(e);
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     if (!response.isSuccessful()) {
                         callback.onFailure(new IOException("Upload failed: " + response));
                         return;
                     }
 
                     try {
+                        assert response.body() != null;
                         JSONObject json = new JSONObject(response.body().string());
                         String link = json.getJSONObject("data").getString("link");
                         callback.onSuccess(link);
@@ -163,13 +167,13 @@ public class ImageDAO {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e("ImageDAO", "Failed to delete image: " + e.getMessage());
                 callback.onFailure(e);
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (!response.isSuccessful()) {
                     String error = "Delete failed: " + response;
                     Log.e("ImageDAO", error);
