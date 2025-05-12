@@ -72,7 +72,8 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
         if (category != null) {
             Log.e("Category", category.toString());
-            presenter.loadDrinksByCategory(category.getUuid());
+//            presenter.loadDrinksByCategory(category.getUuid());
+            presenter.searchDrinks(category.getUuid(),null,null);
             presenter.loadIngredients();
 
             choosenCategory = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
@@ -101,7 +102,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
                 String query = s.toString().trim();
 
                 if (!query.isEmpty()) {
-                    presenter.searchIngredients(query);
+                    presenter.searchDrinks(category.getUuid(),query,null);
                     binding.clearButton.setVisibility(View.VISIBLE);
                 } else {
                     presenter.loadIngredients(); // Nếu không có gì, load lại toàn bộ
