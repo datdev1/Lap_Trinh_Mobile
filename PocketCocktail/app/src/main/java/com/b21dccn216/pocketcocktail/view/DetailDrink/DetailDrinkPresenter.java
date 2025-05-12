@@ -403,23 +403,5 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         );
     }
 
-    @Override
-    public void loadDrinkById(String drinkId) {
-        if (view == null || drinkId == null) return;
-        drinkDAO.getDrink(drinkId, new DrinkDAO.DrinkCallback() {
-            @Override
-            public void onDrinkLoaded(Drink drink) {
-                if (drink != null) {
-                    view.showDrinkDetail(drink);
-                } else {
-                    view.showError("Không tìm thấy công thức này!");
-                }
-            }
-            @Override
-            public void onError(Exception e) {
-                view.showError("Lỗi khi tải lại công thức: " + e.getMessage());
-            }
-        });
-    }
 
 }
