@@ -680,17 +680,17 @@ public class DrinkDAO {
     }
 
     //Xử lý tổng quát 4 trường hợp
-    public void searchDrinkTotal(String query, String categoryId, List<String> ingredientIds, int limit, DrinkListCallback callback) {
+    public void searchDrinkTotal(String query, @Nullable String categoryId, @Nullable List<String> ingredientIds, int limit, DrinkListCallback callback) {
         // Trường hợp 1: Nếu có Category / Name và có list IngredientID
         if (categoryId != null && !categoryId.isEmpty() && ingredientIds != null && !ingredientIds.isEmpty()) {
             searchDrinksByCategoryAndIngredientID(query, categoryId, ingredientIds, callback);
         }
         // Trường hợp 2: Nếu có Category / Name và không có list IngredientID
-        else if (categoryId != null && !categoryId.isEmpty() && (ingredientIds == null || ingredientIds.isEmpty())) {
+        else if (categoryId != null && !categoryId.isEmpty() && (ingredientIds == null)) {
             searchDrinksByCategory(query, categoryId, callback);
         }
         // Trường hợp 3: Nếu không có Category / Name và có list IngredientID
-        else if (categoryId == null || categoryId.isEmpty() && ingredientIds != null && !ingredientIds.isEmpty()) {
+        else if (categoryId == null || ingredientIds != null && !ingredientIds.isEmpty()) {
             getAllDrinkWithListIngredientID(ingredientIds, callback);
         }
         // Trường hợp 4: Nếu không có Category / Name và không có list IngredientID
