@@ -83,80 +83,9 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             } else {
                 Log.e("Category", "Category is null");
             }
-
-            //Search drink
-            binding.searchEditText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    String query = s.toString().trim();
-
-                    if (!query.isEmpty()) {
-                        presenter.searchIngredients(query);
-                        binding.clearButton.setVisibility(View.VISIBLE);
-                    } else {
-                        presenter.loadIngredients(); // Nếu không có gì, load lại toàn bộ
-                        binding.clearButton.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
-
-            binding.clearButton.setOnClickListener(v -> {
-                binding.searchEditText.setText("");
-                presenter.loadIngredients();
-                // Hide keyboard
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(binding.searchEditText.getWindowToken(), 0);
-                }
-            });
-
-
-            //Search ingredient
-            binding.ingredientSearch.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    String query = s.toString().trim();
-                    if (!query.isEmpty()) {
-                        presenter.searchIngredients(query);
-                        binding.clearIngredientSearch.setVisibility(View.VISIBLE);
-
-
-                    } else {
-                        presenter.loadIngredients();
-                        binding.clearIngredientSearch.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
-
-            binding.clearIngredientSearch.setOnClickListener(v -> {
-                binding.ingredientSearch.setText("");
-                presenter.loadIngredients();
-                // Hide keyboard
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(binding.ingredientSearch.getWindowToken(), 0);
-                }
-            });
-            updateDrinkList();
-
-            presenter.loadIngredients();
         }
+
+        presenter.loadIngredients();
 
         //Search drink
         binding.searchEditText.addTextChangedListener(new TextWatcher() {
@@ -255,7 +184,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             String query = binding.searchEditText.getText().toString();
             Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
             if (category != null) {
-//                presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
+                presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
             }
         });
 
