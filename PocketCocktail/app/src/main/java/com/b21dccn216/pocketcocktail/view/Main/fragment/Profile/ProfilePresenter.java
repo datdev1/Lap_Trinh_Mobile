@@ -195,6 +195,22 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                         HelperDialog.DialogType.ERROR);
             }
         });
+        UserDAO userDAO = new UserDAO();
+        userDAO.getUserByUuidAuthen(mAuth.getCurrentUser().getUid(), new UserDAO.UserCallback()
+        {
+
+            @Override
+            public void onUserLoaded(User user) {
+                userDAO.updateUser(user, aVoid -> {
+
+                }, e -> {});
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
 
     }
 }

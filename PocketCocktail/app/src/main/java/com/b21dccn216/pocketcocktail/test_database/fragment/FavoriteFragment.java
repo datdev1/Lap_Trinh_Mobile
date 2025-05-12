@@ -1,25 +1,39 @@
 package com.b21dccn216.pocketcocktail.test_database.fragment;
 
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.b21dccn216.pocketcocktail.R;
+import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.dao.FavoriteDAO;
+import com.b21dccn216.pocketcocktail.dao.UserDAO;
+import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Favorite;
+import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.test_database.adapter.FavoriteAdapter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class FavoriteFragment extends BaseModelFragment {
-    private EditText etUserId, etDrinkId;
+    private EditText etUuid, etCreatedAt, etUpdatedAt;
+    private Spinner spinnerUser, spinnerDrink;
     private Button btnSave, btnUpdate, btnDelete;
     private ListView lvFavorites;
     private FavoriteAdapter adapter;
     private List<Favorite> favorites;
     private Favorite selectedFavorite;
     private FavoriteDAO favoriteDAO;
+    private DrinkDAO drinkDAO;
+    private UserDAO userDAO;
+    private SimpleDateFormat dateFormat;
+    private List<Drink> drinks;
+    private List<User> users;
 
     @Override
     protected int getLayoutId() {
@@ -28,20 +42,113 @@ public class FavoriteFragment extends BaseModelFragment {
 
     @Override
     protected void initViews() {
-        etUserId = rootView.findViewById(R.id.etUserId);
-        etDrinkId = rootView.findViewById(R.id.etDrinkId);
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        
+        etUuid = rootView.findViewById(R.id.etUuid);
+        etCreatedAt = rootView.findViewById(R.id.etCreatedAt);
+        etUpdatedAt = rootView.findViewById(R.id.etUpdatedAt);
+        spinnerUser = rootView.findViewById(R.id.spinnerUser);
+        spinnerDrink = rootView.findViewById(R.id.spinnerDrink);
+        
         btnSave = rootView.findViewById(R.id.btnSave);
         btnUpdate = rootView.findViewById(R.id.btnUpdate);
         btnDelete = rootView.findViewById(R.id.btnDelete);
         lvFavorites = rootView.findViewById(R.id.lvFavorites);
 
         favorites = new ArrayList<>();
+        drinks = new ArrayList<>();
+        users = new ArrayList<>();
+        
         adapter = new FavoriteAdapter(getContext(), favorites);
         lvFavorites.setAdapter(adapter);
+        
         favoriteDAO = new FavoriteDAO();
+        drinkDAO = new DrinkDAO();
+        userDAO = new UserDAO();
 
+        setupSpinners();
         setupListeners();
         loadData();
+    }
+
+    private void setupSpinners() {
+        // Setup User spinner
+        List<String> userItems = new ArrayList<>();
+        userItems.add(""); // Add empty option
+        ArrayAdapter<String> userAdapter = new ArrayAdapter<>(
+            getContext(),
+            android.R.layout.simple_spinner_item,
+            userItems
+        );
+        userAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerUser.setAdapter(userAdapter);
+
+        // Setup Drink spinner
+        List<String> drinkItems = new ArrayList<>();
+        drinkItems.add(""); // Add empty option
+        ArrayAdapter<String> drinkAdapter = new ArrayAdapter<>(
+            getContext(),
+            android.R.layout.simple_spinner_item,
+            drinkItems
+        );
+        drinkAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDrink.setAdapter(drinkAdapter);
+
+        // Load users and drinks
+        loadUsers();
+        loadDrinks();
+    }
+
+    private void loadUsers() {
+        userDAO.getAllUsers(new UserDAO.UserListCallback() {
+            @Override
+            public void onUserListLoaded(List<User> userList) {
+                users.clear();
+                users.addAll(userList);
+                
+                List<String> userItems = new ArrayList<>();
+                userItems.add(""); // Add empty option
+                for (User user : users) {
+                    userItems.add(user.getName() + " (" + user.getUuid() + ")");
+                }
+                
+                ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinnerUser.getAdapter();
+                adapter.clear();
+                adapter.addAll(userItems);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                showToast("Error loading users: " + e.getMessage());
+            }
+        });
+    }
+
+    private void loadDrinks() {
+        drinkDAO.getAllDrinks(new DrinkDAO.DrinkListCallback() {
+            @Override
+            public void onDrinkListLoaded(List<Drink> drinkList) {
+                drinks.clear();
+                drinks.addAll(drinkList);
+                
+                List<String> drinkItems = new ArrayList<>();
+                drinkItems.add(""); // Add empty option
+                for (Drink drink : drinks) {
+                    drinkItems.add(drink.getName() + " (" + drink.getUuid() + ")");
+                }
+                
+                ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinnerDrink.getAdapter();
+                adapter.clear();
+                adapter.addAll(drinkItems);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                showToast("Error loading drinks: " + e.getMessage());
+            }
+        });
     }
 
     private void setupListeners() {
@@ -76,8 +183,11 @@ public class FavoriteFragment extends BaseModelFragment {
 
     @Override
     protected void clearInputs() {
-        etUserId.setText("");
-        etDrinkId.setText("");
+        etUuid.setText("");
+        etCreatedAt.setText("");
+        etUpdatedAt.setText("");
+        spinnerUser.setSelection(0);
+        spinnerDrink.setSelection(0);
         selectedFavorite = null;
         btnUpdate.setEnabled(false);
         btnDelete.setEnabled(false);
@@ -87,22 +197,54 @@ public class FavoriteFragment extends BaseModelFragment {
     protected void fillInputs(Object item) {
         if (item instanceof Favorite) {
             Favorite favorite = (Favorite) item;
-            etUserId.setText(favorite.getUserId());
-            etDrinkId.setText(favorite.getDrinkId());
+            etUuid.setText(favorite.getUuid());
+            etCreatedAt.setText(dateFormat.format(favorite.getCreatedAt()));
+            etUpdatedAt.setText(dateFormat.format(favorite.getUpdatedAt()));
+            
+            // Set user spinner
+            String userId = favorite.getUserId();
+            boolean userFound = false;
+            for (int i = 0; i < users.size(); i++) {
+                if (users.get(i).getUuid().equals(userId)) {
+                    spinnerUser.setSelection(i + 1); // +1 because of empty option
+                    userFound = true;
+                    break;
+                }
+            }
+            if (!userFound) {
+                spinnerUser.setSelection(0);
+            }
+            
+            // Set drink spinner
+            String drinkId = favorite.getDrinkId();
+            boolean drinkFound = false;
+            for (int i = 0; i < drinks.size(); i++) {
+                if (drinks.get(i).getUuid().equals(drinkId)) {
+                    spinnerDrink.setSelection(i + 1); // +1 because of empty option
+                    drinkFound = true;
+                    break;
+                }
+            }
+            if (!drinkFound) {
+                spinnerDrink.setSelection(0);
+            }
         }
     }
 
     @Override
     protected void saveItem() {
-        String userId = etUserId.getText().toString();
-        String drinkId = etDrinkId.getText().toString();
+        int userPosition = spinnerUser.getSelectedItemPosition();
+        int drinkPosition = spinnerDrink.getSelectedItemPosition();
 
-        if (userId.isEmpty() || drinkId.isEmpty()) {
-            showToast("Please fill all required fields");
+        if (userPosition <= 0 || drinkPosition <= 0) {
+            showToast("Please select both user and drink");
             return;
         }
 
-        Favorite favorite = new Favorite(userId, drinkId);
+        String userId = users.get(userPosition - 1).getUuid();
+        String drinkId = drinks.get(drinkPosition - 1).getUuid();
+
+        Favorite favorite = new Favorite(drinkId, userId);
         favorite.generateUUID();
 
         favoriteDAO.addFavorite(favorite,
@@ -121,13 +263,16 @@ public class FavoriteFragment extends BaseModelFragment {
             return;
         }
 
-        String userId = etUserId.getText().toString();
-        String drinkId = etDrinkId.getText().toString();
+        int userPosition = spinnerUser.getSelectedItemPosition();
+        int drinkPosition = spinnerDrink.getSelectedItemPosition();
 
-        if (userId.isEmpty() || drinkId.isEmpty()) {
-            showToast("Please fill all required fields");
+        if (userPosition <= 0 || drinkPosition <= 0) {
+            showToast("Please select both user and drink");
             return;
         }
+
+        String userId = users.get(userPosition - 1).getUuid();
+        String drinkId = drinks.get(drinkPosition - 1).getUuid();
 
         selectedFavorite.setUserId(userId);
         selectedFavorite.setDrinkId(drinkId);

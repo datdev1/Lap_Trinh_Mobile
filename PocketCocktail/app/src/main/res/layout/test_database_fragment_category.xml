@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="0dp">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -14,6 +14,33 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
+
+            <EditText
+                android:id="@+id/etUuid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="UUID"
+                android:inputType="text"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/etCreatedAt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Created At"
+                android:inputType="text"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/etUpdatedAt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Updated At"
+                android:inputType="text"
+                android:enabled="false" />
 
             <EditText
                 android:id="@+id/etName"
@@ -30,12 +57,14 @@
                 android:inputType="textMultiLine"
                 android:minLines="2" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSelectImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Select Image" />
+                android:text="Select Image"
+                android:textColor="@color/text_on_secondary"
+                android:background="@drawable/bg_btn_see_all" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,30 +72,36 @@
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal">
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnSave"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:text="Save" />
+                    android:text="Save"
+                    android:textColor="@color/text_on_secondary"
+                    android:background="@drawable/bg_btn_see_all" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnUpdate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:enabled="false"
-                    android:text="Update" />
+                    android:text="Update"
+                    android:textColor="@color/text_on_secondary"
+                    android:background="@drawable/bg_btn_see_all" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnDelete"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:enabled="false"
-                    android:text="Delete" />
+                    android:text="Delete"
+                    android:textColor="@color/text_on_secondary"
+                    android:background="@drawable/bg_btn_see_all" />
             </LinearLayout>
 
             <ImageView

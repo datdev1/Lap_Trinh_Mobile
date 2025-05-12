@@ -1,11 +1,16 @@
 package com.b21dccn216.pocketcocktail.view.DetailDrink.adapter;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.b21dccn216.pocketcocktail.R;
 import com.bumptech.glide.Glide;
 import com.b21dccn216.pocketcocktail.databinding.ItemReviewBinding;
 import com.b21dccn216.pocketcocktail.model.Review;
@@ -46,6 +51,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
         holder.binding.commentText.setText(review.getComment());
         holder.binding.ratingBar.setRating((float) review.getRate());
+
+
+        LayerDrawable stars = (LayerDrawable) holder.binding.ratingBar.getProgressDrawable();
+        int pink = ContextCompat.getColor(holder.itemView.getContext(), R.color.secondary);
+        stars.getDrawable(2).setColorFilter(pink, PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(1).setColorFilter(pink, PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(0).setColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP);
 
         if (user != null) {
             holder.binding.userName.setText(user.getName() != null ? user.getName() : "Unknown");

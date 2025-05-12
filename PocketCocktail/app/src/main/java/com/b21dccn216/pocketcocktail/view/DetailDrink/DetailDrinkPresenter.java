@@ -332,4 +332,29 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
                 }
         );
     }
+
+    @Override
+    public void onAddReviewClicked(String drinkId) {
+        if (view != null) {
+            view.showAddReviewDialog(drinkId);
+        }
+    }
+
+    @Override
+    public void submitReview(String comment, String drinkId, float rating) {
+        Review review = new Review();
+        review.setComment(comment);
+        review.setDrinkId(drinkId);
+        review.setUserId(currentUserId);
+        review.setRate(rating);
+
+        reviewDAO.addReview(review,
+                unused -> {
+                    view.showError("Đánh giá đã được gửi thành công");
+                    loadReviews(drinkId);
+                },
+                e -> view.showError("Gửi đánh giá thất bại: " + e.getMessage())
+        );
+    }
+
 }
