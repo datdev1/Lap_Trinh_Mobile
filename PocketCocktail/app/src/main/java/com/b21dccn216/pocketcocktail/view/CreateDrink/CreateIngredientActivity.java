@@ -87,6 +87,7 @@ public class CreateIngredientActivity extends AppCompatActivity {
     }
 
     private void saveIngredient() {
+        btnSave.setEnabled(false); // Disable nút lưu ngay khi bắt đầu
         Ingredient ingredient = new Ingredient(
                 etName.getText().toString().trim(),
                 etDescription.getText().toString().trim(),
@@ -101,6 +102,7 @@ public class CreateIngredientActivity extends AppCompatActivity {
                 },
                 e -> {
                     Toast.makeText(this, "Lỗi khi thêm nguyên liệu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    btnSave.setEnabled(true); // Enable lại nếu lỗi
                 });
     }
 } 
