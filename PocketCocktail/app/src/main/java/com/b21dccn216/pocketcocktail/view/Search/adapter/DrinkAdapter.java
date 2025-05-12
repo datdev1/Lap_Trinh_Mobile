@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.b21dccn216.pocketcocktail.R;
-import com.b21dccn216.pocketcocktail.databinding.ItemSimilarDrinkBinding;
+import com.b21dccn216.pocketcocktail.databinding.ItemSearchDrinkBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class DrinkAdapter extends RecyclerView.Adapter<DrinkAdapter.DrinkViewHol
     @Override
     public DrinkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        ItemSimilarDrinkBinding binding = ItemSimilarDrinkBinding.inflate(inflater, parent, false);
+        ItemSearchDrinkBinding binding = ItemSearchDrinkBinding.inflate(inflater, parent, false);
         return new DrinkViewHolder(binding);
     }
 
@@ -54,9 +54,9 @@ public class DrinkAdapter extends RecyclerView.Adapter<DrinkAdapter.DrinkViewHol
     }
 
     class DrinkViewHolder extends RecyclerView.ViewHolder {
-        private final ItemSimilarDrinkBinding binding;
+        private final ItemSearchDrinkBinding binding;
 
-        public DrinkViewHolder(@NonNull ItemSimilarDrinkBinding binding) {
+        public DrinkViewHolder(@NonNull ItemSearchDrinkBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
