@@ -33,6 +33,10 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     private DrinkAdapter drinkAdapter;
     private IngredientAdapter ingredientAdapter;
 
+    private Category choosenCategory;
+    private List<Ingredient> ingredientList;
+    private String searchName = "";
+
 
 
     @Override
@@ -52,14 +56,26 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
-        if (category != null) {
-            Log.e("Category", category.toString());
-            presenter.loadDrinksByCategory(category.getUuid());
-            presenter.loadIngredients();
+        choosenCategory = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
+        Ingredient ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
+        if (ingredient != null) {
+            ingredientList.add(ingredient);
+        }
+
+        if (choosenCategory != null) {
+            Log.e("Category", choosenCategory.toString());
+            presenter.loadDrinksByCategory(choosenCategory.getUuid());
         } else {
             Log.e("Category", "Category is null");
         }
+
+        updateDrinkList();
+
+        presenter.loadIngredients();
+    }
+
+    private void updateDrinkList(){
+        presenter.updateDrinkList(choosenCategory, ingredientList, searchName);
     }
 
     private void setupDrinkRecycler() {
