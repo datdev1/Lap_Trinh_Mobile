@@ -31,6 +31,8 @@ import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.b21dccn216.pocketcocktail.model.Recipe;
+import com.b21dccn216.pocketcocktail.model.User;
+import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -57,6 +59,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
     private DrinkDAO drinkDAO;
     private IngredientDAO ingredientDAO;
     private List<Ingredient> ingredients;
+    private List<Category> categories;
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +114,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         categoryDAO.getAllCategorys(new CategoryDAO.CategoryListCallback() {
             @Override
             public void onCategoryListLoaded(List<Category> categories) {
+                CreateDrinkActivity.this.categories = categories;
                 List<String> categoryNames = new ArrayList<>();
                 for (Category category : categories) {
                     categoryNames.add(category.getName());
@@ -237,12 +241,27 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         String description = etDescription.getText().toString().trim();
         String instructions = etInstruction.getText().toString().trim();
         float rating = ratingBar.getRating();
-        String category = spCategory.getSelectedItem().toString();
+        int categoryPosition = spCategory.getSelectedItemPosition();
 
         if (name.isEmpty() || description.isEmpty() || instructions.isEmpty() || selectedImageUri == null) {
             Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        if (categoryPosition <= 0) {
+            Toast.makeText(this, "Vui lòng chọn danh mục", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Kiểm tra người dùng đã đăng nhập chưa
+        User currentUser = SessionManager.getInstance().getUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "Vui lòng đăng nhập để thêm đồ uống", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Get the selected category
+        Category selectedCategory = categories.get(categoryPosition - 1);
 
         // Tạo đối tượng Drink
         Drink drink = new Drink();
@@ -251,7 +270,8 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         drink.setDescription(description);
         drink.setInstruction(instructions);
         drink.setRate(rating);
-        drink.setCategoryId(category);
+        drink.setCategoryId(selectedCategory.getUuid()); // Sử dụng UUID của category
+        drink.setUserId(currentUser.getUuid());
 
         // Sử dụng DrinkDAO để lưu đồ uống và ảnh
         drinkDAO.addDrinkWithImage(this, drink, selectedImageUri,
