@@ -310,6 +310,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
     }
 
     private void saveDrink() {
+        btnSave.setEnabled(false); // Disable nút lưu ngay khi bắt đầu
         String name = etDrinkName.getText().toString().trim();
         String description = etDescription.getText().toString().trim();
         String instructions = etInstruction.getText().toString().trim();
@@ -318,11 +319,13 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
 
         if (name.isEmpty() || description.isEmpty() || instructions.isEmpty() || selectedImageUri == null) {
             Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            btnSave.setEnabled(true); // Enable lại nếu lỗi
             return;
         }
 
         if (categoryPosition <= 0) {
             Toast.makeText(this, "Vui lòng chọn danh mục", Toast.LENGTH_SHORT).show();
+            btnSave.setEnabled(true); // Enable lại nếu lỗi
             return;
         }
 
@@ -330,6 +333,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         User currentUser = SessionManager.getInstance().getUser();
         if (currentUser == null) {
             Toast.makeText(this, "Vui lòng đăng nhập để thêm đồ uống", Toast.LENGTH_SHORT).show();
+            btnSave.setEnabled(true); // Enable lại nếu lỗi
             return;
         }
 
@@ -337,6 +341,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         Category selectedCategory = categories.get(categoryPosition - 1);
         if (selectedCategory == null) {
             Toast.makeText(this, "Lỗi: Không tìm thấy danh mục đã chọn", Toast.LENGTH_SHORT).show();
+            btnSave.setEnabled(true); // Enable lại nếu lỗi
             return;
         }
 
@@ -355,9 +360,11 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
             aVoid -> {
                 // Lưu các công thức
                 saveRecipes(drink.getUuid());
+                // Không enable lại vì sẽ đóng màn hình khi thành công
             },
             e -> {
                 Toast.makeText(CreateDrinkActivity.this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(true); // Enable lại nếu lỗi
             });
     }
 
