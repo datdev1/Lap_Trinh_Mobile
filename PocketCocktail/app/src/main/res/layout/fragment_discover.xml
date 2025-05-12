@@ -28,7 +28,8 @@
             android:layout_marginTop="8dp"
             android:nestedScrollingEnabled="false"
             android:orientation="horizontal"
-            android:overScrollMode="never" />
+            android:overScrollMode="never"
+            android:nestedScrollingEnabled="false" />
 
         <TextView
             android:text="Ingredients"
