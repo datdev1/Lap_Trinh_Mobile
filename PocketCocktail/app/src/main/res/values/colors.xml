@@ -82,4 +82,6 @@
     <color name="chart_color_4">#64B5F6</color>           <!-- Màu biểu đồ 4 -->
     <color name="chart_color_5">#FF6B6B</color>           <!-- Màu biểu đồ 5 -->
 
+    <color name="brown">#8B4513</color>
+
 </resources>
