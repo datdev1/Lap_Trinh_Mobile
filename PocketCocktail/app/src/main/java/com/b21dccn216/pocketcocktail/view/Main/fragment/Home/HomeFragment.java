@@ -135,6 +135,11 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
             startActivity(intent);
         });
 
+        binding.featureImage.setOnClickListener(v -> {
+            ShowImageDialog dialog = new ShowImageDialog(getContext(), bannerDrink.getImage());
+            dialog.show();
+        });
+
         return binding.getRoot();
     }
 

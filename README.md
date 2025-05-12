@@ -113,6 +113,24 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
     - filter
       - category : checkbox + recycle view
       - ingredients: dropdown
+    - Logic tìm kiếm
+      - 1. Nếu có Category /& Name
+          - Nếu có Filter Ingredient
+              -> gọi DrinkDao -> List<Drink> a
+              -> gọi RecipeDao -> List<Recipe> b  -> Trích drinkId
+              -> For tìm giao a, b
+          - Nếu không có
+              -> gọi DrinkDao -> List<Drink> a
+      - 2. Nếu không có Category / Name
+          - Nếu có Filter Ingredient
+              -> gọi RecipeDao -> List<Recipe> b  -> Trích drinkId
+              -> Gọi DrinkDao.getByListDrinkId
+          - Nếu không có
+              -> gọi DrinkDao.getAllLimit -> List<Drink> a
+
+
+
+
 - Trang discover, trang favorite, (Ngát) (Fragment) (Package Discover)
   - Discovery:
     - Category: Recycle view
