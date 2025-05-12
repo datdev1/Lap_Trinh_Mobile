@@ -3,6 +3,7 @@ package com.b21dccn216.pocketcocktail.view.DetailDrink;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.base.BaseContract;
 import com.b21dccn216.pocketcocktail.model.Review;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.model.IngredientWithAmountDTO;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface DetailDrinkContract {
     interface View extends BaseContract.View {
         void showMessage(String message);
         void showDrinkDetail(Drink drink);
-        void showIngredient(String ingredientText);
+        void showIngredient(List<IngredientWithAmountDTO> list);
         void showInstruction(String instructionText);
         void updateFavoriteIcon(boolean isFavorite);
         void showShareIntent(String text);
