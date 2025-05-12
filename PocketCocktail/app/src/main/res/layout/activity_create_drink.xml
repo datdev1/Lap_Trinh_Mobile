@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_main"
+    android:fillViewport="true"
+    android:scrollbars="vertical"
+    android:fadeScrollbars="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:focusableInTouchMode="true">
 
         <TextView
             android:layout_width="match_parent"
@@ -15,60 +21,98 @@
             android:text="Tạo công thức mới"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/brown"
             android:layout_marginBottom="24dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Tên đồ uống"
+            android:textColor="@color/brown"
+            android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
 
-        <EditText
-            android:id="@+id/etDrinkName"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nhập tên đồ uống"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxStrokeColor="@color/secondary"
+            app:hintTextColor="@color/brown">
+
+            <EditText
+                android:id="@+id/etDrinkName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nhập tên đồ uống"
+                android:textColor="@color/brown"
+                android:fontFamily="@font/poppins_regular"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ảnh đồ uống"
+            android:textColor="@color/brown"
+            android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
 
-        <ImageView
-            android:id="@+id/ivDrinkImage"
+        <androidx.cardview.widget.CardView
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/border_image"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
 
-        <Button
+            <ImageView
+                android:id="@+id/ivDrinkImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@drawable/border_image"/>
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Chọn ảnh"
+            android:textColor="@color/brown"
+            android:fontFamily="@font/poppins_medium"
+            app:cornerRadius="16dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="24dp"
+            app:backgroundTint="@color/secondary"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Danh mục"
+            android:textColor="@color/brown"
+            android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
 
         <Spinner
             android:id="@+id/spCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_regular"
+            android:background="@drawable/spinner_background"
+            android:padding="12dp"
             android:layout_marginBottom="16dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Đánh giá"
+            android:textColor="@color/brown"
+            android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
 
         <RatingBar
@@ -77,65 +121,122 @@
             android:layout_height="wrap_content"
             android:numStars="5"
             android:stepSize="0.5"
+            android:progressTint="@color/secondary"
+            android:secondaryProgressTint="@color/secondary"
             android:layout_marginBottom="16dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Mô tả"
+            android:textColor="@color/brown"
+            android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
 
-        <EditText
-            android:id="@+id/etDescription"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nhập mô tả"
-            android:inputType="textMultiLine"
-            android:minLines="2"
-            android:gravity="top"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxStrokeColor="@color/secondary"
+            app:hintTextColor="@color/brown">
+
+            <EditText
+                android:id="@+id/etDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nhập mô tả"
+                android:inputType="textMultiLine"
+                android:minLines="2"
+                android:gravity="top"
+                android:textColor="@color/brown"
+                android:fontFamily="@font/poppins_regular"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Hướng dẫn pha chế"
+            android:textColor="@color/brown"
+            android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
 
-        <EditText
-            android:id="@+id/etInstruction"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nhập hướng dẫn pha chế"
-            android:inputType="textMultiLine"
-            android:minLines="3"
-            android:gravity="top"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxStrokeColor="@color/secondary"
+            app:hintTextColor="@color/brown">
+
+            <EditText
+                android:id="@+id/etInstruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nhập hướng dẫn pha chế"
+                android:inputType="textMultiLine"
+                android:minLines="3"
+                android:gravity="top"
+                android:textColor="@color/brown"
+                android:fontFamily="@font/poppins_regular"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Nguyên liệu"
+            android:textColor="@color/brown"
+            android:fontFamily="@font/poppins_medium"
             android:layout_marginBottom="4dp"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvIngredients"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/background_main">
 
-        <Button
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvIngredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"/>
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddIngredient"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Thêm nguyên liệu"
+            android:textColor="@color/brown"
+            android:fontFamily="@font/poppins_medium"
+            app:cornerRadius="16dp"
             android:layout_gravity="end"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="24dp"
+            app:backgroundTint="@color/secondary"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lưu công thức"/>
+            android:text="Lưu công thức"
+            android:textColor="@color/brown"
+            android:fontFamily="@font/poppins_medium"
+            app:cornerRadius="16dp"
+            app:backgroundTint="@color/secondary"/>
 
     </LinearLayout>
 </ScrollView>
