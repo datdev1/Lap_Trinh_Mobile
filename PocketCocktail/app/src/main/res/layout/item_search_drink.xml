@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout"
+    android:layout_width="100dp"
+    android:layout_height="140dp"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:strokeColor="@color/secondary"
+    app:strokeWidth="@dimen/selected_stroke_width">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp">
+
+        <!-- ImageView -->
+        <ImageView
+            android:id="@+id/imageDrink"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_round_square"
+            android:clipToOutline="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/nameDrink"
+            app:layout_constraintDimensionRatio="1:1" />
+
+        <!-- Ingredient Name -->
+        <TextView
+            android:id="@+id/nameDrink"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            app:layout_constraintTop_toBottomOf="@id/imageDrink"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- Selected Checkmark -->
+        <ImageView
+            android:id="@+id/selectedCheck"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/s_ic_check_circle"
+            android:visibility="gone"
+            app:tint="@color/secondary"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="4dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

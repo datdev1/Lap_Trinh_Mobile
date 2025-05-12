@@ -81,7 +81,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         });
         drinkAdapter.setDrinks(drinks);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         binding.drinksRecyclerView.setLayoutManager(layoutManager);
         binding.drinksRecyclerView.setAdapter(drinkAdapter);
 
@@ -89,12 +89,11 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
 
         binding.drinksRecyclerView.addItemDecoration(
-                new GridSpacingItemDecoration(2, horizontalSpacing, verticalSpacing, true)
+                new GridSpacingItemDecoration(3, horizontalSpacing, verticalSpacing, true)
         );
 
-        // Thêm padding để không bị cắt khi scroll
         binding.drinksRecyclerView.setClipToPadding(false);
-        binding.drinksRecyclerView.setPadding(0, 0, 0, verticalSpacing);
+        binding.drinksRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);
     }
 
     @Override
@@ -115,7 +114,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
 
         ingredientAdapter.setIngredients(ingredients);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3); // hoặc LinearLayout nếu bạn thích
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         binding.ingredientsRecyclerView.setLayoutManager(layoutManager);
         binding.ingredientsRecyclerView.setAdapter(ingredientAdapter);
 
