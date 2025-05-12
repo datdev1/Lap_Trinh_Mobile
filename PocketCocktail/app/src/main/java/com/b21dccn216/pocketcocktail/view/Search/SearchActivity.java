@@ -59,6 +59,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        setUpDrinkRecycler();
         setUpIngredientRecycler();
 
         Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
@@ -136,6 +137,27 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             }
         });
     }
+    private void setUpDrinkRecycler(){
+        drinkAdapter = new DrinkAdapter(this, drink -> {
+            Intent intent = new Intent(this, DetailDrinkActivity.class);
+            intent.putExtra(EXTRA_DRINK_OBJECT, drink);
+            startActivity(intent);
+        });
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        binding.drinksRecyclerView.setLayoutManager(layoutManager);
+        binding.drinksRecyclerView.setAdapter(drinkAdapter);
+
+        int horizontalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_spacing);
+        int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
+
+        binding.drinksRecyclerView.addItemDecoration(
+                new GridSpacingItemDecoration(3, horizontalSpacing, verticalSpacing, true)
+        );
+
+        binding.drinksRecyclerView.setClipToPadding(false);
+        binding.drinksRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);
+    }
 
     private void setUpIngredientRecycler() {
         ingredientAdapter = new IngredientAdapter(this, selectedIngredients -> {
@@ -168,27 +190,9 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
     @Override
     public void showDrinks(List<Drink> drinks) {
-        drinkAdapter = new DrinkAdapter(this, drink -> {
-            Intent intent = new Intent(this, DetailDrinkActivity.class);
-            intent.putExtra(EXTRA_DRINK_OBJECT, drink);
-            startActivity(intent);
-        });
-        drinkAdapter.setDrinks(drinks);
-
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
-        binding.drinksRecyclerView.setLayoutManager(layoutManager);
-        binding.drinksRecyclerView.setAdapter(drinkAdapter);
-
-        int horizontalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_spacing);
-        int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
-
-
-        binding.drinksRecyclerView.addItemDecoration(
-                new GridSpacingItemDecoration(3, horizontalSpacing, verticalSpacing, true)
-        );
-
-        binding.drinksRecyclerView.setClipToPadding(false);
-        binding.drinksRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);
+        if (drinkAdapter != null) {
+            drinkAdapter.setDrinks(drinks);
+        }
     }
 
     @Override
