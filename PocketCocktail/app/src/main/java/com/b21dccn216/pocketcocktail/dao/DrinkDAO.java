@@ -319,6 +319,22 @@ public class DrinkDAO {
                 .addOnFailureListener(callback::onError);
     }
 
+    public void getDrinksByUserId(String userId, DrinkListCallback callback) {
+        drinkRef.whereEqualTo("userId", userId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Drink> drinks = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Drink drink = convertDocumentToDrink(doc);
+                        if (drink != null) {
+                            drinks.add(drink);
+                        }
+                    }
+                    Log.e("load Drink", "getAllDrinks: " + drinks);
+                    callback.onDrinkListLoaded(drinks);
+                })
+                .addOnFailureListener(callback::onError);
+    }
 
     public void getDrinksByCategoryIdWithLimit(String categoryId, int limit, DrinkListCallback callback) {
         drinkRef.whereEqualTo("categoryId", categoryId)
