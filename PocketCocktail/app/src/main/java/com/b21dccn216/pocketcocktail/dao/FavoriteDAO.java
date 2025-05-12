@@ -21,12 +21,14 @@ import java.util.Map;
 public class FavoriteDAO {
     private final FirebaseFirestore db;
     private final CollectionReference favoriteRef;
+    private final DrinkCntFavDAO drinkCntFavDAO;
 
     public static final String ERROR_USER_NOT_AUTH = "User not authenticated";
 
     public FavoriteDAO() {
         db = FirebaseFirestore.getInstance();
         favoriteRef = db.collection("favorite");
+        drinkCntFavDAO = new DrinkCntFavDAO();
     }
 
     private Map<String, Object> convertFavoriteToMap(Favorite favorite) {
@@ -84,7 +86,20 @@ public class FavoriteDAO {
         Map<String, Object> data = convertFavoriteToMap(favorite);
         favoriteRef.document(favorite.getUuid())
                 .set(data)
-                .addOnSuccessListener(onSuccess)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Increment the favorite count for the drink
+                        drinkCntFavDAO.incrementDrinkCntFav(favorite.getDrinkId(),
+                                new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        onSuccess.onSuccess(aVoid);
+                                    }
+                                },
+                                onFailure);
+                    }
+                })
                 .addOnFailureListener(onFailure);
     }
 
@@ -195,17 +210,81 @@ public class FavoriteDAO {
     }
 
     public void updateFavorite(Favorite updatedFavorite, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        Map<String, Object> data = convertFavoriteToMap(updatedFavorite);
-        favoriteRef.document(updatedFavorite.getUuid())
-                .set(data)
-                .addOnSuccessListener(onSuccess)
+        // First get the old favorite to get the old drinkId
+        favoriteRef.document(updatedFavorite.getUuid()).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Favorite oldFavorite = convertDocumentToFavorite(documentSnapshot);
+                        String oldDrinkId = oldFavorite.getDrinkId();
+                        String newDrinkId = updatedFavorite.getDrinkId();
+
+                        // If drinkId has changed, update both counts
+                        if (!oldDrinkId.equals(newDrinkId)) {
+                            // Decrement old drink count
+                            drinkCntFavDAO.decrementDrinkCntFav(oldDrinkId,
+                                    new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            // Increment new drink count
+                                            drinkCntFavDAO.incrementDrinkCntFav(newDrinkId,
+                                                    new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            // Update the favorite document
+                                                            Map<String, Object> data = convertFavoriteToMap(updatedFavorite);
+                                                            favoriteRef.document(updatedFavorite.getUuid())
+                                                                    .set(data)
+                                                                    .addOnSuccessListener(onSuccess)
+                                                                    .addOnFailureListener(onFailure);
+                                                        }
+                                                    },
+                                                    onFailure);
+                                        }
+                                    },
+                                    onFailure);
+                        } else {
+                            // If drinkId hasn't changed, just update the document
+                            Map<String, Object> data = convertFavoriteToMap(updatedFavorite);
+                            favoriteRef.document(updatedFavorite.getUuid())
+                                    .set(data)
+                                    .addOnSuccessListener(onSuccess)
+                                    .addOnFailureListener(onFailure);
+                        }
+                    }
+                })
                 .addOnFailureListener(onFailure);
     }
 
     public void deleteFavorite(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        favoriteRef.document(uuid)
-                .delete()
-                .addOnSuccessListener(onSuccess)
+        // First get the favorite to get the drinkId
+        favoriteRef.document(uuid).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Favorite favorite = convertDocumentToFavorite(documentSnapshot);
+                        String drinkId = favorite.getDrinkId();
+
+                        // Delete the favorite document
+                        favoriteRef.document(uuid)
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // Decrement the favorite count for the drink
+                                        drinkCntFavDAO.decrementDrinkCntFav(drinkId,
+                                                new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        onSuccess.onSuccess(aVoid);
+                                                    }
+                                                },
+                                                onFailure);
+                                    }
+                                })
+                                .addOnFailureListener(onFailure);
+                    }
+                })
                 .addOnFailureListener(onFailure);
     }
 } 
