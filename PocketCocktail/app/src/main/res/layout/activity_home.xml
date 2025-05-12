@@ -5,18 +5,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.Main.HomeActivity"
     android:fitsSystemWindows="true"
-    app:statusBarBackground="@color/secondary"
+    app:statusBarBackground="@color/actionBarColor"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:elevation="4dp"
-        android:background="@color/button_secondary"
-        app:titleTextColor="@color/text_on_secondary"/>
+        android:layout_height="wrap_content"
+        android:stateListAnimator="@animator/appbar_elevation"
+        app:liftOnScroll="true">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:theme="@style/MyThemeOverlay_Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="4dp"
+            app:title="Home"
+            app:menu="@menu/main_toolbar_menu"
+            android:background="@color/actionBarColor"
+            app:titleTextColor="@color/text_on_secondary"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
 
     <!-- Fragment Container -->
     <androidx.fragment.app.FragmentContainerView
@@ -44,16 +53,16 @@
         app:labelVisibilityMode="labeled"
         app:itemBackground="@drawable/nav_item_background"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabCreateDrink"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="96dp"
-        android:src="@drawable/plus"
-        app:fabSize="normal"
-        app:tint="@color/white"
-        app:backgroundTint="@color/secondary"/>
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/fabCreateDrink"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="bottom|end"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:layout_marginBottom="96dp"-->
+<!--        android:src="@drawable/plus"-->
+<!--        app:fabSize="normal"-->
+<!--        app:tint="@color/white"-->
+<!--        app:backgroundTint="@color/secondary"/>-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

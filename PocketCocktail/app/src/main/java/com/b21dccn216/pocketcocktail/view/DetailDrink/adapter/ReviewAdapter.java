@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.b21dccn216.pocketcocktail.R;
+import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.bumptech.glide.Glide;
 import com.b21dccn216.pocketcocktail.databinding.ItemReviewBinding;
 import com.b21dccn216.pocketcocktail.model.Review;
@@ -25,14 +26,26 @@ import java.util.Locale;
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
     private List<ReviewWithUserDTO> reviews;
+    private final String currentUserId;
 
     public ReviewAdapter(List<ReviewWithUserDTO> reviews) {
         this.reviews = reviews;
+        currentUserId = String.valueOf(SessionManager.getInstance().getUser().getUuid());
     }
 
     public void setReviewList(List<ReviewWithUserDTO> newReviews) {
         this.reviews = newReviews;
         notifyDataSetChanged();
+    }
+
+    public interface OnReviewLongClickListener {
+        void onReviewLongClick(Review review, User user);
+    }
+
+    private OnReviewLongClickListener listener;
+
+    public void setOnReviewLongClickListener(OnReviewLongClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -78,6 +91,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         } else {
             holder.binding.commentDate.setText("");
         }
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (listener != null && review.getUserId().equals(currentUserId)) {
+                listener.onReviewLongClick(review, user);
+            }
+            return true;
+        });
     }
 
     @Override

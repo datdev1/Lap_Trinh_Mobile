@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/nav_search"
+        android:icon="@drawable/search"
+        app:showAsAction="ifRoom"
+        android:iconTint="@color/text_on_secondary"
+        android:title="Search Drink" />
+    <item
+        android:id="@+id/nav_add"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/plus"
+        android:iconTint="@color/text_on_secondary"
+        android:title="Add Drink" />
+</menu>

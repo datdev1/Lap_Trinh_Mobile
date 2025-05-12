@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface DetailDrinkContract {
     interface View extends BaseContract.View {
+        void showMessage(String message);
         void showDrinkDetail(Drink drink);
         void showIngredient(String ingredientText);
         void showInstruction(String instructionText);
@@ -18,7 +19,7 @@ public interface DetailDrinkContract {
         void showReviews(List<ReviewWithUserDTO> reviews);
         void showAddReviewSuccess();
         void showAddReviewError(String message);
-        void showAddReviewDialog(String drinkId);
+        void showAddReviewDialog(String drinkId, Review review);
     }
 
     interface Presenter extends BaseContract.Presenter<View> {
@@ -31,5 +32,8 @@ public interface DetailDrinkContract {
         void loadSimilarDrinks(Drink drink);
         void onAddReviewClicked(String drinkId);
         void submitReview(String comment, String drinkId, float rating);
+        void updateReview(String comment, String drinkId, float rating, Review review);
+        void onEditReviewClicked(Review review);
+        void onDeleteReviewClicked(Review review);
     }
 }
