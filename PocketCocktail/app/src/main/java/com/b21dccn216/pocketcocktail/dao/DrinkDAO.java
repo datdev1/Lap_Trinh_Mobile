@@ -322,6 +322,23 @@ public class DrinkDAO {
                 .addOnFailureListener(callback::onError);
     }
 
+    public void getDrinksByUserId(String userId, DrinkListCallback callback) {
+        drinkRef.whereEqualTo("userId", userId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Drink> drinks = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Drink drink = convertDocumentToDrink(doc);
+                        if (drink != null) {
+                            drinks.add(drink);
+                        }
+                    }
+                    Log.e("load Drink", "getAllDrinks: " + drinks);
+                    callback.onDrinkListLoaded(drinks);
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
 
     public void getDrinksByCategoryIdWithLimit(String categoryId, int limit, DrinkListCallback callback) {
         drinkRef.whereEqualTo("categoryId", categoryId)
@@ -556,10 +573,11 @@ public class DrinkDAO {
                         Drink drink = convertDocumentToDrink(document);
                         filteredDrinks.add(drink);
                     }
+                    Log.d("DrinkDAO", "Success Truong hop 2: " + filteredDrinks);
                     callback.onDrinkListLoaded(filteredDrinks);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DrinkDAO", "searchDrinksByCategory" + e.toString());
+                    Log.e("DrinkDAO", "Trường hợp 2  Nếu có Category / Name và không có list IngredientID" + e.toString());
                     callback.onError(e);
                 });
     }
@@ -581,7 +599,8 @@ public class DrinkDAO {
                                     filteredDrinks.add(drink);
                                 }
                             }
-                            filteredDrinks.sort(Comparator.comparing(Drink::getName));
+//                            filteredDrinks.sort(Comparator.comparing(Drink::getName));
+                            Log.d("DrinkDAO", "Success Truong hop 1: " + filteredDrinks);
                             callback.onDrinkListLoaded(filteredDrinks);
                         }
 
@@ -594,6 +613,7 @@ public class DrinkDAO {
             }
             @Override
             public void onError(Exception e) {
+                Log.e("DrinkDAO"," Trường hợp 1: Nếu có Category / Name và có list IngredientID" + e.toString());
                 callback.onError(e);
             }
         });
@@ -637,6 +657,7 @@ public class DrinkDAO {
                 getAllDrinkWithListDrinkID(drinkIds, new DrinkListCallback() {
                     @Override
                     public void onDrinkListLoaded(List<Drink> drinks) {
+                        Log.d("DrinkDAO", "Success Truong hop 3: " + drinks);
                         callback.onDrinkListLoaded(drinks);
                     }
 
@@ -670,7 +691,8 @@ public class DrinkDAO {
                         }
                     }
                     // Sort drinks by name for consistent ordering
-                    drinks.sort(Comparator.comparing(Drink::getName));
+//                    drinks.sort(Comparator.comparing(Drink::getName));
+                    Log.d("DrinkDAO", "Success Truong hop 4: " + drinks);
                     callback.onDrinkListLoaded(drinks);
                 })
                 .addOnFailureListener(e -> {
@@ -681,6 +703,13 @@ public class DrinkDAO {
 
     //Xử lý tổng quát 4 trường hợp
     public void searchDrinkTotal(String query, @Nullable String categoryId, @Nullable List<String> ingredientIds, int limit, DrinkListCallback callback) {
+        Log.d("DrinkDAO", "------------------------------------------------");
+        Log.d("DrinkDAO", "searchDrinkTotal: \n");
+        Log.d("DrinkDAO", "query: " + query);
+        Log.d("DrinkDAO", "categoryId: " + categoryId);
+        Log.d("DrinkDAO", "List<String> ingredientIds: " + ingredientIds);
+        Log.d("DrinkDAO", "limit: " + limit);
+        Log.d("DrinkDAO", "------------------------------------------------");
         // Trường hợp 1: Nếu có Category / Name và có list IngredientID
         if (categoryId != null && !categoryId.isEmpty() && ingredientIds != null && !ingredientIds.isEmpty()) {
             searchDrinksByCategoryAndIngredientID(query, categoryId, ingredientIds, callback);

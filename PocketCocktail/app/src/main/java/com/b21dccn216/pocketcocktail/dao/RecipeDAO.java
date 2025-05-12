@@ -1,5 +1,7 @@
 package com.b21dccn216.pocketcocktail.dao;
 
+import android.util.Log;
+
 import com.b21dccn216.pocketcocktail.model.Recipe;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -199,7 +201,12 @@ public class RecipeDAO {
                     }
                     callback.onDrinkIDListLoaded(matchingDrinkIds);
                 })
-                .addOnFailureListener(callback::onError);
+                .addOnFailureListener(e ->
+                {
+                    Log.e("DrinkDAO","RecipeDAO Trường hợp 1: Nếu có Category / Name và có list IngredientID" + e.toString());
+                    callback.onError(e);
+
+                });
     }
 
     public void searchDrinkIDByIngredient(List<String> ingredientIds, DrinkIDListCallback callback) {
@@ -215,7 +222,11 @@ public class RecipeDAO {
                     }
                     callback.onDrinkIDListLoaded(matchingDrinkIds);
                 })
-                .addOnFailureListener(callback::onError);
+                .addOnFailureListener(e -> {
+                    Log.e("DrinkDAO","RecipeDAO Trường hợp 3: Nếu không có Category / Name và có list IngredientID" + e.toString());
+                    callback.onError(e);
+
+                });
     }
 
 } 
