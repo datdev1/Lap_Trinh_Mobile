@@ -29,6 +29,8 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -135,6 +137,11 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
             startActivity(intent);
         });
 
+        binding.featureImage.setOnClickListener(v -> {
+            ShowImageDialog dialog = new ShowImageDialog(getContext(), bannerDrink.getImage());
+            dialog.show();
+        });
+
         return binding.getRoot();
     }
 
@@ -177,6 +184,9 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     @Override
     public void showRecommendDrinkList(List<DrinkWithFavCount> drinkList) {
         recommendDrinkList.clear();
+        drinkList.sort((drinkWithFavCount, t1) -> Integer.compare(t1.getCount(), drinkWithFavCount.getCount()));
+
+
         recommendDrinkList.addAll(drinkList);
         recommendDrinkAdapter.notifyDataSetChanged();
     }

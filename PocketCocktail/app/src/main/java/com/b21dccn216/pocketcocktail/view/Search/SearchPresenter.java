@@ -4,6 +4,7 @@ import com.b21dccn216.pocketcocktail.base.BasePresenter;
 import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.dao.IngredientDAO;
 import com.b21dccn216.pocketcocktail.dao.RecipeDAO;
+import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.b21dccn216.pocketcocktail.model.Recipe;
@@ -24,7 +25,6 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
         this.ingredientDAO = new IngredientDAO();
         this.recipeDAO = new RecipeDAO();
     }
-
 
     @Override
     public void loadDrinksByCategory(String categoryId) {
@@ -64,45 +64,71 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
             @Override
             public void onDrinkListLoaded(List<Drink> drinks) {
                 List<Drink> filteredDrinks = new ArrayList<>();
+                int[] pendingCount = {drinks.size()};
 
                 for (Drink drink : drinks) {
-                    List<String> listIngredient = new ArrayList<>();
                     recipeDAO.getRecipesByDrinkId(drink.getUuid(), new RecipeDAO.RecipeListCallback() {
                         @Override
                         public void onRecipeListLoaded(List<Recipe> recipes) {
+                            List<String> drinkIngredientIds = new ArrayList<>();
+                            if (recipes.isEmpty()) {
+                                checkDone();
+                                return;
+                            }
+
+                            int[] recipeCounter = {recipes.size()};
                             for (Recipe recipe : recipes) {
                                 ingredientDAO.getIngredient(recipe.getIngredientId(), new IngredientDAO.IngredientCallback() {
                                     @Override
                                     public void onIngredientLoaded(Ingredient ingredient) {
-                                        listIngredient.add(ingredient.getName()) ;
+                                        drinkIngredientIds.add(ingredient.getUuid());
+                                        recipeCounter[0]--;
+                                        if (recipeCounter[0] == 0) {
+                                            boolean matchesQuery = query == null || query.isEmpty()
+                                                    || drink.getName().toLowerCase().contains(query.toLowerCase());
+
+                                            boolean matchesIngredients = ingredientIds == null || ingredientIds.isEmpty()
+                                                    || drinkIngredientIds.containsAll(ingredientIds);
+
+                                            if (matchesQuery && matchesIngredients) {
+                                                synchronized (filteredDrinks) {
+                                                    filteredDrinks.add(drink);
+                                                }
+                                            }
+                                            checkDone();
+                                        }
                                     }
 
                                     @Override
                                     public void onError(Exception e) {
+                                        recipeCounter[0]--;
+                                        if (recipeCounter[0] == 0) checkDone();
                                     }
-
                                 });
                             }
                         }
 
                         @Override
                         public void onError(Exception e) {
-                            view.showError(e.getMessage());
+                            checkDone();
+                        }
+
+                        private void checkDone() {
+                            synchronized (pendingCount) {
+                                pendingCount[0]--;
+                                if (pendingCount[0] == 0) {
+                                    view.hideLoading();
+                                    view.showDrinks(filteredDrinks);
+                                }
+                            }
                         }
                     });
-                    boolean matchesQuery = query == null || query.isEmpty()
-                            || drink.getName().toLowerCase().contains(query.toLowerCase());
-
-                    boolean matchesIngredients = ingredientIds == null || ingredientIds.isEmpty()
-                            || (!listIngredient.isEmpty() && new HashSet<>(listIngredient).containsAll(ingredientIds));
-
-                    if (matchesQuery && matchesIngredients) {
-                        filteredDrinks.add(drink);
-                    }
                 }
 
-                view.hideLoading();
-                view.showDrinks(filteredDrinks);
+                if (drinks.isEmpty()) {
+                    view.hideLoading();
+                    view.showDrinks(new ArrayList<>());
+                }
             }
 
             @Override
@@ -112,6 +138,7 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
             }
         });
     }
+
 
     @Override
     public void searchIngredients(String query) {
@@ -134,4 +161,21 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
         });
     }
 
+    @Override
+    public void updateDrinkList(Category choosenCategory, List<Ingredient> ingredientList, String searchName) {
+        if(choosenCategory != null && searchName != null){
+            if(!ingredientList.isEmpty()){
+
+            }else{
+                //TODO:: Call drink dao get drink by categoryId and search name
+
+            }
+        }else{
+            if(!ingredientList.isEmpty()){
+
+            }else{
+
+            }
+        }
+    }
 }

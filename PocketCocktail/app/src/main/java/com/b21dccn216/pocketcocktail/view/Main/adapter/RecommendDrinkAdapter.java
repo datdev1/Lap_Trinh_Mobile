@@ -1,6 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Main.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemHomeRecommendDrinkBinding;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithCategoryDTO;
 import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithFavCount;
 import com.bumptech.glide.Glide;
@@ -54,15 +56,11 @@ public class RecommendDrinkAdapter  extends RecyclerView.Adapter<RecommendDrinkA
             DrinkWithFavCount drink = drinkList.get(pos);
             binding.title.setText(drink.getDrink().getName());
             binding.countFav.setText(String.valueOf(drink.getCount()));
-            //binding.conent.setText(drink.getCategoryName());
-
-//            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) binding.image.getLayoutParams();
-//
-//            if((pos + 1) % 4 == 0 || (pos + 1) % 4 == 1){
-//                layoutParams.dimensionRatio = "2:1";
-//            }else{
-//                layoutParams.dimensionRatio = "1:1";
-//            }
+            binding.image.setOnClickListener(v -> {
+                Intent intent = new Intent(context, DetailDrinkActivity.class);
+                intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, drink.getDrink());
+                context.startActivity(intent);
+            });
 
             Glide.with(context)
                     .load(drink.getDrink().getImage())
