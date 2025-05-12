@@ -117,14 +117,15 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
             @Override
             public void onCategoryListLoaded(List<Category> categories) {
                 CreateDrinkActivity.this.categories = categories;
-                List<String> categoryNames = new ArrayList<>();
+                List<String> categoryItems = new ArrayList<>();
+                categoryItems.add(""); // Add empty option
                 for (Category category : categories) {
-                    categoryNames.add(category.getName());
+                    categoryItems.add(category.getName()); // Chỉ hiển thị tên
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     CreateDrinkActivity.this,
                     android.R.layout.simple_spinner_item,
-                    categoryNames
+                    categoryItems
                 );
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spCategory.setAdapter(adapter);
@@ -309,6 +310,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
     }
 
     private void saveDrink() {
+        btnSave.setEnabled(false); // Disable nút lưu ngay khi bắt đầu
         String name = etDrinkName.getText().toString().trim();
         String description = etDescription.getText().toString().trim();
         String instructions = etInstruction.getText().toString().trim();
@@ -317,11 +319,13 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
 
         if (name.isEmpty() || description.isEmpty() || instructions.isEmpty() || selectedImageUri == null) {
             Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            btnSave.setEnabled(true); // Enable lại nếu lỗi
             return;
         }
 
         if (categoryPosition <= 0) {
             Toast.makeText(this, "Vui lòng chọn danh mục", Toast.LENGTH_SHORT).show();
+            btnSave.setEnabled(true); // Enable lại nếu lỗi
             return;
         }
 
@@ -329,11 +333,17 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         User currentUser = SessionManager.getInstance().getUser();
         if (currentUser == null) {
             Toast.makeText(this, "Vui lòng đăng nhập để thêm đồ uống", Toast.LENGTH_SHORT).show();
+            btnSave.setEnabled(true); // Enable lại nếu lỗi
             return;
         }
 
         // Get the selected category
         Category selectedCategory = categories.get(categoryPosition - 1);
+        if (selectedCategory == null) {
+            Toast.makeText(this, "Lỗi: Không tìm thấy danh mục đã chọn", Toast.LENGTH_SHORT).show();
+            btnSave.setEnabled(true); // Enable lại nếu lỗi
+            return;
+        }
 
         // Tạo đối tượng Drink
         Drink drink = new Drink();
@@ -342,7 +352,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         drink.setDescription(description);
         drink.setInstruction(instructions);
         drink.setRate(rating);
-        drink.setCategoryId(selectedCategory.getUuid()); // Sử dụng UUID của category
+        drink.setCategoryId(selectedCategory.getUuid());
         drink.setUserId(currentUser.getUuid());
 
         // Sử dụng DrinkDAO để lưu đồ uống và ảnh
@@ -350,9 +360,11 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
             aVoid -> {
                 // Lưu các công thức
                 saveRecipes(drink.getUuid());
+                // Không enable lại vì sẽ đóng màn hình khi thành công
             },
             e -> {
                 Toast.makeText(CreateDrinkActivity.this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(true); // Enable lại nếu lỗi
             });
     }
 
