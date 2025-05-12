@@ -89,7 +89,7 @@
             android:clipToPadding="false"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:paddingBottom="80dp"
+            android:layout_marginBottom="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
