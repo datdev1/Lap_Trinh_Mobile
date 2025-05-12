@@ -9,11 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseFragment;
@@ -25,13 +23,13 @@ import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.CocktailHomeItemAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.RecommendDrinkAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithCategoryDTO;
+import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithFavCount;
 import com.b21dccn216.pocketcocktail.view.Search.SearchActivity;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.Presenter> implements HomeContract.View {
@@ -47,7 +45,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     private List<Drink> latestDrinkList = new ArrayList<>();
     private List<Drink> highestRateDrinkList = new ArrayList<>();
     private List<Drink> categoryDrinkList = new ArrayList<>();
-    private List<DrinkWithCategoryDTO> recommendDrinkList = new ArrayList<>();
+    private List<DrinkWithFavCount> recommendDrinkList = new ArrayList<>();
     private Drink bannerDrink;
 
     public HomeFragment() {
@@ -177,7 +175,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void showRecommendDrinkList(List<DrinkWithCategoryDTO> drinkList) {
+    public void showRecommendDrinkList(List<DrinkWithFavCount> drinkList) {
         recommendDrinkList.clear();
         recommendDrinkList.addAll(drinkList);
         recommendDrinkAdapter.notifyDataSetChanged();

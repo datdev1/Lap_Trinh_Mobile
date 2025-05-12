@@ -1,14 +1,18 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Home;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
 import com.b21dccn216.pocketcocktail.dao.CategoryDAO;
+import com.b21dccn216.pocketcocktail.dao.DrinkCntFavDAO;
 import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
-import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithCategoryDTO;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.b21dccn216.pocketcocktail.model.DrinkCntFav;
+import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithFavCount;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
@@ -20,6 +24,7 @@ public class HomePresenter
 
     private DrinkDAO drinkDAO = new DrinkDAO();
     private CategoryDAO categoryDAO = new CategoryDAO();
+    private DrinkCntFavDAO drinkCntFavDAO = new DrinkCntFavDAO();
 
 
     public HomePresenter() {
@@ -137,33 +142,24 @@ public class HomePresenter
     }
 
     private void getRecommendDrinkList(){
-        // sort by name desc and limit 12
-        drinkDAO.getDrinksSortAndLimit(
-                DrinkDAO.DRINK_FIELD.NAME, Query.Direction.DESCENDING, 12,
-                new DrinkDAO.DrinkListCallback() {
+        drinkCntFavDAO.getTopDrinkCntFavourite(12, new DrinkCntFavDAO.DrinkCntFavListCallback(){
             @Override
-            public void onDrinkListLoaded(List<Drink> drinkList) {
-                List<DrinkWithCategoryDTO> recommendDrinkList = new ArrayList<>();
-                for (Drink drink : drinkList) {
-                    categoryDAO.getCategory(drink.getCategoryId(),
-                            new CategoryDAO.CategoryCallback() {
-                                @Override
-                                public void onCategoryLoaded(Category category) {
-                                    if (category == null) {
-                                        //Log.d("datdev1", "category == null-> drinkName: " + drink.getName() + " --- CateName: " + drink.getCategoryId());
-                                        recommendDrinkList.add(new DrinkWithCategoryDTO(drink.getCategoryId(), drink));
-                                    } else {
-                                        //Log.d("datdev1", "onDrinkListLoaded: " + drink.getName() + " " + category.getName());
-                                        recommendDrinkList.add(new DrinkWithCategoryDTO(category.getName(), drink));
-                                    }
-                                    view.showRecommendDrinkList(recommendDrinkList);
-                                }
+            public void onDrinkCntFavListLoaded(List<DrinkCntFav> drinkCntFavs) {
+                List<DrinkWithFavCount> list = new ArrayList<>();
+                for (DrinkCntFav drinkCntFav : drinkCntFavs) {
+                    drinkDAO.getDrink(drinkCntFav.getDrinkId(), new DrinkDAO.DrinkCallback() {
+                        @Override
+                        public void onDrinkLoaded(Drink drink) {
+                            list.add(new DrinkWithFavCount(drink, drinkCntFav.getCount()));
+                            view.showRecommendDrinkList(list);
+                        }
 
-                                @Override
-                                public void onError(Exception e) {
-
-                                }
-                            });
+                        @Override
+                        public void onError(Exception e) {
+                            DialogHelper.showAlertDialog(((Context) view).getApplicationContext(),
+                                    "Error", e.getMessage(), HelperDialog.DialogType.ERROR);
+                        }
+                    });
                 }
             }
 
@@ -172,6 +168,7 @@ public class HomePresenter
 
             }
         });
+
     }
 
 

@@ -86,7 +86,7 @@ public class DrinkDAO {
         return data;
     }
 
-    private Drink convertDocumentToDrink(DocumentSnapshot doc) {
+    private Drink convertDocumentToDrink(DocumentSnapshot doc){
         Drink drink = new Drink();
         drink.setUuid(doc.getString("uuid"));
         drink.setName(doc.getString("name"));
@@ -284,6 +284,10 @@ public class DrinkDAO {
     public void getDrink(String drinkUuid, DrinkDAO.DrinkCallback callback) {
         drinkRef.document(drinkUuid).get()
                 .addOnSuccessListener(documentSnapshot -> {
+                    if(documentSnapshot == null) {
+                        callback.onError(new Exception("Drink not found"));
+                        return;
+                    }
                     Drink drink = convertDocumentToDrink(documentSnapshot);
                     callback.onDrinkLoaded(drink);
                 })

@@ -5,23 +5,22 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemHomeRecommendDrinkBinding;
-import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithCategoryDTO;
+import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithFavCount;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 public class RecommendDrinkAdapter  extends RecyclerView.Adapter<RecommendDrinkAdapter.DrinkViewHolder> {
 
-    private final List<DrinkWithCategoryDTO> drinkList;
+    private final List<DrinkWithFavCount> drinkList;
     private final Context context;
 
-    public RecommendDrinkAdapter(Context context, List<DrinkWithCategoryDTO> drinkList) {
+    public RecommendDrinkAdapter(Context context, List<DrinkWithFavCount> drinkList) {
         this.context = context;
         this.drinkList = drinkList;
     }
@@ -52,9 +51,10 @@ public class RecommendDrinkAdapter  extends RecyclerView.Adapter<RecommendDrinkA
         }
 
         public void bind(int pos) {
-            DrinkWithCategoryDTO drink = drinkList.get(pos);
+            DrinkWithFavCount drink = drinkList.get(pos);
             binding.title.setText(drink.getDrink().getName());
-            binding.conent.setText(drink.getCategoryName());
+            binding.countFav.setText(String.valueOf(drink.getCount()));
+            //binding.conent.setText(drink.getCategoryName());
 
 //            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) binding.image.getLayoutParams();
 //
