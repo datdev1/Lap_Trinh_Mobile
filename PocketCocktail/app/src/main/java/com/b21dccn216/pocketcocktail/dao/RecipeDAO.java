@@ -188,7 +188,9 @@ public class RecipeDAO {
     }
 
     public void searchDrinkIDByIngredient(List<String> drinkIds, List<String> ingredientIds, DrinkIDListCallback callback) {
-        recipeRef.whereIn("drinkId", drinkIds)
+//        recipeRef.whereArrayContainsAny("drinkId", drinkIds)
+//                .whereArrayContainsAny("ingredientId", ingredientIds)
+        recipeRef//.whereIn("drinkId", drinkIds)
                 .whereIn("ingredientId", ingredientIds)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {

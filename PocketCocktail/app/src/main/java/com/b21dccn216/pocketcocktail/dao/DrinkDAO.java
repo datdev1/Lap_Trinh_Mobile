@@ -562,7 +562,7 @@ public class DrinkDAO {
         Log.d("DrinkDAO", "Searching with query: " + searchQuery);
 
         drinkRef.whereEqualTo("categoryId", categoryId)
-                .whereArrayContains("name", query)
+//                .whereArrayContains("name", query)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Drink> filteredDrinks = new ArrayList<>();
@@ -571,7 +571,8 @@ public class DrinkDAO {
 
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Drink drink = convertDocumentToDrink(document);
-                        filteredDrinks.add(drink);
+                        if(drink.getName().toLowerCase().contains(searchQuery))
+                            filteredDrinks.add(drink);
                     }
                     Log.d("DrinkDAO", "Success Truong hop 2: " + filteredDrinks);
                     callback.onDrinkListLoaded(filteredDrinks);
