@@ -171,17 +171,4 @@ public class Drink implements Serializable {
                 '}';
     }
 
-    // Clone cho chức năng copy drink
-    public Drink cloneForCopy() {
-        Drink copy = new Drink();
-        copy.setName(this.name);
-        copy.setUserId(this.userId); // sẽ set lại userId mới ở ngoài
-        copy.setImage(null); // bắt buộc chọn lại ảnh
-        copy.setCategoryId(this.categoryId);
-        copy.setInstruction(this.instruction);
-        copy.setDescription(this.description);
-        copy.setRate(this.rate);
-        // Không set uuid, createdAt, updatedAt
-        return copy;
-    }
 }
