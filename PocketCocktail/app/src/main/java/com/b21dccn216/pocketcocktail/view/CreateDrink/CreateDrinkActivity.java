@@ -117,14 +117,15 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
             @Override
             public void onCategoryListLoaded(List<Category> categories) {
                 CreateDrinkActivity.this.categories = categories;
-                List<String> categoryNames = new ArrayList<>();
+                List<String> categoryItems = new ArrayList<>();
+                categoryItems.add(""); // Add empty option
                 for (Category category : categories) {
-                    categoryNames.add(category.getName());
+                    categoryItems.add(category.getName()); // Chỉ hiển thị tên
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     CreateDrinkActivity.this,
                     android.R.layout.simple_spinner_item,
-                    categoryNames
+                    categoryItems
                 );
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spCategory.setAdapter(adapter);
@@ -334,6 +335,10 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
 
         // Get the selected category
         Category selectedCategory = categories.get(categoryPosition - 1);
+        if (selectedCategory == null) {
+            Toast.makeText(this, "Lỗi: Không tìm thấy danh mục đã chọn", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // Tạo đối tượng Drink
         Drink drink = new Drink();
@@ -342,7 +347,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         drink.setDescription(description);
         drink.setInstruction(instructions);
         drink.setRate(rating);
-        drink.setCategoryId(selectedCategory.getUuid()); // Sử dụng UUID của category
+        drink.setCategoryId(selectedCategory.getUuid());
         drink.setUserId(currentUser.getUuid());
 
         // Sử dụng DrinkDAO để lưu đồ uống và ảnh
