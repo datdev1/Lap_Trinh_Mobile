@@ -45,7 +45,9 @@ public class ReviewDAO {
         review.setUuid(doc.getString("uuid"));
         review.setDrinkId(doc.getString("drinkId"));
         review.setUserId(doc.getString("userId"));
-        review.setRate(doc.getDouble("rate"));
+        Double rate = doc.getDouble("rate");
+        review.setRate(rate != null ? rate.floatValue() : 0f);
+
         review.setComment(doc.getString("comment"));
         
         Timestamp createdAt = doc.getTimestamp("createdAt");

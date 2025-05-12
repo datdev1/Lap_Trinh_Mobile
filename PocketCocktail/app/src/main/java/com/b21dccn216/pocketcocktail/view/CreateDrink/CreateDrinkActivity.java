@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -60,7 +61,8 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
     private IngredientDAO ingredientDAO;
     private List<Ingredient> ingredients;
     private List<Category> categories;
- 
+    private Dialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,25 +143,75 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
     }
 
     private void showAddIngredientDialog() {
-        Dialog dialog = new Dialog(this);
+        dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add_ingredient);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        RecyclerView rvIngredients = dialog.findViewById(R.id.rvIngredients);
+        RecyclerView rvPopularIngredients = dialog.findViewById(R.id.rvPopularIngredients);
+        RecyclerView rvSearchResults = dialog.findViewById(R.id.rvSearchResults);
+        TextView tvSearchResults = dialog.findViewById(R.id.tvSearchResults);
+        EditText etSearch = dialog.findViewById(R.id.etSearch);
+        Button btnSearch = dialog.findViewById(R.id.btnSearch);
         Button btnCancel = dialog.findViewById(R.id.btnCancel);
         Button btnAddNewIngredient = dialog.findViewById(R.id.btnAddNewIngredient);
+        TextView tvNoResults = dialog.findViewById(R.id.tvNoResults);
+
+        // Xử lý tìm kiếm
+        btnSearch.setOnClickListener(v -> {
+            String searchQuery = etSearch.getText().toString().trim().toLowerCase();
+            if (searchQuery.isEmpty()) {
+                tvSearchResults.setVisibility(View.GONE);
+                rvSearchResults.setVisibility(View.GONE);
+                tvNoResults.setVisibility(View.GONE);
+                return;
+            }
+
+            if (ingredients == null || ingredients.isEmpty()) {
+                Toast.makeText(this, "Đang tải danh sách nguyên liệu...", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            List<Ingredient> searchResults = new ArrayList<>();
+            for (Ingredient ingredient : ingredients) {
+                if (ingredient.getName().toLowerCase().contains(searchQuery)) {
+                    searchResults.add(ingredient);
+                }
+            }
+
+            if (searchResults.isEmpty()) {
+                tvSearchResults.setVisibility(View.GONE);
+                rvSearchResults.setVisibility(View.GONE);
+                tvNoResults.setVisibility(View.VISIBLE);
+            } else {
+                tvSearchResults.setVisibility(View.VISIBLE);
+                rvSearchResults.setVisibility(View.VISIBLE);
+                tvNoResults.setVisibility(View.GONE);
+
+                IngredientSelectionAdapter searchAdapter = new IngredientSelectionAdapter(searchResults);
+                rvSearchResults.setLayoutManager(new LinearLayoutManager(CreateDrinkActivity.this));
+                rvSearchResults.setAdapter(searchAdapter);
+
+                searchAdapter.setOnIngredientSelectedListener(selectedIngredient -> {
+                    showQuantityDialog(selectedIngredient, dialog);
+                });
+            }
+        });
 
         // Load danh sách nguyên liệu
         ingredientDAO.getAllIngredients(new IngredientDAO.IngredientListCallback() {
             @Override
             public void onIngredientListLoaded(List<Ingredient> ingredientList) {
                 ingredients = ingredientList;
-                IngredientSelectionAdapter adapter = new IngredientSelectionAdapter(ingredients);
-                rvIngredients.setLayoutManager(new LinearLayoutManager(CreateDrinkActivity.this));
-                rvIngredients.setAdapter(adapter);
+                
+                // Hiển thị 15 nguyên liệu phổ biến
+                List<Ingredient> popularIngredients = ingredientList.size() > 15 ? 
+                    ingredientList.subList(0, 15) : ingredientList;
+                
+                IngredientSelectionAdapter popularAdapter = new IngredientSelectionAdapter(popularIngredients);
+                rvPopularIngredients.setLayoutManager(new LinearLayoutManager(CreateDrinkActivity.this));
+                rvPopularIngredients.setAdapter(popularAdapter);
 
-                adapter.setOnIngredientSelectedListener(selectedIngredient -> {
-                    // Hiển thị dialog nhập số lượng
+                popularAdapter.setOnIngredientSelectedListener(selectedIngredient -> {
                     showQuantityDialog(selectedIngredient, dialog);
                 });
             }
@@ -228,6 +280,25 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
             @Override
             public void onIngredientListLoaded(List<Ingredient> ingredientList) {
                 ingredients = ingredientList;
+                // Cập nhật lại adapter nếu dialog đang hiển thị
+                if (dialog != null && dialog.isShowing()) {
+                    List<Ingredient> popularIngredients = ingredientList.size() > 15 ? 
+                        ingredientList.subList(0, 15) : ingredientList;
+                    
+                    RecyclerView rvPopularIngredients = dialog.findViewById(R.id.rvPopularIngredients);
+                    if (rvPopularIngredients != null) {
+                        IngredientSelectionAdapter popularAdapter = new IngredientSelectionAdapter(popularIngredients);
+                        rvPopularIngredients.setLayoutManager(new LinearLayoutManager(CreateDrinkActivity.this));
+                        rvPopularIngredients.setAdapter(popularAdapter);
+
+                        popularAdapter.setOnIngredientSelectedListener(selectedIngredient -> {
+                            showQuantityDialog(selectedIngredient, dialog);
+                        });
+                        
+                        // Đảm bảo RecyclerView được hiển thị
+                        rvPopularIngredients.setVisibility(View.VISIBLE);
+                    }
+                }
             }
 
             @Override

@@ -17,7 +17,7 @@
 
         <!-- ImageView -->
         <ImageView
-            android:id="@+id/imageIngredient"
+            android:id="@+id/imageDrink"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
@@ -26,12 +26,12 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/nameIngredient"
+            app:layout_constraintBottom_toTopOf="@id/nameDrink"
             app:layout_constraintDimensionRatio="1:1" />
 
         <!-- Ingredient Name -->
         <TextView
-            android:id="@+id/nameIngredient"
+            android:id="@+id/nameDrink"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -40,7 +40,7 @@
             android:textSize="14sp"
             android:maxLines="2"
             android:ellipsize="end"
-            app:layout_constraintTop_toBottomOf="@id/imageIngredient"
+            app:layout_constraintTop_toBottomOf="@id/imageDrink"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
