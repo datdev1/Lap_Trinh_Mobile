@@ -29,6 +29,23 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
     }
 
     @Override
+    public void loadDrinks() {
+        drinkDAO.getAllDrinks(new DrinkDAO.DrinkListCallback() {
+            @Override
+            public void onDrinkListLoaded(List<Drink> drinks) {
+                view.hideLoading();
+                view.showDrinks(drinks);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                view.hideLoading();
+                view.showError("Failed to load drinks: " + e.getMessage());
+            }
+        });
+    }
+
+    @Override
     public void loadDrinksByCategory(String categoryId) {
         drinkDAO.getDrinksByCategoryId(categoryId, new DrinkDAO.DrinkListCallback() {
             @Override
@@ -59,14 +76,78 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
             }
         });
     }
+
     @Override
     public void searchDrinks(String categoryId, String query, List<String> ingredientIds) {
-        view.showLoading();
-        drinkDAO.searchDrinkTotal(query, categoryId, ingredientIds, 100, new DrinkDAO.DrinkListCallback() {
+        drinkDAO.getDrinksByCategoryId(categoryId, new DrinkDAO.DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinks) {
-                view.hideLoading();
-                view.showDrinks(drinks);
+                List<Drink> filteredDrinks = new ArrayList<>();
+                int[] pendingCount = {drinks.size()};
+
+                for (Drink drink : drinks) {
+                    recipeDAO.getRecipesByDrinkId(drink.getUuid(), new RecipeDAO.RecipeListCallback() {
+                        @Override
+                        public void onRecipeListLoaded(List<Recipe> recipes) {
+                            List<String> drinkIngredientIds = new ArrayList<>();
+                            if (recipes.isEmpty()) {
+                                checkDone();
+                                return;
+                            }
+
+                            int[] recipeCounter = {recipes.size()};
+                            for (Recipe recipe : recipes) {
+                                ingredientDAO.getIngredient(recipe.getIngredientId(), new IngredientDAO.IngredientCallback() {
+                                    @Override
+                                    public void onIngredientLoaded(Ingredient ingredient) {
+                                        drinkIngredientIds.add(ingredient.getUuid());
+                                        recipeCounter[0]--;
+                                        if (recipeCounter[0] == 0) {
+                                            boolean matchesQuery = query == null || query.isEmpty()
+                                                    || drink.getName().toLowerCase().contains(query.toLowerCase());
+
+                                            boolean matchesIngredients = ingredientIds == null || ingredientIds.isEmpty()
+                                                    || drinkIngredientIds.containsAll(ingredientIds);
+
+                                            if (matchesQuery && matchesIngredients) {
+                                                synchronized (filteredDrinks) {
+                                                    filteredDrinks.add(drink);
+                                                }
+                                            }
+                                            checkDone();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        recipeCounter[0]--;
+                                        if (recipeCounter[0] == 0) checkDone();
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            checkDone();
+                        }
+
+                        private void checkDone() {
+                            synchronized (pendingCount) {
+                                pendingCount[0]--;
+                                if (pendingCount[0] == 0) {
+                                    view.hideLoading();
+                                    view.showDrinks(filteredDrinks);
+                                }
+                            }
+                        }
+                    });
+                }
+
+                if (drinks.isEmpty()) {
+                    view.hideLoading();
+                    view.showDrinks(new ArrayList<>());
+                }
             }
 
             @Override
@@ -76,87 +157,6 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
             }
         });
     }
-
-//    @Override
-//    public void searchDrinks(String categoryId, String query, List<String> ingredientIds) {
-//        drinkDAO.getDrinksByCategoryId(categoryId, new DrinkDAO.DrinkListCallback() {
-//            @Override
-//            public void onDrinkListLoaded(List<Drink> drinks) {
-//                List<Drink> filteredDrinks = new ArrayList<>();
-//                int[] pendingCount = {drinks.size()};
-//
-//                for (Drink drink : drinks) {
-//                    recipeDAO.getRecipesByDrinkId(drink.getUuid(), new RecipeDAO.RecipeListCallback() {
-//                        @Override
-//                        public void onRecipeListLoaded(List<Recipe> recipes) {
-//                            List<String> drinkIngredientIds = new ArrayList<>();
-//                            if (recipes.isEmpty()) {
-//                                checkDone();
-//                                return;
-//                            }
-//
-//                            int[] recipeCounter = {recipes.size()};
-//                            for (Recipe recipe : recipes) {
-//                                ingredientDAO.getIngredient(recipe.getIngredientId(), new IngredientDAO.IngredientCallback() {
-//                                    @Override
-//                                    public void onIngredientLoaded(Ingredient ingredient) {
-//                                        drinkIngredientIds.add(ingredient.getUuid());
-//                                        recipeCounter[0]--;
-//                                        if (recipeCounter[0] == 0) {
-//                                            boolean matchesQuery = query == null || query.isEmpty()
-//                                                    || drink.getName().toLowerCase().contains(query.toLowerCase());
-//
-//                                            boolean matchesIngredients = ingredientIds == null || ingredientIds.isEmpty()
-//                                                    || drinkIngredientIds.containsAll(ingredientIds);
-//
-//                                            if (matchesQuery && matchesIngredients) {
-//                                                synchronized (filteredDrinks) {
-//                                                    filteredDrinks.add(drink);
-//                                                }
-//                                            }
-//                                            checkDone();
-//                                        }
-//                                    }
-//
-//                                    @Override
-//                                    public void onError(Exception e) {
-//                                        recipeCounter[0]--;
-//                                        if (recipeCounter[0] == 0) checkDone();
-//                                    }
-//                                });
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onError(Exception e) {
-//                            checkDone();
-//                        }
-//
-//                        private void checkDone() {
-//                            synchronized (pendingCount) {
-//                                pendingCount[0]--;
-//                                if (pendingCount[0] == 0) {
-//                                    view.hideLoading();
-//                                    view.showDrinks(filteredDrinks);
-//                                }
-//                            }
-//                        }
-//                    });
-//                }
-//
-//                if (drinks.isEmpty()) {
-//                    view.hideLoading();
-//                    view.showDrinks(new ArrayList<>());
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                view.hideLoading();
-//                view.showError("Search failed: " + e.getMessage());
-//            }
-//        });
-//    }
 
 
     @Override

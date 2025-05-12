@@ -20,6 +20,7 @@ public interface SearchContract {
     }
 
     interface Presenter extends BaseContract.Presenter<SearchContract.View>{
+        void loadDrinks();
         void loadDrinksByCategory(String categoryId);
         void loadIngredients();
         void searchDrinks(String categoryId, String query, List<String> ingredientIds);

@@ -41,7 +41,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     private DrinkAdapter drinkAdapter;
     private IngredientAdapter ingredientAdapter;
 
-    private Category choosenCategory;
+    private Category category;
 
     private Ingredient ingredient;
 
@@ -69,28 +69,17 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         setUpDrinkRecycler();
         setUpIngredientRecycler();
 
-        Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
+        category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
+        ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
+        presenter.loadIngredients();
         if (category != null) {
             Log.e("Category", category.toString());
-//            presenter.loadDrinksByCategory(category.getUuid());
-            presenter.searchDrinks(category.getUuid(),"",null);
-            presenter.loadIngredients();
-
-            choosenCategory = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
-            ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
-            if (ingredient != null) {
-                choosenIngredientList.add(ingredient);
-            }
-
-            if (choosenCategory != null) {
-                Log.e("Category", choosenCategory.toString());
-                presenter.loadDrinksByCategory(choosenCategory.getUuid());
-            } else {
-                Log.e("Category", "Category is null");
-            }
+            presenter.loadDrinksByCategory(category.getUuid());
+        }
+        if(category == null && ingredient == null){
+            presenter.loadDrinks();
         }
 
-        presenter.loadIngredients();
 
         //Search drink
         binding.searchEditText.addTextChangedListener(new TextWatcher() {
@@ -101,12 +90,23 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String query = s.toString().trim();
 
-                if (!query.isEmpty()) {
-                    presenter.searchDrinks(category.getUuid(),query,null);
-                    binding.clearButton.setVisibility(View.VISIBLE);
-                } else {
-                    presenter.loadIngredients(); // Nếu không có gì, load lại toàn bộ
-                    binding.clearButton.setVisibility(View.GONE);
+                if(category.getUuid() != null){
+                    if (!query.isEmpty()) {
+                        presenter.searchDrinks(category.getUuid(),query,null);
+                        binding.clearButton.setVisibility(View.VISIBLE);
+                    } else {
+                        presenter.loadIngredients();
+                        binding.clearButton.setVisibility(View.GONE);
+                    }
+                }
+                else{
+                    if (!query.isEmpty()) {
+                        presenter.searchDrinks(null,query,null);
+                        binding.clearButton.setVisibility(View.VISIBLE);
+                    } else {
+                        presenter.loadIngredients();
+                        binding.clearButton.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -116,7 +116,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
         binding.clearButton.setOnClickListener(v -> {
             binding.searchEditText.setText("");
-            presenter.loadIngredients();
+            presenter.loadDrinksByCategory(category.getUuid());
             // Hide keyboard
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
@@ -182,20 +182,17 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     }
 
     private void updateDrinkList(){
-        presenter.updateDrinkList(choosenCategory, choosenIngredientList, searchName);
+//        presenter.updateDrinkList(choosenCategory, choosenIngredientList, searchName);
     }
 
     private void setUpIngredientRecycler() {
         ingredientAdapter = new IngredientAdapter(this, selectedIngredients -> {
             String query = binding.searchEditText.getText().toString();
-            if(query.isEmpty()){
-                query = "";
-            }
-            Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
             if (category != null) {
-                if (selectedIngredients == null || selectedIngredients.isEmpty()) {
+                if(query.isEmpty() && selectedIngredients.isEmpty()){
                     presenter.loadDrinksByCategory(category.getUuid());
-                } else {
+                }
+                else {
                     presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
                 }
             }

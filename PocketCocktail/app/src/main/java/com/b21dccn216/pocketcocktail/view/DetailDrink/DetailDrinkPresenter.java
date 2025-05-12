@@ -25,6 +25,7 @@ import java.util.List;
 public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View>
         implements DetailDrinkContract.Presenter {
 
+    //
     //DAO
     private final FavoriteDAO favoriteDAO;
     private final DrinkDAO drinkDAO;
@@ -92,6 +93,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
                         @Override
                         public void onIngredientLoaded(Ingredient ingredient) {
                             String line = ingredient.getName() + " (" + recipe.getAmount() + " " + ingredient.getUnit() + ")";
+                            Log.e("Ingredient", "Ingredient: " + line);
                             view.showIngredient(line);
                         }
 
@@ -379,7 +381,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         reviewDAO.updateReview(review,
                 unused -> {
                     view.showMessage("Đánh giá đã được cập nhật");
-                    loadReviews(drinkId); 
+                    loadReviews(drinkId);
                 },
                 e -> view.showMessage("Cập nhật đánh giá thất bại: " + e.getMessage())
         );
