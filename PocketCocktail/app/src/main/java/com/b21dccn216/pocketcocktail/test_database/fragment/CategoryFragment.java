@@ -227,6 +227,6 @@ public class CategoryFragment extends BaseModelFragment {
                     clearInputs();
                     loadData();
                 },
-                e -> showToast("Error deleting category: " + e.getMessage()));
+                e -> showToast(e.getMessage()));
     }
 } 

@@ -125,14 +125,14 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
 
         binding.btnLatestSeeAll.setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), SearchActivity.class);
-            intent.putExtra(SearchActivity.SORT_FIELD, DrinkDAO.DRINK_FIELD.CREATED_AT);
+            intent.putExtra(SearchActivity.SORT_FIELD, DrinkDAO.DRINK_FIELD.CREATED_AT.getValue());
             intent.putExtra(SearchActivity.SORT_ORDER, Query.Direction.DESCENDING);
             startActivity(intent);
         });
 
         binding.btnHighestRateSeeAll.setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), SearchActivity.class);
-            intent.putExtra(SearchActivity.SORT_FIELD, DrinkDAO.DRINK_FIELD.RATE);
+            intent.putExtra(SearchActivity.SORT_FIELD, DrinkDAO.DRINK_FIELD.RATE.getValue());
             intent.putExtra(SearchActivity.SORT_ORDER, Query.Direction.DESCENDING);
             startActivity(intent);
         });

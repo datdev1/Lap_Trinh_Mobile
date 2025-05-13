@@ -282,6 +282,6 @@ public class IngredientFragment extends BaseModelFragment {
                     clearInputs();
                     loadData();
                 },
-                e -> showToast("Error deleting ingredient: " + e.getMessage()));
+                e -> showToast(e.getMessage()));
     }
 } 

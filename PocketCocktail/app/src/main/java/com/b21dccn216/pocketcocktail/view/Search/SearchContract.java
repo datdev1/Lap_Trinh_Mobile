@@ -1,9 +1,9 @@
 package com.b21dccn216.pocketcocktail.view.Search;
 
 import com.b21dccn216.pocketcocktail.base.BaseContract;
-import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
+import com.google.firebase.firestore.Query;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface SearchContract {
     }
 
     interface Presenter extends BaseContract.Presenter<SearchContract.View>{
-        void loadDrinks();
+        void loadDrinks(String sortField, Query.Direction sortOrder);
         void loadDrinksByCategory(String categoryId);
         void loadDrinksByIngredient(String ingredientId);
         void loadIngredients();

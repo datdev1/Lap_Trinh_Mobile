@@ -600,7 +600,7 @@ public class DrinkFragment extends BaseModelFragment {
                 },
                 e -> {
                     Log.e(TAG, "Error deleting drink", e);
-                    showToast("Error deleting drink: " + e.getMessage());
+                    showToast(e.getMessage());
                 });
     }
 } 

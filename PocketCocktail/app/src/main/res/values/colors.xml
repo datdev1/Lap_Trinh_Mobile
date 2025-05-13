@@ -94,6 +94,8 @@
     <color name="text_primary_y">#4A4A4A</color>
     <color name="text_hint">#9E9E9E</color>
     <color name="transparent_t">#00000000</color>
+    <color name="star_color">#FFD700</color>
+    <color name="star_color_secondary">#FFC107</color>
 
     <color name="actionBarColor">#FFD5E5</color>
 

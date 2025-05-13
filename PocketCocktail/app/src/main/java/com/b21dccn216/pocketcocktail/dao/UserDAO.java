@@ -4,6 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.model.Favorite;
+import com.b21dccn216.pocketcocktail.model.Review;
 import com.b21dccn216.pocketcocktail.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -296,6 +299,60 @@ public class UserDAO {
         });
     }
 
+    private void checkUserDependencies(String userId, OnSuccessListener<Boolean> onSuccess, OnFailureListener onFailure) {
+        // Check for drinks created by user
+        DrinkDAO drinkDAO = new DrinkDAO();
+        drinkDAO.getDrinksByUserId(userId, new DrinkDAO.DrinkListCallback() {
+            @Override
+            public void onDrinkListLoaded(List<Drink> drinks) {
+                if (!drinks.isEmpty()) {
+                    onFailure.onFailure(new Exception("Cannot delete user: User has created drinks"));
+                    return;
+                }
+                
+                // Check for reviews by user
+                ReviewDAO reviewDAO = new ReviewDAO();
+                reviewDAO.getReviewsByUserId(userId, new ReviewDAO.ReviewListCallback() {
+                    @Override
+                    public void onReviewListLoaded(List<Review> reviews) {
+                        if (!reviews.isEmpty()) {
+                            onFailure.onFailure(new Exception("Cannot delete user: User has reviews"));
+                            return;
+                        }
+                        
+                        // Check for favorites by user
+                        FavoriteDAO favoriteDAO = new FavoriteDAO();
+                        favoriteDAO.getFavoritesByUserId(userId, new FavoriteDAO.FavoriteListCallback() {
+                            @Override
+                            public void onFavoriteListLoaded(List<Favorite> favorites) {
+                                if (!favorites.isEmpty()) {
+                                    onFailure.onFailure(new Exception("Cannot delete user: User has favorites"));
+                                    return;
+                                }
+                                onSuccess.onSuccess(true);
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                onFailure.onFailure(e);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        onFailure.onFailure(e);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
+    }
+
     public void deleteUser(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         //waitForAuthentication();
         if (!isAuthenticated) {
@@ -303,32 +360,39 @@ public class UserDAO {
             return;
         }
 
-        // First get the user to get their image URL
-        userRef.document(uuid).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    User user = convertDocumentToUser(documentSnapshot);
-                    if (user != null && user.getImage() != null && !user.getImage().isEmpty()) {
-                        // Delete the image first
-                        imageDAO.deleteImageFromImgur(user.getImage(), new ImageDAO.DeleteCallback() {
-                            @Override
-                            public void onSuccess() {
-                                // After image is deleted, delete the user document
-                                deleteUserDocument(uuid, onSuccess, onFailure);
-                            }
+        // First check dependencies
+        checkUserDependencies(uuid, 
+            success -> {
+                // If no dependencies, proceed with deletion
+                // First get the user to get their image URL
+                userRef.document(uuid).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        User user = convertDocumentToUser(documentSnapshot);
+                        if (user != null && user.getImage() != null && !user.getImage().isEmpty()) {
+                            // Delete the image first
+                            imageDAO.deleteImageFromImgur(user.getImage(), new ImageDAO.DeleteCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    // After image is deleted, delete the user document
+                                    deleteUserDocument(uuid, onSuccess, onFailure);
+                                }
 
-                            @Override
-                            public void onFailure(Exception e) {
-                                // Even if image deletion fails, continue with user deletion
-                                Log.e("UserDAO", "Failed to delete image for user " + uuid + ": " + e.getMessage());
-                                deleteUserDocument(uuid, onSuccess, onFailure);
-                            }
-                        });
-                    } else {
-                        // If no image, just delete the user
-                        deleteUserDocument(uuid, onSuccess, onFailure);
-                    }
-                })
-                .addOnFailureListener(onFailure);
+                                @Override
+                                public void onFailure(Exception e) {
+                                    // Even if image deletion fails, continue with user deletion
+                                    Log.e("UserDAO", "Failed to delete image for user " + uuid + ": " + e.getMessage());
+                                    deleteUserDocument(uuid, onSuccess, onFailure);
+                                }
+                            });
+                        } else {
+                            // If no image, just delete the user
+                            deleteUserDocument(uuid, onSuccess, onFailure);
+                        }
+                    })
+                    .addOnFailureListener(onFailure);
+            },
+            onFailure
+        );
     }
 
     private void deleteUserDocument(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {

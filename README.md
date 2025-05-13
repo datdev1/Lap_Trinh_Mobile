@@ -35,6 +35,8 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
 
 ## Thiết kế model
 
+![Database diagram](Database_diagram.png)
+
 - Model Drink đồ uống:
   - uuid
   - Tên đồ uống
@@ -44,18 +46,23 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
   - Instruction
   - Description
   - Rate (mặc định)
+  - createdAt
+  - updatedAt
 - Model Recipe
   - uuid
   - id đồ uống
   - id Nguyên liệu
   - Liều lượng/số lượng
+  - createdAt
+  - updatedAt
 - Model Nguyên liệu (Ingredients) - Mặc định
   - uuid
   - Tên nguyên liệu
   - Description
   - Image
   - Đơn vị
-  
+  - createdAt
+  - updatedAt
 - Model user
   - uuid
   - saveUuidFromAuthen
@@ -63,21 +70,35 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
   - email
   - password
   - Image
+  - createdAt
+  - updatedAt
 - Model Category - Mặc định
   - uuid
   - name
   - description
   - image
+  - createdAt
+  - updatedAt
 - Model Review
   - uuid
   - id user
   - id đồ uống
   - comment
   - rate
+  - createdAt
+  - updatedAt
 - Model Favorite
   - uuid
   - id user
   - id đồ uống
+  - createdAt
+  - updatedAt
+- Model DrinkCntFav
+  - uuid
+  - drinkId
+  - count
+  - createdAt
+  - updatedAt
 
 ## Các đầu mục công việc
 - Nghiên cứu kết nối dữ liệu FireStore và Imagur, Dao + Model, các trang quản lý db (admin) (Dũng) (Package data)
