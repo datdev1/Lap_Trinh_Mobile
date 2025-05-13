@@ -652,12 +652,16 @@ public class DrinkDAO {
 
     // Trường hợp 2  Nếu có Category / Name và không có list IngredientID
     public void searchDrinksByCategory(String query, String categoryId, DrinkListCallback callback) {
-        String searchQuery = query.toLowerCase();
+        String searchQuery = query != null ? query.toLowerCase() : "";
         Log.d("DrinkDAO", "Searching with query: " + searchQuery);
+        Log.d("DrinkDAO", "Category ID: " + categoryId);
 
-        drinkRef.whereEqualTo("categoryId", categoryId)
-//                .whereArrayContains("name", query)
-                .get()
+        Query drinkQuery = drinkRef;
+        if (categoryId != null && !categoryId.isEmpty()) {
+            drinkQuery = drinkQuery.whereEqualTo("categoryId", categoryId);
+        }
+
+        drinkQuery.get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Drink> filteredDrinks = new ArrayList<>();
 
@@ -665,8 +669,9 @@ public class DrinkDAO {
 
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Drink drink = convertDocumentToDrink(document);
-                        if(drink.getName().toLowerCase().contains(searchQuery))
+                        if (drink != null && (searchQuery.isEmpty() || drink.getName().toLowerCase().contains(searchQuery))) {
                             filteredDrinks.add(drink);
+                        }
                     }
                     Log.d("DrinkDAO", "Success Truong hop 2: " + filteredDrinks);
                     callback.onDrinkListLoaded(filteredDrinks);
@@ -675,18 +680,17 @@ public class DrinkDAO {
                     Log.e("DrinkDAO", "Trường hợp 2  Nếu có Category / Name và không có list IngredientID" + e.toString());
                     callback.onError(e);
                 });
-
     }
 
     // Trường hợp 1: Nếu có Category / Name và có list IngredientID
     public void searchDrinksByCategoryAndIngredientID(String query, String categoryId, List<String> ingredientIds, DrinkListCallback callback) {
+
         searchDrinksByCategory(query, categoryId, new DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinks) {
                 RecipeDAO recipeDAO = new RecipeDAO();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     recipeDAO.searchDrinkIDByIngredient(drinks.stream().map(Drink::getUuid).toList(), ingredientIds, new RecipeDAO.DrinkIDListCallback() {
-
                         @Override
                         public void onDrinkIDListLoaded(List<String> drinkIds) {
                             List<Drink> filteredDrinks = new ArrayList<>();
@@ -695,7 +699,6 @@ public class DrinkDAO {
                                     filteredDrinks.add(drink);
                                 }
                             }
-//                            filteredDrinks.sort(Comparator.comparing(Drink::getName));
                             Log.d("DrinkDAO", "Success Truong hop 1: " + filteredDrinks);
                             callback.onDrinkListLoaded(filteredDrinks);
                         }
@@ -807,22 +810,21 @@ public class DrinkDAO {
         Log.d("DrinkDAO", "limit: " + limit);
         Log.d("DrinkDAO", "------------------------------------------------");
         // Trường hợp 1: Nếu có Category / Name và có list IngredientID
-        if (categoryId != null && !categoryId.isEmpty() && ingredientIds != null && !ingredientIds.isEmpty()) {
+        if ((categoryId != null && !categoryId.isEmpty() || (query != null && !query.isEmpty())) && ingredientIds != null && !ingredientIds.isEmpty()) {
             searchDrinksByCategoryAndIngredientID(query, categoryId, ingredientIds, callback);
         }
         // Trường hợp 2: Nếu có Category / Name và không có list IngredientID
-        else if (categoryId != null && !categoryId.isEmpty() && (ingredientIds == null)) {
+        else if (categoryId != null && !categoryId.isEmpty() || (query != null && !query.isEmpty())) {
             searchDrinksByCategory(query, categoryId, callback);
         }
         // Trường hợp 3: Nếu không có Category / Name và có list IngredientID
-        else if (categoryId == null || ingredientIds != null && !ingredientIds.isEmpty()) {
+        else if ((categoryId == null || categoryId.isEmpty()) && ingredientIds != null && !ingredientIds.isEmpty()) {
             getAllDrinkWithListIngredientID(ingredientIds, callback);
         }
         // Trường hợp 4: Nếu không có Category / Name và không có list IngredientID
         else {
             getAllDrinkWithLimit(limit, callback);
         }
-        
     }
 
     public void searchDrinkTotalWithSort(@Nullable String query, @Nullable String categoryId, @Nullable List<String> ingredientIds, int limit, @Nullable DRINK_FIELD sortTag, @Nullable Query.Direction sortOrder, DrinkListCallback callback) {
@@ -859,11 +861,12 @@ public class DrinkDAO {
         };
         
         // Trường hợp 1: Nếu có Category / Name và có list IngredientID
-        if (categoryId != null && !categoryId.isEmpty() && ingredientIds != null && !ingredientIds.isEmpty()) {
+
+        if ((categoryId != null && !categoryId.isEmpty() || (query != null && !query.isEmpty())) && ingredientIds != null && !ingredientIds.isEmpty()) {
             searchDrinksByCategoryAndIngredientID(query, categoryId, ingredientIds, sortingCallback);
         }
         // Trường hợp 2: Nếu có Category / Name và không có list IngredientID
-        else if (categoryId != null && !categoryId.isEmpty() && (ingredientIds == null)) {
+        else if (categoryId != null && !categoryId.isEmpty() || (query != null && !query.isEmpty())) {
             searchDrinksByCategory(query, categoryId, sortingCallback);
         }
         // Trường hợp 3: Nếu không có Category / Name và có list IngredientID

@@ -161,65 +161,65 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
             }
         });
     }
-//    @Override
-//    public void searchDrinks(String categoryId, String query, List<String> ingredientIds, String sortField, Query.Direction sortOrder) {
-//        view.showLoading();
-//        drinkDAO.searchDrinkTotal(query,categoryId,ingredientIds,100, new DrinkDAO.DrinkListCallback(){
-//
-//            @Override
-//            public void onDrinkListLoaded(List<Drink> drinks) {
-//                view.showDrinks(drinks);
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                view.showError("Failed to load ingredients: " + e.getMessage());
-//            }
-//        });
-//    }
-
-
-    // Search drinks (4 case)
     @Override
     public void searchDrinks(String categoryId, String query, List<String> ingredientIds, String sortField, Query.Direction sortOrder) {
         view.showLoading();
+        drinkDAO.searchDrinkTotal(query,categoryId,ingredientIds,100, new DrinkDAO.DrinkListCallback(){
 
-        // Tạo callback chung
-        DrinkDAO.DrinkListCallback callback = new DrinkDAO.DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinks) {
-                if (drinks == null || drinks.isEmpty()) {
-                    view.hideLoading();
-                    view.showDrinks(new ArrayList<>());
-                    return;
-                }
-
-                // Not ingredient
-                if (ingredientIds == null || ingredientIds.isEmpty()) {
-                    List<Drink> filteredDrinks = filterDrinksByQuery(drinks, query);
-                    view.hideLoading();
-                    view.showDrinks(filteredDrinks);
-                    return;
-                }
-
-                // Have ingredient
-                filterDrinksWithIngredients(drinks, query, ingredientIds);
+                view.showDrinks(drinks);
             }
 
             @Override
             public void onError(Exception e) {
-                view.hideLoading();
-                view.showError("Search failed: " + e.getMessage());
+                view.showError("Failed to load ingredients: " + e.getMessage());
             }
-        };
-
-        // Search by category or not
-        if (categoryId != null && !categoryId.isEmpty()) {
-            drinkDAO.getDrinksByCategoryId(categoryId, callback);
-        } else {
-            drinkDAO.getDrinksSorted(sortField, sortOrder,callback);
-        }
+        });
     }
+
+
+    // Search drinks (4 case)
+//    @Override
+//    public void searchDrinks(String categoryId, String query, List<String> ingredientIds, String sortField, Query.Direction sortOrder) {
+//        view.showLoading();
+//
+//        // Tạo callback chung
+//        DrinkDAO.DrinkListCallback callback = new DrinkDAO.DrinkListCallback() {
+//            @Override
+//            public void onDrinkListLoaded(List<Drink> drinks) {
+//                if (drinks == null || drinks.isEmpty()) {
+//                    view.hideLoading();
+//                    view.showDrinks(new ArrayList<>());
+//                    return;
+//                }
+//
+//                // Not ingredient
+//                if (ingredientIds == null || ingredientIds.isEmpty()) {
+//                    List<Drink> filteredDrinks = filterDrinksByQuery(drinks, query);
+//                    view.hideLoading();
+//                    view.showDrinks(filteredDrinks);
+//                    return;
+//                }
+//
+//                // Have ingredient
+//                filterDrinksWithIngredients(drinks, query, ingredientIds);
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                view.hideLoading();
+//                view.showError("Search failed: " + e.getMessage());
+//            }
+//        };
+//
+//        // Search by category or not
+//        if (categoryId != null && !categoryId.isEmpty()) {
+//            drinkDAO.getDrinksByCategoryId(categoryId, callback);
+//        } else {
+//            drinkDAO.getDrinksSorted(sortField, sortOrder,callback);
+//        }
+//    }
 
     private List<Drink> filterDrinksByQuery(List<Drink> drinks, String query) {
         if (query == null || query.isEmpty()) {
