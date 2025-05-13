@@ -15,10 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:elevation="4dp"
-        app:title="Home"
         app:menu="@menu/main_toolbar_menu"
         android:background="@color/actionBarColor"
-        app:titleTextColor="@color/text_on_secondary"/>
+        app:titleTextColor="@color/text_on_secondary"
+        app:title="Home"
+        app:titleTextAppearance="@style/FragmentSectionTitle"/>
 
 
     <!-- Fragment Container -->
@@ -43,20 +44,9 @@
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/nav_item_icon_tint"
         app:itemActiveIndicatorStyle="@color/transparent"
+        app:itemTextAppearanceActive="@style/BaseString"
+        app:itemTextAppearanceInactive="@style/BaseString"
         app:itemTextColor="@color/nav_item_icon_tint"
         app:labelVisibilityMode="labeled"
         app:itemBackground="@drawable/nav_item_background"/>
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/fabCreateDrink"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="bottom|end"-->
-<!--        android:layout_marginEnd="16dp"-->
-<!--        android:layout_marginBottom="96dp"-->
-<!--        android:src="@drawable/plus"-->
-<!--        app:fabSize="normal"-->
-<!--        app:tint="@color/white"-->
-<!--        app:backgroundTint="@color/secondary"/>-->
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

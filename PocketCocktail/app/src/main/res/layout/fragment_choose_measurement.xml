@@ -116,7 +116,7 @@
         android:layout_height="wrap_content"
         android:text="Choose Your Units"
         style="@style/AppSecondaryTitle"
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/kanit"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/unitOptions"
         app:layout_constraintStart_toStartOf="parent"
@@ -155,13 +155,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Metric"
-                    android:fontFamily="@font/poppins_bold"
+                    style="@style/BaseString"
                     android:textSize="18sp"
                     android:textStyle="bold"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_bold"
+                    style="@style/BaseString"
                     android:text="ml, g, °C"
                     android:textSize="14sp"
                     android:textColor="@color/text_secondary"/>
@@ -188,14 +188,14 @@
                     android:id="@+id/txImperial"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_bold"
+                    style="@style/BaseString"
                     android:text="Imperial"
                     android:textSize="18sp"
                     android:textStyle="bold"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_bold"
+                    style="@style/BaseString"
                     android:text="oz, lbs, °F"
                     android:textSize="14sp"
                     android:textColor="@color/text_secondary"/>

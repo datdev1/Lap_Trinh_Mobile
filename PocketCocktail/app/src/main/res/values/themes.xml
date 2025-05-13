@@ -16,6 +16,10 @@
         <!-- color used by title text -->
         <item name="colorControlNormal">@color/text_on_secondary</item>
         <item name="colorOnContainer">@color/text_on_secondary</item>
+        <item name="colorOnSurface">@color/text_on_secondary</item>
+        <item name="colorOnSecondary">@color/text_on_secondary</item>
+        <item name="android:fontFamily">@font/kanit</item>
+        <item name="actionBarItemBackground">@color/transparent</item>
     </style>
 
     <style name="Theme.PocketCocktail" parent="Base.Theme.PocketCocktail" />

@@ -79,6 +79,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Mojito"
+                        style="@style/BaseString"
                         android:textColor="@color/black"
                         android:textSize="28sp"
                         android:textStyle="bold" />
@@ -122,6 +123,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    style="@style/BaseString"
                     android:text="Mojito variations can be made using different fruits such as strawberries, raspberries, or watermelon."
                     android:textColor="@color/gray"
                     android:textSize="16sp" />
@@ -132,9 +134,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:text="Ingredients"
-                    android:textColor="@color/black"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    style="@style/DetailDrinkTitle"/>
 
                 <LinearLayout
                     android:id="@+id/ingredients_layout"
@@ -200,9 +200,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:text="Instructions"
-                    android:textColor="@color/black"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    style="@style/DetailDrinkTitle"/>
 
                 <LinearLayout
                     android:id="@+id/instructions_layout"
@@ -258,9 +256,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:text="Similar Taste"
-                    android:textColor="@color/black"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    style="@style/DetailDrinkTitle" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/similar_drinks_recycler_view"
@@ -290,9 +286,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Comments"
-                        android:textColor="#000000"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
+                        style="@style/DetailDrinkTitle"
                         android:letterSpacing="0.02"
                         android:paddingTop="4dp" />
 

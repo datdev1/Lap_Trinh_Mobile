@@ -2,7 +2,7 @@
 <resources>
 
     <style name="BaseString">
-        <item name="fontFamily">@font/poppins_regular</item>
+        <item name="fontFamily">@font/kanit</item>
     </style>
 
     <style name="NormalString" parent="BaseString">
@@ -25,6 +25,8 @@
     <style name="AppLogo">
         <item name="android:textColor">@color/secondary</item>
         <item name="android:textSize">100sp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:fontFamily">@font/sakitu_baelah_clean</item>
         <item name="android:textStyle">italic</item>
         <item name="android:letterSpacing">0.08</item>
     </style>
@@ -37,7 +39,7 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
-    <style name="RecyclerViewTitle" parent="BaseString">
+    <style name="FragmentSectionTitle" parent="BaseString">
         <item name="android:textSize">24sp</item>
         <item name="android:textColor">@color/brown</item>
         <item name="android:textStyle">bold</item>
@@ -51,6 +53,12 @@
         <item name="android:textStyle">bold</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="HomeItemName" parent="BaseString">\
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAlignment">center</item>
     </style>
 
     <style name="ItemTitle" parent="BaseString">
@@ -68,12 +76,28 @@
         <item name="android:ellipsize">end</item>
     </style>
 
+    <style name="EditTextLabel" parent="BaseString">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/brown</item>
+    </style>
+
+    <style name="DetailDrinkTitle" parent="BaseString">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+<!--            -->
+<!--        Shape-->
+<!--                -->
     <style name="CircleImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
 
 
+    <!--            -->
+    <!--        Button-->
+    <!--                -->
     <style name="BaseButton" parent="BaseString">
         <item name="android:textSize">14sp</item>
         <item name="android:textAllCaps">false</item>
@@ -88,6 +112,15 @@
         <item name="android:background">@drawable/bg_btn_login</item>
         <item name="android:textColor">@color/text_on_secondary</item>
     </style>
+
+    <style name="PinkPillButton" parent="BaseButton">
+        <item name="android:background">@drawable/bg_btn_see_all</item>
+        <item name="android:textColor">@color/text_on_primary</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
 
 
 </resources>
