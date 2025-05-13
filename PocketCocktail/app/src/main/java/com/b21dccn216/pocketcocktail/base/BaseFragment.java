@@ -32,6 +32,7 @@ public abstract class BaseFragment<V extends BaseContract.View, P extends BaseCo
     @Override
     public void onResume() {
         super.onResume();
+        presenter.attachView(getViewImpl());
         presenter.onResume();
     }
 

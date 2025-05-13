@@ -52,9 +52,8 @@ public class IngredientDiscoverAdapter extends RecyclerView.Adapter<IngredientDi
 
         public void bind(int pos){
             Ingredient ingredient = ingredientsList.get(pos);
-
-
             binding.titleDiscover.setText(ingredient.getName());
+
             binding.layout.setOnClickListener(v -> {
                 Intent intent = new Intent(context, SearchActivity.class);
                 intent.putExtra(SearchActivity.EXTRA_INGREDIENT_OBJECT, ingredient);
