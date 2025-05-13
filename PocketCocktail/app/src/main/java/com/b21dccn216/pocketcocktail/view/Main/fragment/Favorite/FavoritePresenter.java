@@ -39,8 +39,8 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
     public void onCreate(){
         super.onCreate();
         getAllFavoriteByUserId();
+        getAllDrinksCreatedByCurrentUser();
     }
-
 
     public void getAllFavoriteByUserId() {
         Log.d("favourite", "currentUserId: " + currentUserId);
@@ -49,6 +49,12 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
             public void onFavoriteListLoaded(List<Favorite> favorites) {
                 // TODO
                 Log.d("favourite", "Size: " + favorites.size());
+
+                if (favorites.isEmpty()) {
+                    view.showFavoriteDrinkList(new ArrayList<>()); // Truyền list rỗng để xử lý hiển thị thông báo
+                    return;
+                }
+
                 List<Drink> drinks = new ArrayList<>();
                 for(Favorite favorite : favorites){
                     drinkDAO.getDrink(favorite.getDrinkId(),
@@ -77,5 +83,27 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
         });
     }
 
+    public void getAllDrinksCreatedByCurrentUser() {
+        Log.d("drink", "currentUserId: " + currentUserId);
+        drinkDAO.getDrinksByUserId(currentUserId, new DrinkDAO.DrinkListCallback() {
+            @Override
+            public void onDrinkListLoaded(List<Drink> drinks) {
+                Log.d("drink", "Drinks created by user: " + drinks.size());
+                if (drinks.isEmpty()) {
+                    view.showFavoriteDrinkList(new ArrayList<>()); // Truyền list rỗng để xử lý hiển thị thông báo
+                    return;
+                }
+
+                view.showFavoriteDrinkCreateByUserId(drinks); // Hiển thị danh sách nếu có
+            }
+
+            @Override
+            public void onError(Exception e) {
+                DialogHelper.showAlertDialog(((Fragment) view).requireActivity(),
+                        "Error", e.getMessage(),
+                        HelperDialog.DialogType.ERROR);
+            }
+        });
+    }
 
 }

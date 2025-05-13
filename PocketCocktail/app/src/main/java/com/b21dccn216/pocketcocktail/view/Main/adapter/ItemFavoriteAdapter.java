@@ -44,12 +44,11 @@ public class ItemFavoriteAdapter extends RecyclerView.Adapter<ItemFavoriteAdapte
                 .into(holder.binding.image);
 
         holder.binding.name.setText(favorite.getName());
-//        holder.binding.cate.setText(String.valueOf(images.get(position).rate));
+
 
         holder.binding.layout.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailDrinkActivity.class);
             intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, favorite);
-//            intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_ID, drinks.get(position).getUuid());
             context.startActivity(intent);
         });
     }

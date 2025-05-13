@@ -12,6 +12,15 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
+        <TextView
+            android:text="Your Favorites"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/homeTitle"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerFavorites"
             android:layout_width="match_parent"
@@ -20,5 +29,43 @@
             android:orientation="horizontal"
             android:overScrollMode="never"
             android:nestedScrollingEnabled="false" />
+
+        <TextView
+            android:id="@+id/emptyFavorite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hãy thêm vào đồ uống yêu thích của bạn!"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:padding="16dp" />
+
+        <TextView
+            android:text="Your Creations"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/homeTitle"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerDrinkCreateByUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:overScrollMode="never"
+            android:nestedScrollingEnabled="false" />
+
+        <TextView
+            android:id="@+id/emptyCreation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hiện bạn chưa tạo mới công thức pha chế nào!"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:padding="16dp"
+            />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
