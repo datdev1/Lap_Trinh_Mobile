@@ -1,21 +1,30 @@
 package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
+import com.b21dccn216.pocketcocktail.dao.DrinkCntFavDAO;
 import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.dao.FavoriteDAO;
 import com.b21dccn216.pocketcocktail.dao.IngredientDAO;
 import com.b21dccn216.pocketcocktail.dao.RecipeDAO;
 import com.b21dccn216.pocketcocktail.dao.ReviewDAO;
 import com.b21dccn216.pocketcocktail.dao.UserDAO;
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.model.DrinkCntFav;
 import com.b21dccn216.pocketcocktail.model.Favorite;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.b21dccn216.pocketcocktail.model.Recipe;
 import com.b21dccn216.pocketcocktail.model.Review;
 import com.b21dccn216.pocketcocktail.model.User;
+import com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.model.IngredientWithAmountDTO;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -28,18 +37,19 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
     //
     //DAO
     private final FavoriteDAO favoriteDAO;
+    private final DrinkCntFavDAO drinkCntFavDAO;
     private final DrinkDAO drinkDAO;
     private final RecipeDAO recipeDAO;
     private final IngredientDAO ingredientDAO;
     private final ReviewDAO reviewDAO;
     private final UserDAO userDAO;
 
-
     private boolean isFavorite = false;
     private boolean isFavoriteProcessing = false;
     private Favorite currentFavorite;
     private final String currentUserId;
     private final List<String> commentList = new ArrayList<>();
+    private List<Recipe> ingredientList = new ArrayList<>();
 
 
     public DetailDrinkPresenter() {
@@ -49,6 +59,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         ingredientDAO = new IngredientDAO();
         reviewDAO = new ReviewDAO();
         userDAO = new UserDAO();
+        drinkCntFavDAO = new DrinkCntFavDAO();
 
         currentUserId = String.valueOf(SessionManager.getInstance().getUser().getUuid());
     }
@@ -88,10 +99,13 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         recipeDAO.getRecipesByDrinkId(drink.getUuid(), new RecipeDAO.RecipeListCallback() {
             @Override
             public void onRecipeListLoaded(List<Recipe> recipes) {
+                ingredientList.clear();
+                ingredientList.addAll(recipes);
                 for (Recipe recipe : recipes) {
                     ingredientDAO.getIngredient(recipe.getIngredientId(), new IngredientDAO.IngredientCallback() {
                         @Override
                         public void onIngredientLoaded(Ingredient ingredient) {
+
                             String line = ingredient.getName() + " (" + recipe.getAmount() + " " + ingredient.getUnit() + ")";
                             Log.e("Ingredient", "Ingredient: " + line);
                             view.showIngredient(line);
@@ -118,7 +132,48 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         //Load review
         loadReviews(drink.getUuid());
 
+        // Load creator info
+        loadCreatorInfo(drink.getUserId());
+        // Load fav count
+        loadFavCount(drink.getUuid());
     }
+
+    @Override
+    public void loadFavCount(String uuid) {
+        drinkCntFavDAO.getDrinkCntFavByDrinkId(uuid, new DrinkCntFavDAO.DrinkCntFavCallback() {
+            @Override
+            public void onDrinkCntFavLoaded(DrinkCntFav drinkCntFav) {
+                if(drinkCntFav == null) {
+                    view.showCountFavourite(0);
+                    return;
+                }
+                view.showCountFavourite(drinkCntFav.getCount());
+            }
+
+            @Override
+            public void onError(Exception e) {
+                view.showCountFavourite(0);
+            }
+        });
+    }
+
+    private void loadCreatorInfo(String userId) {
+        if(userId == null) return;
+        userDAO.getUser(userId, new UserDAO.UserCallback() {
+            @Override
+            public void onUserLoaded(User user) {
+                if(view != null){
+                    view.showCreatorInfo(user);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
 
     @Override
     public void checkFavorite(String drinkId) {
@@ -174,6 +229,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
 
         if (isFavorite && currentFavorite != null) {
             favoriteDAO.deleteFavorite(currentFavorite.getUuid(), unused -> {
+                loadFavCount(drink.getUuid());
                 isFavorite = false;
                 currentFavorite = null;
                 isFavoriteProcessing = false;
@@ -189,6 +245,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
             favorite.generateUUID();
 
             favoriteDAO.addFavorite(favorite, unused -> {
+                loadFavCount(drink.getUuid());
                 isFavorite = true;
                 currentFavorite = favorite;
                 isFavoriteProcessing = false;
@@ -403,5 +460,8 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         );
     }
 
-
+    @Override
+    public List<Recipe> getRecipes() {
+        return this.ingredientList;
+    }
 }
