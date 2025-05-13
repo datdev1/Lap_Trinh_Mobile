@@ -62,6 +62,7 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
                                 @Override
                                 public void onDrinkLoaded(Drink drink) {
                                     drinks.add(drink);
+                                    drinks.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
                                     if(view == null) return;
                                     view.showFavoriteDrinkList(drinks);
 

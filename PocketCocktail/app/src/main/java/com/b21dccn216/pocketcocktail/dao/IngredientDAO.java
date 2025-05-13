@@ -202,6 +202,7 @@ public class IngredientDAO {
                             ingredients.add(ingredient);
                         }
                     }
+                    ingredients.sort((a, b) -> a.getName().compareTo(b.getName()));
                     callback.onIngredientListLoaded(ingredients);
                 })
                 .addOnFailureListener(callback::onError);

@@ -298,6 +298,7 @@ public class CategoryDAO {
                             categories.add(category);
                         }
                     }
+                    categories.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
                     callback.onCategoryListLoaded(categories);
                 })
                 .addOnFailureListener(callback::onError);

@@ -401,6 +401,7 @@ public class DrinkDAO {
                         }
                     }
                     Log.e("load Drink", "getAllDrinks: " + drinks);
+                    drinks.sort((a, b) -> a.getName().compareTo(b.getName()));
                     callback.onDrinkListLoaded(drinks);
                 })
                 .addOnFailureListener(callback::onError);
