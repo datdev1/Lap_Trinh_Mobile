@@ -1,10 +1,12 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Profile;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +21,9 @@ import com.b21dccn216.pocketcocktail.databinding.FragmentProfileBinding;
 import com.b21dccn216.pocketcocktail.helper.DialogHelper;
 import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
+import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.User;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.bumptech.glide.Glide;
 
 
@@ -177,11 +181,15 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
     @Override
     public void updateInfoFail(String message) {
         // TODO:: SET DIALOG FINISH LOADING
+        Log.e("datdev1", "updateInfoFail: " + message);
         editingUser = presenter.getCurrentUser();
         setViewCurrentUser();
         isEditting = false;
         setVisibilityEditing(isEditting);
-        Toast.makeText(requireActivity(), "Update Fail", Toast.LENGTH_SHORT).show();
+
+        DialogHelper.showAlertDialog(requireContext(),
+                "Fail update", message, HelperDialog.DialogType.ERROR  );
+        
 
     }
 }
