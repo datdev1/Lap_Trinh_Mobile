@@ -25,19 +25,19 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
     private final UserDAO userDAO;
     private final DrinkDAO drinkDAO;
 
-    private final String currentUserId;
+    private String currentUserId;
     private boolean isFavorite = false;
 
     public FavoritePresenter() {
         favoriteDAO = new FavoriteDAO();
         userDAO = new UserDAO();
         drinkDAO = new DrinkDAO();
-        currentUserId = SessionManager.getInstance().getUser().getUuid();
     }
 
     @Override
     public void onCreate(){
         super.onCreate();
+        currentUserId = SessionManager.getInstance().getUser().getUuid();
         getAllFavoriteByUserId();
         getAllDrinksCreatedByCurrentUser();
     }
@@ -50,7 +50,7 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
                 // TODO
                 Log.d("favourite", "Size: " + favorites.size());
 
-                if (favorites.isEmpty()) {
+                if (favorites.isEmpty() && view != null) {
                     view.showFavoriteDrinkList(new ArrayList<>()); // Truyền list rỗng để xử lý hiển thị thông báo
                     return;
                 }
@@ -62,6 +62,7 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
                                 @Override
                                 public void onDrinkLoaded(Drink drink) {
                                     drinks.add(drink);
+                                    if(view == null) return;
                                     view.showFavoriteDrinkList(drinks);
 
                                 }
@@ -89,11 +90,11 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
             @Override
             public void onDrinkListLoaded(List<Drink> drinks) {
                 Log.d("drink", "Drinks created by user: " + drinks.size());
+                if(view == null) return;
                 if (drinks.isEmpty()) {
                     view.showFavoriteDrinkList(new ArrayList<>()); // Truyền list rỗng để xử lý hiển thị thông báo
                     return;
                 }
-
                 view.showFavoriteDrinkCreateByUserId(drinks); // Hiển thị danh sách nếu có
             }
 
