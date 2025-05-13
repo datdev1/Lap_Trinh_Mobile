@@ -26,7 +26,5 @@ public interface SearchContract {
         void searchDrinks(String categoryId, String query, List<String> ingredientIds);
         void searchIngredients(String query);
         void onDestroy();
-
-        void updateDrinkList(Category choosenCategory, List<Ingredient> ingredientList, String searchName);
     }
 }

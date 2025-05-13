@@ -21,7 +21,7 @@ public interface DetailDrinkContract {
         void showAddReviewError(String message);
         void showAddReviewDialog(String drinkId, Review review);
     }
-    //
+
 
     interface Presenter extends BaseContract.Presenter<View> {
         void loadDrinkDetails(Drink drink);

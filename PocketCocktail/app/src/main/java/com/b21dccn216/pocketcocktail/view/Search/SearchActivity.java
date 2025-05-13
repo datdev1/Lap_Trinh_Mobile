@@ -23,6 +23,7 @@ import com.b21dccn216.pocketcocktail.view.Search.adapter.DrinkAdapter;
 import com.b21dccn216.pocketcocktail.view.Search.adapter.IngredientAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.b21dccn216.pocketcocktail.view.Search.helper.GridSpacingItemDecoration;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     public static final String SORT_ORDER = "sort_order";
 
 
+    private BottomSheetBehavior bottomSheetBehavior;
     private ActivitySearchBinding binding;;
     private DrinkAdapter drinkAdapter;
     private IngredientAdapter ingredientAdapter;
@@ -45,8 +47,6 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
     private Ingredient ingredient;
 
-    private List<Ingredient> choosenIngredientList = new ArrayList<>();
-    private String searchName = "";
 
 
     @Override
@@ -66,9 +66,17 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // NestedScrollView
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet);
+        bottomSheetBehavior.setHideable(false);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+        // Set Up RecycleView
         setUpDrinkRecycler();
         setUpIngredientRecycler();
 
+
+        // Received data from intend
         category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
         ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
         presenter.loadIngredients();
@@ -102,7 +110,6 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             @Override
             public void afterTextChanged(Editable s) {}
         });
-
         binding.clearButton.setOnClickListener(v -> {
             binding.searchEditText.setText("");
             if (category != null) {
@@ -128,10 +135,8 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
                 String query = s.toString().trim();
                 if (!query.isEmpty()) {
                     presenter.searchIngredients(query);
-//                    binding.clearIngredientSearch.setVisibility(View.VISIBLE);
                 } else {
                     presenter.loadIngredients();
-//                    binding.clearIngredientSearch.setVisibility(View.GONE);
                 }
                 binding.clearIngredientSearch.setVisibility(query.isEmpty() ? View.GONE : View.VISIBLE);
             }
@@ -173,10 +178,6 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         binding.drinksRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);
     }
 
-    private void updateDrinkList(){
-//        presenter.updateDrinkList(choosenCategory, choosenIngredientList, searchName);
-    }
-
     private void setUpIngredientRecycler() {
         ingredientAdapter = new IngredientAdapter(this, selectedIngredients -> {
             String query = binding.searchEditText.getText().toString().trim();
@@ -200,6 +201,15 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         );
         binding.ingredientsRecyclerView.setClipToPadding(false);
         binding.ingredientsRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
     }
 
 
