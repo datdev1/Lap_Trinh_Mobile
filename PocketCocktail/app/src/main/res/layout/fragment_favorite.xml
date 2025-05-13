@@ -16,7 +16,7 @@
             android:text="Your Favorites"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/homeTitle"/>
@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal"
             android:overScrollMode="never"
             android:nestedScrollingEnabled="false" />
@@ -35,15 +36,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Hãy thêm vào đồ uống yêu thích của bạn!"
+            android:layout_marginVertical="8dp"
             android:textSize="16sp"
             android:gravity="center"
             android:padding="16dp" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:alpha="0.5"
+            app:dividerColor="@color/button_disabled"
+            android:layout_marginVertical="8dp"
+            android:layout_marginBottom="4dp"/>
 
         <TextView
             android:text="Your Creations"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/homeTitle"/>
@@ -53,9 +63,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:nestedScrollingEnabled="false"
             android:orientation="horizontal"
-            android:overScrollMode="never"
-            android:nestedScrollingEnabled="false" />
+            android:overScrollMode="never" />
 
         <TextView
             android:id="@+id/emptyCreation"
@@ -63,6 +73,7 @@
             android:layout_height="wrap_content"
             android:text="Hiện bạn chưa tạo mới công thức pha chế nào!"
             android:gravity="center"
+            android:layout_margin="8dp"
             android:textSize="16sp"
             android:padding="16dp"
             />
