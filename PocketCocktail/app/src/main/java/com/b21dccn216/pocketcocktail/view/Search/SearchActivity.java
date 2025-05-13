@@ -81,10 +81,16 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
         presenter.loadIngredients();
         if (category != null) {
-            Log.e("Category", category.toString());
             presenter.loadDrinksByCategory(category.getUuid());
-        }
-        if(category == null && ingredient == null){
+        } else if (ingredient != null) {
+            List<Ingredient> initialSelection = new ArrayList<>();
+            initialSelection.add(ingredient);
+            ingredientAdapter.setSelectedIngredients(initialSelection);
+
+            List<String> selectedIngredientIds = new ArrayList<>();
+            selectedIngredientIds.add(ingredient.getUuid());
+            presenter.searchDrinks(null, "", selectedIngredientIds);
+        } else {
             presenter.loadDrinks();
         }
 
@@ -181,11 +187,11 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     private void setUpIngredientRecycler() {
         ingredientAdapter = new IngredientAdapter(this, selectedIngredients -> {
             String query = binding.searchEditText.getText().toString().trim();
-
+            List<String> selectedIngredientIds = ingredientAdapter.getSelectedIngredientIds();
             if (category != null) {
-                presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
+                presenter.searchDrinks(category.getUuid(), query, selectedIngredientIds);
             } else {
-                presenter.searchDrinks(null, query, selectedIngredients);
+                presenter.searchDrinks(null, query, selectedIngredientIds);
             }
         });
 

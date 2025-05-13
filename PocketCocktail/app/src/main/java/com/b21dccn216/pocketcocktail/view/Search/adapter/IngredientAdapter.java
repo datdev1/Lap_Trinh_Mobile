@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.view.Search.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,13 +37,41 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
         notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    public void setSelectedIngredients(List<Ingredient> selectedIngredients) {
+        selectedIngredientIds.clear();
+        if (selectedIngredients != null) {
+            for (Ingredient ingredient : selectedIngredients) {
+                selectedIngredientIds.add(ingredient.getUuid());
+            }
+        }
+        notifyDataSetChanged();
+
+        if (listener != null) {
+            listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void selectIngredient(String ingredientId) {
+        selectedIngredientIds.add(ingredientId);
+        notifyDataSetChanged();
+        if (listener != null) {
+            listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
+        }
+    }
+
     public List<String> getSelectedIngredientIds() {
         return new ArrayList<>(selectedIngredientIds);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void clearSelection() {
         selectedIngredientIds.clear();
         notifyDataSetChanged();
+        if (listener != null) {
+            listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
+        }
     }
 
     @NonNull
@@ -91,7 +120,9 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
                 toggleSelection(ingredient.getUuid());
                 boolean nowSelected = selectedIngredientIds.contains(ingredient.getUuid());
                 updateSelectionUI(nowSelected);
-                listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
+                if (listener != null) {
+                    listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
+                }
             });
         }
 
