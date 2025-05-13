@@ -14,12 +14,11 @@
 
         <TextView
             android:text="Categories"
-            android:textSize="18dp"
             android:textStyle="bold"
             android:layout_marginTop="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/homeTitle"/>
+            style="@style/RecyclerViewTitle"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerCategories"
@@ -27,23 +26,22 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
             android:orientation="horizontal"
-            android:overScrollMode="never" />
+            android:nestedScrollingEnabled="false" />
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:alpha="0.5"
-            app:dividerColor="@color/button_disabled"
+            app:dividerColor="@color/brown"
             android:layout_marginVertical="12dp"/>
 
         <TextView
             android:text="Ingredients"
-            android:textSize="18dp"
             android:textStyle="bold"
             android:layout_marginTop="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/homeTitle"/>
+            style="@style/RecyclerViewTitle"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerIngredients"
