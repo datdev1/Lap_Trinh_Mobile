@@ -22,6 +22,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     private final OnIngredientSelectedListener listener;
     private List<Ingredient> ingredients = new ArrayList<>();
     private final Set<String> selectedIngredientIds = new HashSet<>();
+    private List<Ingredient> originalIngredients = new ArrayList<>();
 
     public interface OnIngredientSelectedListener {
         void onIngredientSelected(List<String> selectedIngredientIds);
@@ -33,7 +34,29 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     }
 
     public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
+        if (ingredients == null) return;
+
+        originalIngredients.clear();
+        originalIngredients.addAll(ingredients);
+
+        updateSortedIngredients();
+    }
+    private void updateSortedIngredients() {
+        List<Ingredient> sorted = new ArrayList<>();
+
+        for (Ingredient ingredient : originalIngredients) {
+            if (selectedIngredientIds.contains(ingredient.getUuid())) {
+                sorted.add(ingredient);
+            }
+        }
+
+        for (Ingredient ingredient : originalIngredients) {
+            if (!selectedIngredientIds.contains(ingredient.getUuid())) {
+                sorted.add(ingredient);
+            }
+        }
+
+        this.ingredients = sorted;
         notifyDataSetChanged();
     }
 
@@ -131,6 +154,11 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
                 selectedIngredientIds.remove(ingredientId);
             } else {
                 selectedIngredientIds.add(ingredientId);
+            }
+
+            updateSortedIngredients();
+            if (listener != null) {
+                listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
             }
         }
 
