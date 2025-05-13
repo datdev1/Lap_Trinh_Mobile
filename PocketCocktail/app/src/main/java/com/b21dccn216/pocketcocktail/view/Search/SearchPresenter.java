@@ -13,8 +13,10 @@ import com.google.firebase.firestore.Query;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchPresenter extends BasePresenter<SearchContract.View>
     implements SearchContract.Presenter{
@@ -159,48 +161,65 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
             }
         });
     }
-
-    // Search drinks (4 case)
     @Override
     public void searchDrinks(String categoryId, String query, List<String> ingredientIds, String sortField, Query.Direction sortOrder) {
         view.showLoading();
+        drinkDAO.searchDrinkTotalWithSort(query,categoryId,ingredientIds,100, DrinkDAO.DRINK_FIELD.fromString(sortField),sortOrder, new DrinkDAO.DrinkListCallback(){
 
-        // Tạo callback chung
-        DrinkDAO.DrinkListCallback callback = new DrinkDAO.DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinks) {
-                if (drinks == null || drinks.isEmpty()) {
-                    view.hideLoading();
-                    view.showDrinks(new ArrayList<>());
-                    return;
-                }
-
-                // Not ingredient
-                if (ingredientIds == null || ingredientIds.isEmpty()) {
-                    List<Drink> filteredDrinks = filterDrinksByQuery(drinks, query);
-                    view.hideLoading();
-                    view.showDrinks(filteredDrinks);
-                    return;
-                }
-
-                // Have ingredient
-                filterDrinksWithIngredients(drinks, query, ingredientIds);
+                view.showDrinks(drinks);
             }
 
             @Override
             public void onError(Exception e) {
-                view.hideLoading();
-                view.showError("Search failed: " + e.getMessage());
+                view.showError("Failed to load ingredients: " + e.getMessage());
             }
-        };
-
-        // Search by category or not
-        if (categoryId != null && !categoryId.isEmpty()) {
-            drinkDAO.getDrinksByCategoryId(categoryId, callback);
-        } else {
-            drinkDAO.getDrinksSorted(sortField, sortOrder,callback);
-        }
+        });
     }
+
+
+    // Search drinks (4 case)
+//    @Override
+//    public void searchDrinks(String categoryId, String query, List<String> ingredientIds, String sortField, Query.Direction sortOrder) {
+//        view.showLoading();
+//
+//        // Tạo callback chung
+//        DrinkDAO.DrinkListCallback callback = new DrinkDAO.DrinkListCallback() {
+//            @Override
+//            public void onDrinkListLoaded(List<Drink> drinks) {
+//                if (drinks == null || drinks.isEmpty()) {
+//                    view.hideLoading();
+//                    view.showDrinks(new ArrayList<>());
+//                    return;
+//                }
+//
+//                // Not ingredient
+//                if (ingredientIds == null || ingredientIds.isEmpty()) {
+//                    List<Drink> filteredDrinks = filterDrinksByQuery(drinks, query);
+//                    view.hideLoading();
+//                    view.showDrinks(filteredDrinks);
+//                    return;
+//                }
+//
+//                // Have ingredient
+//                filterDrinksWithIngredients(drinks, query, ingredientIds);
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                view.hideLoading();
+//                view.showError("Search failed: " + e.getMessage());
+//            }
+//        };
+//
+//        // Search by category or not
+//        if (categoryId != null && !categoryId.isEmpty()) {
+//            drinkDAO.getDrinksByCategoryId(categoryId, callback);
+//        } else {
+//            drinkDAO.getDrinksSorted(sortField, sortOrder,callback);
+//        }
+//    }
 
     private List<Drink> filterDrinksByQuery(List<Drink> drinks, String query) {
         if (query == null || query.isEmpty()) {
@@ -218,20 +237,19 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
     }
 
     private void filterDrinksWithIngredients(List<Drink> drinks, String query, List<String> ingredientIds) {
-        List<Drink> filteredDrinks = new ArrayList<>();
-        int[] pendingCount = {drinks.size()};
+        List<Drink> filteredDrinks = Collections.synchronizedList(new ArrayList<>(Collections.nCopies(drinks.size(), null)));
+        AtomicInteger pendingCount = new AtomicInteger(drinks.size());
 
-        for (Drink drink : drinks) {
+        for (int i = 0; i < drinks.size(); i++) {
+            Drink drink = drinks.get(i);
+            final int index = i;
+
             recipeDAO.getRecipesByDrinkId(drink.getUuid(), new RecipeDAO.RecipeListCallback() {
                 @Override
                 public void onRecipeListLoaded(List<Recipe> recipes) {
                     List<String> drinkIngredientIds = extractIngredientIds(recipes);
-                    boolean matches = checkMatch(drink, query, ingredientIds, drinkIngredientIds);
-
-                    if (matches) {
-                        synchronized (filteredDrinks) {
-                            filteredDrinks.add(drink);
-                        }
+                    if (checkMatch(drink, query, ingredientIds, drinkIngredientIds)) {
+                        filteredDrinks.set(index, drink);
                     }
                     checkCompletion(pendingCount, filteredDrinks);
                 }
@@ -266,13 +284,11 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
         return matchesQuery && matchesIngredients;
     }
 
-    private void checkCompletion(int[] pendingCount, List<Drink> filteredDrinks) {
-        synchronized (pendingCount) {
-            pendingCount[0]--;
-            if (pendingCount[0] == 0) {
-                view.hideLoading();
-                view.showDrinks(filteredDrinks);
-            }
+    private void checkCompletion(AtomicInteger pendingCount, List<Drink> filteredDrinks) {
+        if (pendingCount.decrementAndGet() == 0) {
+            filteredDrinks.removeAll(Collections.singleton(null));
+            view.hideLoading();
+            view.showDrinks(filteredDrinks);
         }
     }
 
@@ -300,3 +316,5 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
         });
     }
 }
+
+

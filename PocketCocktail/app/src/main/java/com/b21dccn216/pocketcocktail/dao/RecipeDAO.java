@@ -190,6 +190,10 @@ public class RecipeDAO {
     public void searchDrinkIDByIngredient(List<String> drinkIds, List<String> ingredientIds, DrinkIDListCallback callback) {
 //        recipeRef.whereArrayContainsAny("drinkId", drinkIds)
 //                .whereArrayContainsAny("ingredientId", ingredientIds)
+        if (ingredientIds.isEmpty()) {
+            callback.onDrinkIDListLoaded(new ArrayList<>());
+            return;
+        }
         recipeRef//.whereIn("drinkId", drinkIds)
                 .whereIn("ingredientId", ingredientIds)
                 .get()
@@ -233,6 +237,10 @@ public class RecipeDAO {
     }
 
     public void searchDrinkIDByIngredient(List<String> ingredientIds, DrinkIDListCallback callback) {
+        if (ingredientIds.isEmpty()) {
+            callback.onDrinkIDListLoaded(new ArrayList<>());
+            return;
+        }
         recipeRef.whereIn("ingredientId", ingredientIds)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
