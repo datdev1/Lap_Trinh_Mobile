@@ -121,8 +121,8 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         if (intent != null) {
             mode = intent.getStringExtra("mode");
             editingDrink = (Drink) intent.getSerializableExtra("drink");            
-            // incomingCategoryId = intent.getStringExtra("categoryId");
-            incomingCategoryId = editingDrink.getCategoryId();
+             incomingCategoryId = intent.getStringExtra("categoryId");
+//            incomingCategoryId = editingDrink.getCategoryId();
             incomingRecipes = (ArrayList<Recipe>) intent.getSerializableExtra("recipes");
             if (editingDrink != null) {
                 // Đợi categories load xong mới fill form

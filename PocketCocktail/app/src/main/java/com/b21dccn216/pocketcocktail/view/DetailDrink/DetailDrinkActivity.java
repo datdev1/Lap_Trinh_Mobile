@@ -1,6 +1,9 @@
 package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -23,14 +26,18 @@ import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.databinding.ActivityDetailDrinkBinding;
 import com.b21dccn216.pocketcocktail.databinding.DialogAddReviewBinding;
+import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Review;
 import com.b21dccn216.pocketcocktail.model.User;
+import com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.ReviewAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.SimilarDrinkAdapter;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.model.IngredientWithAmountDTO;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
 import com.bumptech.glide.Glide;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -67,23 +74,33 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
 
         binding.instructionsLayout.removeAllViews();
         binding.ingredientsLayout.removeAllViews();
-        Drink drink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_OBJECT);
-        if (drink != null) {
-            presenter.loadDrinkDetails(drink);
-            presenter.checkFavorite(drink.getUuid());
+        Drink currentDrink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_OBJECT);
+        if (currentDrink != null) {
+            presenter.loadDrinkDetails(currentDrink);
+            presenter.checkFavorite(currentDrink.getUuid());
         } else {
             Toast.makeText(this, "Drink data not found", Toast.LENGTH_SHORT).show();
             finish();
         }
-        binding.favoriteButton.setOnClickListener(v -> presenter.toggleFavorite(drink));
-        binding.shareButton.setOnClickListener(v -> presenter.shareDrink(drink));
+        binding.favoriteButton.setOnClickListener(v -> presenter.toggleFavorite(currentDrink));
+        binding.shareButton.setOnClickListener(v -> presenter.shareDrink(currentDrink));
         binding.addCommentButton.setOnClickListener(v -> {
-            String drinkId = drink.getUuid();
+            String drinkId = currentDrink.getUuid();
             presenter.onAddReviewClicked(drinkId);
         });
 
         binding.btnEditOrCopy.setOnClickListener(v -> {
-
+            Intent intent = new Intent(this, CreateDrinkActivity.class);
+            User currentUser = SessionManager.getInstance().getUser();
+            if(currentUser == null){
+                return;
+            }
+            String mode = currentUser.getUuid().equals(currentDrink.getUuid()) ? "edit" : "copy";
+            intent.putExtra("mode", mode);
+            intent.putExtra("drink", currentDrink);
+            intent.putExtra("categoryId", currentDrink.getCategoryId());
+            intent.putExtra("recipes", (Serializable) presenter.getRecipes());
+            startActivity(intent);
         });
 
 

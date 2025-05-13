@@ -1,5 +1,9 @@
 package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
@@ -19,6 +23,8 @@ import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.b21dccn216.pocketcocktail.model.Recipe;
 import com.b21dccn216.pocketcocktail.model.Review;
 import com.b21dccn216.pocketcocktail.model.User;
+import com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.model.IngredientWithAmountDTO;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -43,6 +49,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
     private Favorite currentFavorite;
     private final String currentUserId;
     private final List<String> commentList = new ArrayList<>();
+    private List<Recipe> ingredientList = new ArrayList<>();
 
 
     public DetailDrinkPresenter() {
@@ -92,10 +99,13 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         recipeDAO.getRecipesByDrinkId(drink.getUuid(), new RecipeDAO.RecipeListCallback() {
             @Override
             public void onRecipeListLoaded(List<Recipe> recipes) {
+                ingredientList.clear();
+                ingredientList.addAll(recipes);
                 for (Recipe recipe : recipes) {
                     ingredientDAO.getIngredient(recipe.getIngredientId(), new IngredientDAO.IngredientCallback() {
                         @Override
                         public void onIngredientLoaded(Ingredient ingredient) {
+
                             String line = ingredient.getName() + " (" + recipe.getAmount() + " " + ingredient.getUnit() + ")";
                             Log.e("Ingredient", "Ingredient: " + line);
                             view.showIngredient(line);
@@ -450,5 +460,8 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         );
     }
 
-
+    @Override
+    public List<Recipe> getRecipes() {
+        return this.ingredientList;
+    }
 }

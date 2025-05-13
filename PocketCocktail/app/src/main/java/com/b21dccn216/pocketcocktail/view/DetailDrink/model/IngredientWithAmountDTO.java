@@ -2,7 +2,9 @@ package com.b21dccn216.pocketcocktail.view.DetailDrink.model;
 
 import com.b21dccn216.pocketcocktail.model.Ingredient;
 
-public class IngredientWithAmountDTO {
+import java.io.Serializable;
+
+public class IngredientWithAmountDTO implements Serializable {
     private Ingredient ingredient;
     private double amount;
 
