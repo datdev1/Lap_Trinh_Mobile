@@ -58,15 +58,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp"
-                    android:padding="8dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="16dp"
-                    android:textAllCaps="false"
-                    android:textColor="@color/text_on_primary"
+                    style="@style/PinkPillButton"
                     android:text="See recipe"
-                    android:background="@drawable/bg_btn_see_all"
                     />
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
@@ -105,13 +100,8 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:minHeight="0dp"
-                        android:minWidth="0dp"
-                        android:padding="8dp"
-                        android:textAllCaps="false"
-                        android:textColor="@color/text_on_primary"
+                        style="@style/PinkPillButton"
                         android:text="See all"
-                        android:background="@drawable/bg_btn_see_all"
                         />
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerHighestRate"
@@ -142,13 +132,8 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:minHeight="0dp"
-                        android:minWidth="0dp"
-                        android:padding="8dp"
-                        android:textAllCaps="false"
-                        android:textColor="@color/text_on_primary"
                         android:text="See all"
-                        android:background="@drawable/bg_btn_see_all"
+                        style="@style/PinkPillButton"
                         />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -180,13 +165,8 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:minHeight="0dp"
-                        android:minWidth="0dp"
-                        android:padding="8dp"
-                        android:textAllCaps="false"
-                        android:textColor="@color/text_on_primary"
+                        style="@style/PinkPillButton"
                         android:text="See all"
-                        android:background="@drawable/bg_btn_see_all"
                         />
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerMocktail"

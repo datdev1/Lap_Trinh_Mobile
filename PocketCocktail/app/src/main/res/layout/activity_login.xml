@@ -18,8 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="24dp"
         style="@style/AppTitle"
-
-        android:fontFamily="@font/poppins_bold"
         android:includeFontPadding="false"
         android:text="It's time for a"/>
     <TextView
@@ -28,8 +26,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tv1"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="24dp"
-        android:includeFontPadding="false"
-        android:fontFamily="@font/sakitu_baelah_clean"
         style="@style/AppLogo"
         android:text="Drink  "/>
 
@@ -75,6 +71,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
+                app:tabTextAppearance="@style/EditTextLabel"
+                app:tabSelectedTextAppearance="@style/EditTextLabel"
                 app:tabIndicatorColor="@color/secondary"
                 app:tabSelectedTextColor="@color/secondary"
                 app:tabTextColor="@android:color/darker_gray">

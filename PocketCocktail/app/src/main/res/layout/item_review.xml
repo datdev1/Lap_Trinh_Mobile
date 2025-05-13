@@ -39,13 +39,15 @@
                     android:text="User Name"
                     android:textColor="#333333"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    style="@style/BaseString" />
 
                 <TextView
                     android:id="@+id/commentDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="May 10, 2023"
+                    style="@style/BaseString"
                     android:textColor="#757575"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -68,6 +70,7 @@
                 android:layout_marginTop="8dp"
                 android:text="This is a sample comment about the cocktail recipe."
                 android:textColor="#666666"
+                style="@style/BaseString"
                 android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>

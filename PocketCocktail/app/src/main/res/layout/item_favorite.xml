@@ -52,9 +52,8 @@
                 android:layout_width="0dp"
                 android:textAlignment="center"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                style="@style/HomeItemName"
                 android:paddingVertical="8dp"
-                android:textColor="@color/white"
                 android:text="Red Rum" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

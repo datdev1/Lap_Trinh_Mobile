@@ -39,6 +39,7 @@
                 android:textStyle="bold"
                 android:textColor="#1A1A1A"
                 android:maxLines="1"
+                style="@style/BaseString"
                 android:ellipsize="end"/>
 
             <TextView
@@ -49,6 +50,7 @@
                 android:textColor="#666666"
                 android:maxLines="2"
                 android:ellipsize="end"
+                style="@style/BaseString"
                 android:layout_marginTop="4dp"/>
 
             <TextView
@@ -57,6 +59,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:textColor="#2196F3"
+                style="@style/BaseString"
                 android:layout_marginTop="4dp"
                 android:drawablePadding="4dp"/>
         </LinearLayout>

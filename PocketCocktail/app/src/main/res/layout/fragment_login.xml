@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:textColor="@color/white"
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/kanit"
         android:background="@drawable/bg_btn_login"
         />
 

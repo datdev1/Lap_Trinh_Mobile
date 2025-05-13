@@ -33,6 +33,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="#222222"
+                style="@style/BaseString"
                 android:layout_marginBottom="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -41,6 +42,7 @@
                 android:id="@+id/tvMessage"
                 android:text="Message goes here"
                 android:textSize="16sp"
+                style="@style/BaseString"
                 android:textColor="#555555"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

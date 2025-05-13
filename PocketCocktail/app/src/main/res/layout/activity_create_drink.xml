@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -20,18 +19,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Create New Recipe"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/poppins_bold"
-            android:textColor="@color/brown"
+            style="@style/FragmentSectionTitle"
             android:layout_marginBottom="24dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Drink Name"
-            android:textColor="@color/brown"
-            android:fontFamily="@font/poppins_medium"
+            style="@style/EditTextLabel"
             android:layout_marginBottom="4dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -52,15 +47,14 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter drink name"
                 android:textColor="@color/brown"
-                android:fontFamily="@font/poppins_medium"/>
+                style="@style/BaseString"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Drink Image"
-            android:textColor="@color/brown"
-            android:fontFamily="@font/poppins_medium"
+            style="@style/EditTextLabel"
             android:layout_marginBottom="4dp"/>
 
         <androidx.cardview.widget.CardView
@@ -85,8 +79,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Choose Image"
+            style="@style/BaseString"
             android:textColor="@color/brown"
-            android:fontFamily="@font/poppins_medium"
             app:cornerRadius="16dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"
@@ -96,15 +90,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Category"
-            android:textColor="@color/brown"
-            android:fontFamily="@font/poppins_medium"
+            style="@style/EditTextLabel"
             android:layout_marginBottom="4dp"/>
 
         <Spinner
             android:id="@+id/spCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_medium"
+            style="@style/BaseString"
             android:background="@drawable/spinner_background"
             android:padding="12dp"
             android:layout_marginBottom="16dp"/>
@@ -113,8 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Rating"
-            android:textColor="@color/brown"
-            android:fontFamily="@font/poppins_medium"
+            style="@style/EditTextLabel"
             android:layout_marginBottom="4dp"/>
 
         <RatingBar
@@ -131,8 +123,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Description"
-            android:textColor="@color/brown"
-            android:fontFamily="@font/poppins_medium"
+            style="@style/EditTextLabel"
             android:layout_marginBottom="4dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -156,7 +147,7 @@
                 android:minLines="2"
                 android:gravity="top"
                 android:textColor="@color/brown"
-                android:fontFamily="@font/poppins_medium"
+                style="@style/BaseString"
                 android:scrollbars="vertical"
                 android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -165,8 +156,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Instructions"
-            android:textColor="@color/brown"
-            android:fontFamily="@font/poppins_medium"
+            style="@style/EditTextLabel"
             android:layout_marginBottom="4dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -190,7 +180,7 @@
                 android:minLines="3"
                 android:gravity="top"
                 android:textColor="@color/brown"
-                android:fontFamily="@font/poppins_medium"
+                style="@style/BaseString"
                 android:scrollbars="vertical"
                 android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -199,8 +189,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ingredients"
-            android:textColor="@color/brown"
-            android:fontFamily="@font/poppins_medium"
+            style="@style/EditTextLabel"
             android:layout_marginBottom="4dp"/>
 
         <androidx.cardview.widget.CardView
@@ -224,7 +213,7 @@
             android:layout_height="wrap_content"
             android:text="Add Ingredient"
             android:textColor="@color/brown"
-            android:fontFamily="@font/poppins_medium"
+            style="@style/BaseString"
             app:cornerRadius="16dp"
             android:layout_gravity="end"
             android:layout_marginBottom="24dp"
@@ -236,7 +225,7 @@
             android:layout_height="wrap_content"
             android:text="Save Recipe"
             android:textColor="@color/brown"
-            android:fontFamily="@font/poppins_medium"
+            style="@style/BaseString"
             app:cornerRadius="16dp"
             app:backgroundTint="@color/secondary"/>
 

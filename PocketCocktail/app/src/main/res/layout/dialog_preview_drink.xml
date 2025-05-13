@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:padding="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="20dp"
+    android:elevation="5dp"
+    android:background="@color/transparent"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -11,4 +15,5 @@
         android:layout_height="250dp"
         android:scaleType="centerCrop"
         android:src="@drawable/sample_cocktail" />
-</LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
