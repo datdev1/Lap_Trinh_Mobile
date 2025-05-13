@@ -6,49 +6,82 @@
     android:background="@color/transparent"
     app:cardCornerRadius="25dp"
     android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_gravity="center_vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/imgStatus"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/angle"
+                app:tint="@color/primary"
+                android:layout_width="48dp"
+                android:layout_height="48dp"/>
+
+            <LinearLayout
+                android:padding="24dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:text="Title"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#222222"
+                    style="@style/BaseString"
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tvMessage"
+                    android:text="Message goes here"
+                    android:textSize="16sp"
+                    style="@style/BaseString"
+                    android:textColor="#555555"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
-        android:layout_gravity="center_vertical">
+        android:gravity="center">
 
-        <ImageView
-            android:id="@+id/imgStatus"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/angle"
-            app:tint="@color/primary"
-            android:layout_width="48dp"
-            android:layout_height="48dp"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            style="@style/ButtonOutlinePastel"
+            android:text="No"/>
 
-        <LinearLayout
-            android:padding="24dp"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/tvTitle"
-                android:text="Title"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#222222"
-                style="@style/BaseString"
-                android:layout_marginBottom="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            style="@style/ButtonPastel"
+            android:text="Yes"/>
 
-            <TextView
-                android:id="@+id/tvMessage"
-                android:text="Message goes here"
-                android:textSize="16sp"
-                style="@style/BaseString"
-                android:textColor="#555555"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
     </LinearLayout>
+
+
+    </LinearLayout>
+
 
 
 </androidx.cardview.widget.CardView>

@@ -28,6 +28,7 @@ public class HelperDialog extends Dialog {
         this.message = message;
     }
 
+
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
