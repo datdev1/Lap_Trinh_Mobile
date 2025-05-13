@@ -8,11 +8,13 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.PopupMenu;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
+import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.databinding.ActivitySearchBinding;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
@@ -45,8 +47,8 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     private Category category;
 
     private Ingredient ingredient;
-    private String sortField;
-    private  Query.Direction sortOrder;
+    private String sortField = DrinkDAO.DRINK_FIELD.RATE.getValue();
+    private  Query.Direction sortOrder = Query.Direction.DESCENDING;
 
 
 
@@ -80,8 +82,12 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         // Received data from intend
         category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
         ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
-        sortField = getIntent().getStringExtra(SORT_FIELD);
-        sortOrder = (Query.Direction) getIntent().getSerializableExtra(SORT_ORDER);
+        if(getIntent().getStringExtra(SORT_FIELD) != null){
+            sortField = getIntent().getStringExtra(SORT_FIELD);
+        }
+        if(getIntent().getSerializableExtra(SORT_ORDER) != null){
+            sortOrder = (Query.Direction) getIntent().getSerializableExtra(SORT_ORDER);
+        }
         Log.d("SORT_FIELD", "SORT_FIELD: " + sortField);
         Log.d("SORT_ORDER", "SORT_ORDER: " + sortOrder);
 
@@ -170,9 +176,34 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         });
 
         // Filter
-        binding.sortByContainer.setOnClickListener(v->{
+        binding.sortByContainer.setOnClickListener(v -> showSortByMenu());
+        binding.sortOrderButton.setOnClickListener(v -> presenter.toggleSortOrder(sortField,sortOrder));
+    }
+    private void showSortByMenu() {
+        PopupMenu popup = new PopupMenu(this, binding.sortByContainer);
+        popup.getMenuInflater().inflate(R.menu.sort_menu, popup.getMenu());
 
+        // Highlight item hiện tại
+        String currentSort = sortField;
+        if (currentSort != null) {
+            switch (currentSort) {
+                case "rate": popup.getMenu().findItem(R.id.sort_by_rating).setChecked(true); break;
+                case "name": popup.getMenu().findItem(R.id.sort_by_name).setChecked(true); break;
+                case "createdAt": popup.getMenu().findItem(R.id.sort_by_date).setChecked(true); break;
+            }
+        }
+
+        popup.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.sort_by_rating) {
+                presenter.handleSortOptionSelected("rate", sortOrder);
+            } else if (item.getItemId() == R.id.sort_by_name) {
+                presenter.handleSortOptionSelected("name",sortOrder);
+            } else if (item.getItemId() == R.id.sort_by_date) {
+                presenter.handleSortOptionSelected("createdAt",sortOrder);
+            }
+            return true;
         });
+        popup.show();
     }
 
     private void setUpDrinkRecycler(){
@@ -253,6 +284,23 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             Log.e("Ingredients", "ingredients null");
         }
         ingredientAdapter.setIngredients(ingredients);
+    }
+
+    @Override
+    public void updateSortUI(String sortFielded, Query.Direction sortOrdered) {
+        switch (sortFielded) {
+            case "rate": binding.sortByText.setText("Đánh giá"); break;
+            case "name": binding.sortByText.setText("Tên"); break;
+            case "createdAt": binding.sortByText.setText("Mới nhất"); break;
+        }
+
+        if (sortOrdered == Query.Direction.DESCENDING) {
+            binding.sortOrderText.setText("Giảm dần");
+            binding.sortOrderIcon.setImageResource(R.drawable.s_ic_sort_desc);
+        } else {
+            binding.sortOrderText.setText("Tăng dần");
+            binding.sortOrderIcon.setImageResource(R.drawable.s_ic_sort_asc);
+        }
     }
 
     @Override

@@ -23,6 +23,8 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
     private final DrinkDAO drinkDAO;
     private final IngredientDAO ingredientDAO;
     private final RecipeDAO recipeDAO;
+    private String currentSortField = DrinkDAO.DRINK_FIELD.RATE.getValue();
+    private  Query.Direction currentSortOrder = Query.Direction.DESCENDING;
 
     public SearchPresenter() {
         this.drinkDAO = new DrinkDAO();
@@ -49,45 +51,32 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
     }
 
 
-    // Load all drinks
-//    @Override
-//    public void loadDrinks(String sortField, Query.Direction sortOrder) {
-//        view.showLoading();
-//        drinkDAO.getAllDrinks(new DrinkDAO.DrinkListCallback() {
-//            @Override
-//            public void onDrinkListLoaded(List<Drink> drinks) {
-//                view.hideLoading();
-//
-//                if (sortField != null && sortOrder != null && drinks != null) {
-//                    try {
-//                        drinks.sort((d1, d2) -> {
-//                            Comparable val1 = getFieldValue(d1, sortField);
-//                            Comparable val2 = getFieldValue(d2, sortField);
-//
-//                            if (val1 == null && val2 == null) return 0;
-//                            if (val1 == null) return sortOrder == Query.Direction.ASCENDING ? -1 : 1;
-//                            if (val2 == null) return sortOrder == Query.Direction.ASCENDING ? 1 : -1;
-//
-//                            // So sánh giá trị
-//                            int compareResult = val1.compareTo(val2);
-//                            return sortOrder == Query.Direction.ASCENDING ? compareResult : -compareResult;
-//                        });
-//                    } catch (Exception e) {
-//                        view.showError("Sorting error: " + e.getMessage());
-//                    }
-//                }
-//
-//                view.showDrinks(drinks != null ? drinks : new ArrayList<>());
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                view.hideLoading();
-//                view.showError("Failed to load drinks: " + e.getMessage());
-//                view.showDrinks(new ArrayList<>());
-//            }
-//        });
-//    }
+    @Override
+    public void handleSortOptionSelected(String sortField, Query.Direction sortOrder) {
+        if (sortField.equals(currentSortField)) {
+            toggleSortOrder(sortField, sortOrder);
+        } else {
+            currentSortField = sortField;
+            currentSortOrder = sortOrder;
+            applyCurrentSort(currentSortField, currentSortOrder);
+        }
+    }
+
+    @Override
+    public void toggleSortOrder(String sortField,Query.Direction sortOrder) {
+        currentSortField = sortField;
+        currentSortOrder = (currentSortOrder == sortOrder)
+                ? Query.Direction.ASCENDING
+                : Query.Direction.DESCENDING;
+        applyCurrentSort(currentSortField, currentSortOrder);
+    }
+
+    @Override
+    public void applyCurrentSort(String sortField,Query.Direction sortOrder) {
+        view.updateSortUI(sortField, sortOrder);
+    }
+
+    // Load drinks
     @Override
     public void loadDrinks(String sortField, Query.Direction sortOrder) {
         view.showLoading();
