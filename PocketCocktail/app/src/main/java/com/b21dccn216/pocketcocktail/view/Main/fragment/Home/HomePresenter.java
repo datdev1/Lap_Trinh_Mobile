@@ -13,6 +13,7 @@ import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.DrinkCntFav;
 import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithFavCount;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class HomePresenter
         drinkDAO.getFeatureDrink(new DrinkDAO.DrinkCallback() {
             @Override
             public void onDrinkLoaded(Drink drink) {
+                if(view == null) return;
                 view.showBannerDrink(drink);
             }
             @Override
@@ -83,6 +85,7 @@ public class HomePresenter
                 new DrinkDAO.DrinkListCallback(){
                     @Override
                     public void onDrinkListLoaded(List<Drink> drinks) {
+                        if(view == null) return;
                         view.showHighestRateDrinkList(drinks);
                     }
                     @Override
@@ -100,6 +103,7 @@ public class HomePresenter
                 new DrinkDAO.DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinkList) {
+                if(view == null) return;
                 view.showLatestDrinkList(drinkList);
             }
 
@@ -111,26 +115,13 @@ public class HomePresenter
     }
 
     private void loadOneCategoryDrinkList(Category category){
-//        drinkDAO.getDrinksByCategoryId(category.getUuid(),
-//                queryDocumentSnapshots -> {
-//                    List<Drink> drinkList = new ArrayList<>();
-//                    for (DocumentSnapshot drinkSnapshot : queryDocumentSnapshots.getDocuments()) {
-//                        Drink drink = drinkSnapshot.toObject(Drink.class);
-//                        drinkList.add(drink);
-//                        if(drinkList.size() == 10) break;
-//                    }
-//                    Log.d("datdev1", "loadOneCategoryDrinkList: " + drinkList.size());
-//                    view.showOneCategoryDrinkList(category, drinkList);
-//                },
-//                e -> {
-//
-//                });
         drinkDAO.getDrinksByCategoryIdWithLimit(category.getUuid(), 10,
                 new DrinkDAO.DrinkListCallback()
                 {
                     @Override
                     public void onDrinkListLoaded(List<Drink> drinkList) {
                         Log.d("datdev1", "loadOneCategoryDrinkList: " + drinkList.size());
+                        if(view == null) return;
                         view.showOneCategoryDrinkList(category, drinkList);
                     }
 
@@ -151,6 +142,7 @@ public class HomePresenter
                     drinkDAO.getDrink(drinkCntFav.getDrinkId(), new DrinkDAO.DrinkCallback() {
                         @Override
                         public void onDrinkLoaded(Drink drink) {
+                            if(view == null) return;
                             Log.d("datdev1", "2. onDrinkLoaded: " + drink.getUuid() + " Name: " + drink.getName());
                             list.add(new DrinkWithFavCount(drink, drinkCntFav.getCount()));
                             view.showRecommendDrinkList(list);

@@ -27,6 +27,11 @@ public class DiscoverPresenter extends BasePresenter<DiscoverContract.View>
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
     }
@@ -35,6 +40,7 @@ public class DiscoverPresenter extends BasePresenter<DiscoverContract.View>
         categoryDAO.getAllCategorys(new CategoryDAO.CategoryListCallback() {
             @Override
             public void onCategoryListLoaded(List<Category> categorys) {
+                if(view == null) return;
                 view.showCategoryList(categorys);
             }
 
@@ -49,6 +55,7 @@ public class DiscoverPresenter extends BasePresenter<DiscoverContract.View>
         ingredientDAO.getAllIngredients(new IngredientDAO.IngredientListCallback() {
             @Override
             public void onIngredientListLoaded(List<Ingredient> ingredients) {
+                if(view == null) return;
                 view.showIngredientList(ingredients);
             }
 

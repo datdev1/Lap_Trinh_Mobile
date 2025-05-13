@@ -64,6 +64,27 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
         });
     }
 
+    // Load drinks by ingredient
+    @Override
+    public  void loadDrinksByIngredient(String ingredientId){
+        view.showLoading();
+        List<String> ingredientIds = new ArrayList<>();
+        ingredientIds.add(ingredientId);
+        drinkDAO.searchDrinkTotal("",null,ingredientIds,100, new DrinkDAO.DrinkListCallback() {
+            @Override
+            public void onDrinkListLoaded(List<Drink> drinks) {
+                view.hideLoading();
+                view.showDrinks(drinks);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                view.hideLoading();
+                view.showError("Failed to load drinks by ingredient: " + e.getMessage());
+            }
+        });
+    }
+
     // Load ingredients
     @Override
     public void loadIngredients() {

@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.view.Search.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     private final OnIngredientSelectedListener listener;
     private List<Ingredient> ingredients = new ArrayList<>();
     private final Set<String> selectedIngredientIds = new HashSet<>();
+    private List<Ingredient> originalIngredients = new ArrayList<>();
 
     public interface OnIngredientSelectedListener {
         void onIngredientSelected(List<String> selectedIngredientIds);
@@ -32,17 +34,67 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     }
 
     public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
+        if (ingredients == null) return;
+
+        originalIngredients.clear();
+        originalIngredients.addAll(ingredients);
+
+        updateSortedIngredients();
+    }
+    private void updateSortedIngredients() {
+        List<Ingredient> sorted = new ArrayList<>();
+
+        for (Ingredient ingredient : originalIngredients) {
+            if (selectedIngredientIds.contains(ingredient.getUuid())) {
+                sorted.add(ingredient);
+            }
+        }
+
+        for (Ingredient ingredient : originalIngredients) {
+            if (!selectedIngredientIds.contains(ingredient.getUuid())) {
+                sorted.add(ingredient);
+            }
+        }
+
+        this.ingredients = sorted;
         notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setSelectedIngredients(List<Ingredient> selectedIngredients) {
+        selectedIngredientIds.clear();
+        if (selectedIngredients != null) {
+            for (Ingredient ingredient : selectedIngredients) {
+                selectedIngredientIds.add(ingredient.getUuid());
+            }
+        }
+        notifyDataSetChanged();
+
+        if (listener != null) {
+            listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void selectIngredient(String ingredientId) {
+        selectedIngredientIds.add(ingredientId);
+        notifyDataSetChanged();
+        if (listener != null) {
+            listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
+        }
     }
 
     public List<String> getSelectedIngredientIds() {
         return new ArrayList<>(selectedIngredientIds);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void clearSelection() {
         selectedIngredientIds.clear();
         notifyDataSetChanged();
+        if (listener != null) {
+            listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
+        }
     }
 
     @NonNull
@@ -91,7 +143,9 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
                 toggleSelection(ingredient.getUuid());
                 boolean nowSelected = selectedIngredientIds.contains(ingredient.getUuid());
                 updateSelectionUI(nowSelected);
-                listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
+                if (listener != null) {
+                    listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
+                }
             });
         }
 
@@ -100,6 +154,11 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
                 selectedIngredientIds.remove(ingredientId);
             } else {
                 selectedIngredientIds.add(ingredientId);
+            }
+
+            updateSortedIngredients();
+            if (listener != null) {
+                listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
             }
         }
 
