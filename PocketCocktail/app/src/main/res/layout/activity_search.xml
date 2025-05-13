@@ -75,7 +75,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_weight="1"
                             android:background="@color/transparent_t"
-                            android:hint="Find Cocktail"
+                            android:hint="Tìm kiếm đồ uống..."
                             style="@style/NormalString"
                             android:textColorHint="@color/text_hint"
                             android:imeOptions="actionSearch"
@@ -94,6 +94,90 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Sort Controls -->
+                <LinearLayout
+                    android:id="@+id/sort_controls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    app:layout_constraintTop_toBottomOf="@id/search_card">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sắp xếp theo:"
+                        android:textColor="@color/text_primary_y"
+                        android:textSize="16sp" />
+
+                    <!-- Sort By Spinner/Button -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/sort_by_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/s_rounded_button_background"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp">
+
+                        <TextView
+                            android:id="@+id/sort_by_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Đánh giá"
+                            android:textColor="@color/text_primary_y"
+                            android:textSize="16sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_marginStart="4dp"
+                            android:src="@drawable/s_ic_arrow_down"
+                            app:tint="@color/text_primary_y"
+                            app:layout_constraintStart_toEndOf="@id/sort_by_text"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <!-- Sort Order Button -->
+                    <LinearLayout
+                        android:id="@+id/sort_order_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:id="@+id/sort_order_icon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/s_ic_sort_desc"
+                            app:tint="@color/text_primary_y" />
+
+                        <TextView
+                            android:id="@+id/sort_order_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:text="Giảm dần"
+                            android:textColor="@color/text_primary_y"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
                 <!-- Drinks RecyclerView -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/drinksRecyclerView"
@@ -107,7 +191,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/search_card" />
+                    app:layout_constraintTop_toBottomOf="@id/sort_controls" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
