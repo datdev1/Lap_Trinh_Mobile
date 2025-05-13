@@ -35,21 +35,7 @@ public class CategoryDiscoverAdapter extends RecyclerView.Adapter<CategoryDiscov
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-        Category category = categoriesList.get(position);
-        Glide.with(context)
-                .load(category.getImage())
-                .centerCrop()
-                .error(R.drawable.baseline_downloading_24)
-                .into(holder.binding.imageDiscover);
-
-        holder.binding.titleDiscover.setText(category.getName());
-        holder.binding.layout.setOnClickListener(v -> {
-            Intent intent = new Intent(context, SearchActivity.class);
-            intent.putExtra(SearchActivity.EXTRA_CATEGORY_OBJECT, category);
-            context.startActivity(intent);
-        });
-
-
+        holder.bind(position);
     }
 
     @Override
@@ -68,7 +54,14 @@ public class CategoryDiscoverAdapter extends RecyclerView.Adapter<CategoryDiscov
             Category category = categoriesList.get(pos);
             binding.titleDiscover.setText(category.getName());
 
-            Glide.with(context).load(category.getImage())
+            binding.layout.setOnClickListener(v -> {
+                Intent intent = new Intent(context, SearchActivity.class);
+                intent.putExtra(SearchActivity.EXTRA_CATEGORY_OBJECT, category);
+                context.startActivity(intent);
+            });
+            
+            Glide.with(context)
+                    .load(category.getImage())
                     .placeholder(R.drawable.baseline_downloading_24)
                     .error(R.drawable.baseline_error_outline_24)
                     .into(binding.imageDiscover);
