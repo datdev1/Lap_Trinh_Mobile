@@ -41,7 +41,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     private DrinkAdapter drinkAdapter;
     private IngredientAdapter ingredientAdapter;
 
-    private Category choosenCategory;
+    private Category category;
 
     private Ingredient ingredient;
 
@@ -69,27 +69,17 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         setUpDrinkRecycler();
         setUpIngredientRecycler();
 
-        Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
+        category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
+        ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
+        presenter.loadIngredients();
         if (category != null) {
             Log.e("Category", category.toString());
             presenter.loadDrinksByCategory(category.getUuid());
-            presenter.loadIngredients();
-
-            choosenCategory = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
-            ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
-            if (ingredient != null) {
-                choosenIngredientList.add(ingredient);
-            }
-
-            if (choosenCategory != null) {
-                Log.e("Category", choosenCategory.toString());
-                presenter.loadDrinksByCategory(choosenCategory.getUuid());
-            } else {
-                Log.e("Category", "Category is null");
-            }
+        }
+        if(category == null && ingredient == null){
+            presenter.loadDrinks();
         }
 
-        presenter.loadIngredients();
 
         //Search drink
         binding.searchEditText.addTextChangedListener(new TextWatcher() {
@@ -100,13 +90,13 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String query = s.toString().trim();
 
-                if (!query.isEmpty()) {
-                    presenter.searchIngredients(query);
-                    binding.clearButton.setVisibility(View.VISIBLE);
+                List<String> selectedIngredientIds = ingredientAdapter.getSelectedIngredientIds();
+                if (category != null) {
+                    presenter.searchDrinks(category.getUuid(), query, selectedIngredientIds);
                 } else {
-                    presenter.loadIngredients(); // Nếu không có gì, load lại toàn bộ
-                    binding.clearButton.setVisibility(View.GONE);
+                    presenter.searchDrinks(null, query, selectedIngredientIds);
                 }
+                binding.clearButton.setVisibility(query.isEmpty() ? View.GONE : View.VISIBLE);
             }
 
             @Override
@@ -115,7 +105,11 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
         binding.clearButton.setOnClickListener(v -> {
             binding.searchEditText.setText("");
-            presenter.loadIngredients();
+            if (category != null) {
+                presenter.loadDrinksByCategory(category.getUuid());
+            } else {
+                presenter.loadDrinks();
+            }
             // Hide keyboard
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
@@ -134,13 +128,12 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
                 String query = s.toString().trim();
                 if (!query.isEmpty()) {
                     presenter.searchIngredients(query);
-                    binding.clearIngredientSearch.setVisibility(View.VISIBLE);
-
-
+//                    binding.clearIngredientSearch.setVisibility(View.VISIBLE);
                 } else {
                     presenter.loadIngredients();
-                    binding.clearIngredientSearch.setVisibility(View.GONE);
+//                    binding.clearIngredientSearch.setVisibility(View.GONE);
                 }
+                binding.clearIngredientSearch.setVisibility(query.isEmpty() ? View.GONE : View.VISIBLE);
             }
 
             @Override
@@ -181,19 +174,17 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     }
 
     private void updateDrinkList(){
-        presenter.updateDrinkList(choosenCategory, choosenIngredientList, searchName);
+//        presenter.updateDrinkList(choosenCategory, choosenIngredientList, searchName);
     }
 
     private void setUpIngredientRecycler() {
         ingredientAdapter = new IngredientAdapter(this, selectedIngredients -> {
-            String query = binding.searchEditText.getText().toString();
-            Category category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
+            String query = binding.searchEditText.getText().toString().trim();
+
             if (category != null) {
-                if (selectedIngredients == null || selectedIngredients.isEmpty()) {
-                    presenter.loadDrinksByCategory(category.getUuid());
-                } else {
-                    presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
-                }
+                presenter.searchDrinks(category.getUuid(), query, selectedIngredients);
+            } else {
+                presenter.searchDrinks(null, query, selectedIngredients);
             }
         });
 
@@ -222,6 +213,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         if (drinkAdapter != null) {
             drinkAdapter.setDrinks(drinks);
         }
+        Log.e("DrinkDAO", "List drink" + drinks);
     }
 
     @Override

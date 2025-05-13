@@ -188,15 +188,38 @@ public class RecipeDAO {
     }
 
     public void searchDrinkIDByIngredient(List<String> drinkIds, List<String> ingredientIds, DrinkIDListCallback callback) {
-        recipeRef.whereIn("drinkId", drinkIds)
+//        recipeRef.whereArrayContainsAny("drinkId", drinkIds)
+//                .whereArrayContainsAny("ingredientId", ingredientIds)
+        recipeRef//.whereIn("drinkId", drinkIds)
                 .whereIn("ingredientId", ingredientIds)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
+//                    List<String> matchingDrinkIds = new ArrayList<>();
+//                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+//                        Recipe recipe = convertDocumentToRecipe(doc);
+//                        if (recipe != null && !matchingDrinkIds.contains(recipe.getDrinkId())) {
+//                            matchingDrinkIds.add(recipe.getDrinkId());
+//                        }
+//                    }
+
+                    // Map to store drinkId -> count of matching ingredients
+                    Map<String, Integer> drinkIngredientCount = new HashMap<>();
                     List<String> matchingDrinkIds = new ArrayList<>();
+
+                    // Count how many ingredients each drink has from our list
                     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                         Recipe recipe = convertDocumentToRecipe(doc);
-                        if (recipe != null && !matchingDrinkIds.contains(recipe.getDrinkId())) {
-                            matchingDrinkIds.add(recipe.getDrinkId());
+                        if (recipe != null) {
+                            String drinkId = recipe.getDrinkId();
+                            drinkIngredientCount.put(drinkId,
+                                    drinkIngredientCount.getOrDefault(drinkId, 0) + 1);
+                        }
+                    }
+
+                    // Only include drinks that have ALL required ingredients
+                    for (Map.Entry<String, Integer> entry : drinkIngredientCount.entrySet()) {
+                        if (entry.getValue() == ingredientIds.size()) {
+                            matchingDrinkIds.add(entry.getKey());
                         }
                     }
                     callback.onDrinkIDListLoaded(matchingDrinkIds);
@@ -213,19 +236,32 @@ public class RecipeDAO {
         recipeRef.whereIn("ingredientId", ingredientIds)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
+                    // Map to store drinkId -> count of matching ingredients
+                    Map<String, Integer> drinkIngredientCount = new HashMap<>();
                     List<String> matchingDrinkIds = new ArrayList<>();
+
+                    // Count how many ingredients each drink has from our list
                     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                         Recipe recipe = convertDocumentToRecipe(doc);
-                        if (recipe != null && !matchingDrinkIds.contains(recipe.getDrinkId())) {
-                            matchingDrinkIds.add(recipe.getDrinkId());
+                        if (recipe != null) {
+                            String drinkId = recipe.getDrinkId();
+                            drinkIngredientCount.put(drinkId, 
+                                drinkIngredientCount.getOrDefault(drinkId, 0) + 1);
                         }
                     }
+
+                    // Only include drinks that have ALL required ingredients
+                    for (Map.Entry<String, Integer> entry : drinkIngredientCount.entrySet()) {
+                        if (entry.getValue() == ingredientIds.size()) {
+                            matchingDrinkIds.add(entry.getKey());
+                        }
+                    }
+
                     callback.onDrinkIDListLoaded(matchingDrinkIds);
                 })
                 .addOnFailureListener(e -> {
                     Log.e("DrinkDAO","RecipeDAO Trường hợp 3: Nếu không có Category / Name và có list IngredientID" + e.toString());
                     callback.onError(e);
-
                 });
     }
 

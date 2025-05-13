@@ -83,6 +83,18 @@
                         android:textSize="28sp"
                         android:textStyle="bold" />
 
+                    <!-- Edit and Copy -->
+                    <ImageButton
+                            android:id="@+id/btnEditOrCopy"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_marginStart="8dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Edit or Copy"
+                            android:src="@drawable/ic_edit"
+                            android:visibility="visible"
+                            app:tint="@color/secondary" />
+
                     <!-- Favorite button -->
                     <ImageButton
                         android:id="@+id/favorite_button"
