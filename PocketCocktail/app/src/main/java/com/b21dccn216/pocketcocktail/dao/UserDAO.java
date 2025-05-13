@@ -2,8 +2,11 @@ package com.b21dccn216.pocketcocktail.dao;
 
 import android.content.Context;
 import android.net.Uri;
+import android.widget.Toast;
 import android.util.Log;
 
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Favorite;
 import com.b21dccn216.pocketcocktail.model.Review;
@@ -126,30 +129,43 @@ public class UserDAO {
     public void addUserWithImage(Context context, User user, Uri imageUri,
                                 OnSuccessListener<Void> onSuccess,
                                 OnFailureListener onFailure) {
-        //waitForAuthentication();
-        if (!isAuthenticated) {
-            onFailure.onFailure(new Exception("Imgur authentication failed"));
-            return;
-        }
-
         String title = ImageDAO.ImageDaoFolderForAvatar + "_" + user.getName() + "_" + user.getUuid();
-        imageDAO.uploadImageToImgur(context, imageUri, title, new ImageDAO.UploadCallback() {
-            @Override
-            public void onSuccess(String imageUrl) {
-                user.generateUUID();
-                user.setImage(imageUrl);
+        
+        if (isAuthenticated) {
+            imageDAO.uploadImageAuthenticated(context, imageUri, title, new ImageDAO.UploadCallback() {
+                @Override
+                public void onSuccess(String imageUrl) {
+                    user.generateUUID();
+                    user.setImage(imageUrl);
+                    userRef.document(user.getUuid())
+                            .set(user)
+                            .addOnSuccessListener(onSuccess)
+                            .addOnFailureListener(onFailure);
+                }
 
-                userRef.document(user.getUuid())
-                        .set(user)
-                        .addOnSuccessListener(onSuccess)
-                        .addOnFailureListener(onFailure);
-            }
+                @Override
+                public void onFailure(Exception e) {
+                    onFailure.onFailure(e);
+                }
+            });
+        } else {
+            imageDAO.uploadImageAnonymous(context, imageUri, title, new ImageDAO.UploadCallback() {
+                @Override
+                public void onSuccess(String imageUrl) {
+                    user.generateUUID();
+                    user.setImage(imageUrl);
+                    userRef.document(user.getUuid())
+                            .set(user)
+                            .addOnSuccessListener(onSuccess)
+                            .addOnFailureListener(onFailure);
+                }
 
-            @Override
-            public void onFailure(Exception e) {
-                onFailure.onFailure(e);
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    onFailure.onFailure(e);
+                }
+            });
+        }
     }
 
     public void getUser(String userUuid, UserCallback callback) {
@@ -250,42 +266,57 @@ public class UserDAO {
 
     public void updateUserWithImage(Context context, User updatedUser, Uri newImageUri,
                                   OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        //waitForAuthentication();
-        if (!isAuthenticated) {
-            onFailure.onFailure(new Exception("Imgur authentication failed"));
-            return;
-        }
-
         if (newImageUri != null) {
-            // First delete the old image if it exists
-            if (updatedUser.getImage() != null && !updatedUser.getImage().isEmpty()) {
-                imageDAO.deleteImageFromImgur(updatedUser.getImage(), new ImageDAO.DeleteCallback() {
-                    @Override
-                    public void onSuccess() {
-                        // After deleting old image, upload new one
-                        uploadNewImage(context, updatedUser, newImageUri, onSuccess, onFailure);
-                    }
+            String title = ImageDAO.ImageDaoFolderForAvatar + "_" + updatedUser.getName() + "_" + updatedUser.getUuid();
+            
+            if (isAuthenticated) {
+                // Delete old image first if it exists
+                if (updatedUser.getImage() != null && !updatedUser.getImage().isEmpty()) {
+                    imageDAO.deleteImageFromImgur(updatedUser.getImage(), new ImageDAO.DeleteCallback() {
+                        @Override
+                        public void onSuccess() {
+                            uploadNewImageAuthenticated(context, updatedUser, newImageUri, title, onSuccess, onFailure);
+                        }
 
-                    @Override
-                    public void onFailure(Exception e) {
-                        // Even if delete fails, continue with new image upload
-                        Log.e("UserDAO", "Failed to delete old image for user " + updatedUser.getUuid() + ": " + e.getMessage());
-                        uploadNewImage(context, updatedUser, newImageUri, onSuccess, onFailure);
-                    }
-                });
+                        @Override
+                        public void onFailure(Exception e) {
+                            Log.e("UserDAO", "Failed to delete old image: " + e.getMessage());
+                            uploadNewImageAuthenticated(context, updatedUser, newImageUri, title, onSuccess, onFailure);
+                        }
+                    });
+                } else {
+                    uploadNewImageAuthenticated(context, updatedUser, newImageUri, title, onSuccess, onFailure);
+                }
             } else {
-                // If no old image, just upload new one
-                uploadNewImage(context, updatedUser, newImageUri, onSuccess, onFailure);
+                // Anonymous upload without deleting old image
+                uploadNewImageAnonymous(context, updatedUser, newImageUri, title, onSuccess, onFailure);
             }
         } else {
             updateUser(updatedUser, onSuccess, onFailure);
         }
     }
 
-    private void uploadNewImage(Context context, User updatedUser, Uri newImageUri,
-                              OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        String title = ImageDAO.ImageDaoFolderForAvatar + "_" + updatedUser.getName() + "_" + updatedUser.getUuid();
-        imageDAO.uploadImageToImgur(context, newImageUri, title, new ImageDAO.UploadCallback() {
+    private void uploadNewImageAuthenticated(Context context, User updatedUser, Uri newImageUri,
+                                           String title, OnSuccessListener<Void> onSuccess, 
+                                           OnFailureListener onFailure) {
+        imageDAO.uploadImageAuthenticated(context, newImageUri, title, new ImageDAO.UploadCallback() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                updatedUser.setImage(imageUrl);
+                updateUser(updatedUser, onSuccess, onFailure);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
+    }
+
+    private void uploadNewImageAnonymous(Context context, User updatedUser, Uri newImageUri,
+                                       String title, OnSuccessListener<Void> onSuccess, 
+                                       OnFailureListener onFailure) {
+        imageDAO.uploadImageAnonymous(context, newImageUri, title, new ImageDAO.UploadCallback() {
             @Override
             public void onSuccess(String imageUrl) {
                 updatedUser.setImage(imageUrl);
@@ -354,36 +385,32 @@ public class UserDAO {
     }
 
     public void deleteUser(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        //waitForAuthentication();
-        if (!isAuthenticated) {
-            onFailure.onFailure(new Exception("Imgur authentication failed"));
-            return;
-        }
-
         // First check dependencies
         checkUserDependencies(uuid, 
             success -> {
                 // If no dependencies, proceed with deletion
-                // First get the user to get their image URL
                 userRef.document(uuid).get()
                     .addOnSuccessListener(documentSnapshot -> {
                         User user = convertDocumentToUser(documentSnapshot);
                         if (user != null && user.getImage() != null && !user.getImage().isEmpty()) {
-                            // Delete the image first
-                            imageDAO.deleteImageFromImgur(user.getImage(), new ImageDAO.DeleteCallback() {
-                                @Override
-                                public void onSuccess() {
-                                    // After image is deleted, delete the user document
-                                    deleteUserDocument(uuid, onSuccess, onFailure);
-                                }
+                            if (isAuthenticated) {
+                                // Delete image if authenticated
+                                imageDAO.deleteImageFromImgur(user.getImage(), new ImageDAO.DeleteCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        deleteUserDocument(uuid, onSuccess, onFailure);
+                                    }
 
-                                @Override
-                                public void onFailure(Exception e) {
-                                    // Even if image deletion fails, continue with user deletion
-                                    Log.e("UserDAO", "Failed to delete image for user " + uuid + ": " + e.getMessage());
-                                    deleteUserDocument(uuid, onSuccess, onFailure);
-                                }
-                            });
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                        Log.e("UserDAO", "Failed to delete image: " + e.getMessage());
+                                        deleteUserDocument(uuid, onSuccess, onFailure);
+                                    }
+                                });
+                            } else {
+                                // If not authenticated, just delete user document
+                                deleteUserDocument(uuid, onSuccess, onFailure);
+                            }
                         } else {
                             // If no image, just delete the user
                             deleteUserDocument(uuid, onSuccess, onFailure);

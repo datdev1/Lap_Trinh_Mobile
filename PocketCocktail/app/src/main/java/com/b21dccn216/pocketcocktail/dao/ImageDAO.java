@@ -95,11 +95,14 @@ public class ImageDAO {
     }
 
     public void uploadImageToImgur(Context context, Uri imageUri, String title, UploadCallback callback) {
-        if (accessToken == null) {
-            callback.onFailure(new IllegalStateException("Not authenticated. Call authenticate() first."));
-            return;
+        if (accessToken != null) {
+            uploadImageAuthenticated(context, imageUri, title, callback);
+        } else {
+            uploadImageAnonymous(context, imageUri, title, callback);
         }
+    }
 
+    public void uploadImageAuthenticated(Context context, Uri imageUri, String title, UploadCallback callback) {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
             assert inputStream != null;
@@ -115,6 +118,54 @@ public class ImageDAO {
             Request request = new Request.Builder()
                     .url(IMGUR_UPLOAD_URL)
                     .header("Authorization", "Bearer " + accessToken)
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    callback.onFailure(e);
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    if (!response.isSuccessful()) {
+                        callback.onFailure(new IOException("Upload failed: " + response));
+                        return;
+                    }
+
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().string());
+                        String link = json.getJSONObject("data").getString("link");
+                        callback.onSuccess(link);
+                    } catch (JSONException e) {
+                        callback.onFailure(e);
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            callback.onFailure(e);
+        }
+    }
+
+    public void uploadImageAnonymous(Context context, Uri imageUri, String title, UploadCallback callback) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
+            assert inputStream != null;
+            byte[] imageBytes = getBytes(inputStream);
+            String base64Image = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+            RequestBody requestBody = new FormBody.Builder()
+                    .add("image", base64Image)
+                    .add("type", "base64")
+                    .add("title", title)
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(IMGUR_UPLOAD_URL)
+                    .header("Authorization", "Client-ID " + IMGUR_CLIENT_ID)
                     .post(requestBody)
                     .build();
 
