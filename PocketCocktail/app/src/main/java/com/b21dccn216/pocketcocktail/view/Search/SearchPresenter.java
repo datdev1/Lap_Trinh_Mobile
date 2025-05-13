@@ -13,8 +13,10 @@ import com.google.firebase.firestore.Query;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchPresenter extends BasePresenter<SearchContract.View>
     implements SearchContract.Presenter{
@@ -218,20 +220,19 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
     }
 
     private void filterDrinksWithIngredients(List<Drink> drinks, String query, List<String> ingredientIds) {
-        List<Drink> filteredDrinks = new ArrayList<>();
-        int[] pendingCount = {drinks.size()};
+        List<Drink> filteredDrinks = Collections.synchronizedList(new ArrayList<>(Collections.nCopies(drinks.size(), null)));
+        AtomicInteger pendingCount = new AtomicInteger(drinks.size());
 
-        for (Drink drink : drinks) {
+        for (int i = 0; i < drinks.size(); i++) {
+            Drink drink = drinks.get(i);
+            final int index = i;
+
             recipeDAO.getRecipesByDrinkId(drink.getUuid(), new RecipeDAO.RecipeListCallback() {
                 @Override
                 public void onRecipeListLoaded(List<Recipe> recipes) {
                     List<String> drinkIngredientIds = extractIngredientIds(recipes);
-                    boolean matches = checkMatch(drink, query, ingredientIds, drinkIngredientIds);
-
-                    if (matches) {
-                        synchronized (filteredDrinks) {
-                            filteredDrinks.add(drink);
-                        }
+                    if (checkMatch(drink, query, ingredientIds, drinkIngredientIds)) {
+                        filteredDrinks.set(index, drink);
                     }
                     checkCompletion(pendingCount, filteredDrinks);
                 }
@@ -266,13 +267,11 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
         return matchesQuery && matchesIngredients;
     }
 
-    private void checkCompletion(int[] pendingCount, List<Drink> filteredDrinks) {
-        synchronized (pendingCount) {
-            pendingCount[0]--;
-            if (pendingCount[0] == 0) {
-                view.hideLoading();
-                view.showDrinks(filteredDrinks);
-            }
+    private void checkCompletion(AtomicInteger pendingCount, List<Drink> filteredDrinks) {
+        if (pendingCount.decrementAndGet() == 0) {
+            filteredDrinks.removeAll(Collections.singleton(null));
+            view.hideLoading();
+            view.showDrinks(filteredDrinks);
         }
     }
 
