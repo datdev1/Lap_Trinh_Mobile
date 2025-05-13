@@ -16,10 +16,14 @@ public interface SearchContract {
         void hideLoading();
         void showDrinks(List<Drink> drinks);
         void showIngredients(List<Ingredient> ingredients);
+        void updateSortUI(String sortField, Query.Direction sortOrder);
 
     }
 
     interface Presenter extends BaseContract.Presenter<SearchContract.View>{
+        void handleSortOptionSelected(String sortField,Query.Direction sortOrder);
+        void toggleSortOrder(String sortField, Query.Direction sortOrder);
+        void applyCurrentSort(String sortField, Query.Direction sortOrder);
         void loadDrinks(String sortField, Query.Direction sortOrder);
         void loadDrinksByCategory(String categoryId);
         void loadDrinksByIngredient(String ingredientId);
