@@ -602,33 +602,57 @@ public class DrinkDAO {
     }
 
     private void sortDrinks(List<Drink> drinks, DRINK_FIELD sortField, Query.Direction sortOrder) {
+        Log.d("DrinkDAO", "Sorting drinks by: " + sortField.getValue() + " in " + sortOrder + " order");
+        Log.d("DrinkDAO", "Before sorting: " + drinks.size() + " drinks");
+        
         drinks.sort((d1, d2) -> {
             int comparison = 0;
-            switch (sortField) {
-                case NAME:
-                    comparison = d1.getName().compareTo(d2.getName());
-                    break;
-                case DESCRIPTION:
-                    comparison = d1.getDescription().compareTo(d2.getDescription());
-                    break;
-                case RATE:
-                    comparison = Double.compare(d1.getRate(), d2.getRate());
-                    break;
-                case CREATED_AT:
-                    comparison = d1.getCreatedAt().compareTo(d2.getCreatedAt());
-                    break;
-                case UPDATED_AT:
-                    comparison = d1.getUpdatedAt().compareTo(d2.getUpdatedAt());
-                    break;
-                case CATEGORY_ID:
-                    comparison = d1.getCategoryId().compareTo(d2.getCategoryId());
-                    break;
-                case USER_ID:
-                    comparison = d1.getUserId().compareTo(d2.getUserId());
-                    break;
+            try {
+                switch (sortField) {
+                    case NAME:
+                        comparison = d1.getName().compareToIgnoreCase(d2.getName());
+                        break;
+                    case DESCRIPTION:
+                        comparison = d1.getDescription().compareToIgnoreCase(d2.getDescription());
+                        break;
+                    case RATE:
+                        comparison = Double.compare(d1.getRate(), d2.getRate());
+                        break;
+                    case CREATED_AT:
+                        comparison = d1.getCreatedAtTimestamp().compareTo(d2.getCreatedAtTimestamp());
+                        break;
+                    case UPDATED_AT:
+                        comparison = d1.getUpdatedAtTimestamp().compareTo(d2.getUpdatedAtTimestamp());
+                        break;
+                    case CATEGORY_ID:
+                        comparison = d1.getCategoryId().compareToIgnoreCase(d2.getCategoryId());
+                        break;
+                    case USER_ID:
+                        comparison = d1.getUserId().compareToIgnoreCase(d2.getUserId());
+                        break;
+                }
+            } catch (NullPointerException e) {
+                Log.e("DrinkDAO", "Error comparing drinks: " + e.getMessage());
+                return 0;
             }
-            return sortOrder == Query.Direction.ASCENDING ? comparison : -comparison;
+            
+            // If sortOrder is DESCENDING, reverse the comparison
+            return sortOrder == Query.Direction.DESCENDING ? -comparison : comparison;
         });
+        
+        Log.d("DrinkDAO", "After sorting: " + drinks.size() + " drinks");
+        // Log first few items to verify sorting
+        for (int i = 0; i < Math.min(3, drinks.size()); i++) {
+            Drink drink = drinks.get(i);
+            Log.d("DrinkDAO", "Sorted item " + i + ": " + 
+                (sortField == DRINK_FIELD.NAME ? drink.getName() :
+                 sortField == DRINK_FIELD.RATE ? String.valueOf(drink.getRate()) :
+                 sortField == DRINK_FIELD.CREATED_AT ? drink.getCreatedAtTimestamp().toString() :
+                 sortField == DRINK_FIELD.UPDATED_AT ? drink.getUpdatedAtTimestamp().toString() :
+                 sortField == DRINK_FIELD.CATEGORY_ID ? drink.getCategoryId() :
+                 sortField == DRINK_FIELD.USER_ID ? drink.getUserId() :
+                 sortField == DRINK_FIELD.DESCRIPTION ? drink.getDescription() : "unknown"));
+        }
     }
 
     private boolean matchesSearchQuery(Drink drink, String searchQuery) {
@@ -673,7 +697,7 @@ public class DrinkDAO {
                             filteredDrinks.add(drink);
                         }
                     }
-                    Log.d("DrinkDAO", "Success Truong hop 2: " + filteredDrinks);
+                    Log.d("DrinkDAO", "Success Truong hop 2: " + formatDrinksListForLog(filteredDrinks));
                     callback.onDrinkListLoaded(filteredDrinks);
                 })
                 .addOnFailureListener(e -> {
@@ -684,7 +708,6 @@ public class DrinkDAO {
 
     // Trường hợp 1: Nếu có Category / Name và có list IngredientID
     public void searchDrinksByCategoryAndIngredientID(String query, String categoryId, List<String> ingredientIds, DrinkListCallback callback) {
-
         searchDrinksByCategory(query, categoryId, new DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinks) {
@@ -699,7 +722,7 @@ public class DrinkDAO {
                                     filteredDrinks.add(drink);
                                 }
                             }
-                            Log.d("DrinkDAO", "Success Truong hop 1: " + filteredDrinks);
+                            Log.d("DrinkDAO", "Success Truong hop 1: " + formatDrinksListForLog(filteredDrinks));
                             callback.onDrinkListLoaded(filteredDrinks);
                         }
 
@@ -756,7 +779,7 @@ public class DrinkDAO {
                 getAllDrinkWithListDrinkID(drinkIds, new DrinkListCallback() {
                     @Override
                     public void onDrinkListLoaded(List<Drink> drinks) {
-                        Log.d("DrinkDAO", "Success Truong hop 3: " + drinks);
+                        Log.d("DrinkDAO", "Success Truong hop 3: " + formatDrinksListForLog(drinks));
                         callback.onDrinkListLoaded(drinks);
                     }
 
@@ -778,6 +801,7 @@ public class DrinkDAO {
     }
 
     // Trường hợp 4: Nếu không có Category / Name và không có list IngredientID
+    
     public void getAllDrinkWithLimit(int limit, DrinkListCallback callback) {
         drinkRef.limit(limit)
                 .get()
@@ -789,9 +813,7 @@ public class DrinkDAO {
                             drinks.add(drink);
                         }
                     }
-                    // Sort drinks by name for consistent ordering
-//                    drinks.sort(Comparator.comparing(Drink::getName));
-                    Log.d("DrinkDAO", "Success Truong hop 4: " + drinks);
+                    Log.d("DrinkDAO", "Success Truong hop 4: " + formatDrinksListForLog(drinks));
                     callback.onDrinkListLoaded(drinks);
                 })
                 .addOnFailureListener(e -> {
@@ -859,9 +881,8 @@ public class DrinkDAO {
                 callback.onError(e);
             }
         };
-        
-        // Trường hợp 1: Nếu có Category / Name và có list IngredientID
 
+        // Trường hợp 1: Nếu có Category / Name và có list IngredientID
         if ((categoryId != null && !categoryId.isEmpty() || (query != null && !query.isEmpty())) && ingredientIds != null && !ingredientIds.isEmpty()) {
             searchDrinksByCategoryAndIngredientID(query, categoryId, ingredientIds, sortingCallback);
         }
@@ -870,13 +891,38 @@ public class DrinkDAO {
             searchDrinksByCategory(query, categoryId, sortingCallback);
         }
         // Trường hợp 3: Nếu không có Category / Name và có list IngredientID
-        else if (categoryId == null || ingredientIds != null && !ingredientIds.isEmpty()) {
+        else if ((categoryId == null || categoryId.isEmpty()) && ingredientIds != null && !ingredientIds.isEmpty()) {
             getAllDrinkWithListIngredientID(ingredientIds, sortingCallback);
         }
         // Trường hợp 4: Nếu không có Category / Name và không có list IngredientID
         else {
             getAllDrinkWithLimit(limit, sortingCallback);
         }
+    }
+
+    private String formatDrinksListForLog(List<Drink> drinks) {
+        if (drinks == null || drinks.isEmpty()) {
+            return "Empty drinks list";
+        }
+
+        StringBuilder sb = new StringBuilder("\n");
+        sb.append("Total drinks: ").append(drinks.size()).append("\n");
+        sb.append("----------------------------------------\n");
+        
+        for (int i = 0; i < drinks.size(); i++) {
+            Drink drink = drinks.get(i);
+            sb.append(i + 1).append(". ")
+              .append("Name: ").append(drink.getName())
+              .append(" | ID: ").append(drink.getUuid())
+              .append(" | Category: ").append(drink.getCategoryId())
+              .append(" | Rate: ").append(drink.getRate())
+              .append(" | CreatedAt: ").append(drink.getCreatedAtTimestamp())
+              .append(" | UpdatedAt: ").append(drink.getUpdatedAtTimestamp())
+              .append("\n");
+        }
+        sb.append("----------------------------------------");
+        
+        return sb.toString();
     }
 
     public enum DRINK_FIELD {
@@ -898,6 +944,7 @@ public class DrinkDAO {
             return value;
         }
         public static DRINK_FIELD fromString(String text) {
+            Log.d("DrinkDAO", "Sortquery: " + text);
             if (text == null || text.isEmpty()) {
                 return NAME;
             }
@@ -911,4 +958,4 @@ public class DrinkDAO {
             return NAME;
         }
     }
-}
+} 
