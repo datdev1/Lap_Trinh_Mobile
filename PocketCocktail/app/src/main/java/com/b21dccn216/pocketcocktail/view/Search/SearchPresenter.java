@@ -23,8 +23,6 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
     private final DrinkDAO drinkDAO;
     private final IngredientDAO ingredientDAO;
     private final RecipeDAO recipeDAO;
-    private String currentSortField = DrinkDAO.DRINK_FIELD.RATE.getValue();
-    private  Query.Direction currentSortOrder = Query.Direction.DESCENDING;
 
     public SearchPresenter() {
         this.drinkDAO = new DrinkDAO();
@@ -48,32 +46,6 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
         } catch (Exception e) {
             return null;
         }
-    }
-
-
-    @Override
-    public void handleSortOptionSelected(String sortField, Query.Direction sortOrder) {
-        if (sortField.equals(currentSortField)) {
-            toggleSortOrder(sortField, sortOrder);
-        } else {
-            currentSortField = sortField;
-            currentSortOrder = sortOrder;
-            applyCurrentSort(currentSortField, currentSortOrder);
-        }
-    }
-
-    @Override
-    public void toggleSortOrder(String sortField,Query.Direction sortOrder) {
-        currentSortField = sortField;
-        currentSortOrder = (currentSortOrder == sortOrder)
-                ? Query.Direction.ASCENDING
-                : Query.Direction.DESCENDING;
-        applyCurrentSort(currentSortField, currentSortOrder);
-    }
-
-    @Override
-    public void applyCurrentSort(String sortField,Query.Direction sortOrder) {
-        view.updateSortUI(sortField, sortOrder);
     }
 
     // Load drinks

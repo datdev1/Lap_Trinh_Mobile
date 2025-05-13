@@ -94,7 +94,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         //Load Data
         presenter.loadIngredients();
         if (category != null) {
-            presenter.loadDrinksByCategory(category.getUuid());
+            presenter.searchDrinks(category.getUuid(), "", null, sortField, sortOrder);
         } else if (ingredient != null) {
             List<Ingredient> initialSelection = new ArrayList<>();
             initialSelection.add(ingredient);
@@ -177,35 +177,77 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
         // Filter
         binding.sortByContainer.setOnClickListener(v -> showSortByMenu());
-        binding.sortOrderButton.setOnClickListener(v -> presenter.toggleSortOrder(sortField,sortOrder));
+        binding.sortOrderButton.setOnClickListener(v -> toggleSortOrder());
     }
+
+
+    // Pop up sort
     private void showSortByMenu() {
         PopupMenu popup = new PopupMenu(this, binding.sortByContainer);
         popup.getMenuInflater().inflate(R.menu.sort_menu, popup.getMenu());
 
-        // Highlight item hiện tại
-        String currentSort = sortField;
-        if (currentSort != null) {
-            switch (currentSort) {
-                case "rate": popup.getMenu().findItem(R.id.sort_by_rating).setChecked(true); break;
-                case "name": popup.getMenu().findItem(R.id.sort_by_name).setChecked(true); break;
-                case "createdAt": popup.getMenu().findItem(R.id.sort_by_date).setChecked(true); break;
-            }
+        switch (sortField) {
+            case "rate":
+                popup.getMenu().findItem(R.id.sort_by_rating).setChecked(true);
+                break;
+            case "name":
+                popup.getMenu().findItem(R.id.sort_by_name).setChecked(true);
+                break;
+            case "createdAt":
+                popup.getMenu().findItem(R.id.sort_by_date).setChecked(true);
+                break;
         }
 
         popup.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.sort_by_rating) {
-                presenter.handleSortOptionSelected("rate", sortOrder);
-            } else if (item.getItemId() == R.id.sort_by_name) {
-                presenter.handleSortOptionSelected("name",sortOrder);
-            } else if (item.getItemId() == R.id.sort_by_date) {
-                presenter.handleSortOptionSelected("createdAt",sortOrder);
+            int itemId = item.getItemId();
+            if (itemId == R.id.sort_by_rating) {
+                sortField = "rate";
+                binding.sortByText.setText("Đánh giá");
+            } else if (itemId == R.id.sort_by_name) {
+                sortField = "name";
+                binding.sortByText.setText("Tên");
+            } else if (itemId == R.id.sort_by_date) {
+                sortField = "createdAt";
+                binding.sortByText.setText("Mới nhất");
             }
+
+            applySorting();
             return true;
         });
+
         popup.show();
     }
+    private void toggleSortOrder() {
+        sortOrder = (sortOrder == Query.Direction.DESCENDING)
+                ? Query.Direction.ASCENDING
+                : Query.Direction.DESCENDING;
+        updateSortOrderUI();
+        applySorting();
+    }
+    private void updateSortOrderUI() {
+        if (sortOrder == Query.Direction.DESCENDING) {
+            binding.sortOrderText.setText("Giảm dần");
+            binding.sortOrderIcon.setImageResource(R.drawable.s_ic_sort_desc);
+        } else {
+            binding.sortOrderText.setText("Tăng dần");
+            binding.sortOrderIcon.setImageResource(R.drawable.s_ic_sort_asc);
+        }
+    }
+    private void applySorting() {
+        String query = binding.searchEditText.getText().toString().trim();
+        List<String> selectedIngredientIds = ingredientAdapter.getSelectedIngredientIds();
 
+        if (category != null) {
+            presenter.searchDrinks(category.getUuid(), query, selectedIngredientIds, sortField, sortOrder);
+        } else {
+            presenter.searchDrinks(null, query, selectedIngredientIds, sortField, sortOrder);
+        }
+    }
+
+
+
+
+    //Set up recycle view
     private void setUpDrinkRecycler(){
         drinkAdapter = new DrinkAdapter(this, drink -> {
             Intent intent = new Intent(this, DetailDrinkActivity.class);
@@ -253,6 +295,9 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         binding.ingredientsRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);
     }
 
+
+
+    // Exit NestedScrollView
     @Override
     public void onBackPressed() {
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
@@ -263,11 +308,8 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     }
 
 
-    @Override
-    public void showMessage(String message) {
 
-    }
-
+    // Load data
     @Override
     public void showDrinks(List<Drink> drinks) {
         if (drinkAdapter != null) {
@@ -287,20 +329,8 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     }
 
     @Override
-    public void updateSortUI(String sortFielded, Query.Direction sortOrdered) {
-        switch (sortFielded) {
-            case "rate": binding.sortByText.setText("Đánh giá"); break;
-            case "name": binding.sortByText.setText("Tên"); break;
-            case "createdAt": binding.sortByText.setText("Mới nhất"); break;
-        }
+    public void showMessage(String message) {
 
-        if (sortOrdered == Query.Direction.DESCENDING) {
-            binding.sortOrderText.setText("Giảm dần");
-            binding.sortOrderIcon.setImageResource(R.drawable.s_ic_sort_desc);
-        } else {
-            binding.sortOrderText.setText("Tăng dần");
-            binding.sortOrderIcon.setImageResource(R.drawable.s_ic_sort_asc);
-        }
     }
 
     @Override
