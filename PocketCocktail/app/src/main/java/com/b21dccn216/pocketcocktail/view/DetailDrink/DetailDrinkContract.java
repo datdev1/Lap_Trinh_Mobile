@@ -30,6 +30,7 @@ public interface DetailDrinkContract {
         void loadDrinkDetails(Drink drink);
         void checkFavorite(String drinkId);
         void toggleFavorite(Drink drink);
+        void loadFavCount(String drinkId);
         void shareDrink(Drink drink);
         void addReview(Review review);
         void loadReviews(String drinkId);

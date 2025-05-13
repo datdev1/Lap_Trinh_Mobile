@@ -3,6 +3,7 @@ package com.b21dccn216.pocketcocktail.view.DetailDrink;
 import android.util.Log;
 
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
+import com.b21dccn216.pocketcocktail.dao.DrinkCntFavDAO;
 import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.dao.FavoriteDAO;
 import com.b21dccn216.pocketcocktail.dao.IngredientDAO;
@@ -12,6 +13,7 @@ import com.b21dccn216.pocketcocktail.dao.UserDAO;
 import com.b21dccn216.pocketcocktail.helper.DialogHelper;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.model.DrinkCntFav;
 import com.b21dccn216.pocketcocktail.model.Favorite;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.b21dccn216.pocketcocktail.model.Recipe;
@@ -29,6 +31,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
     //
     //DAO
     private final FavoriteDAO favoriteDAO;
+    private final DrinkCntFavDAO drinkCntFavDAO;
     private final DrinkDAO drinkDAO;
     private final RecipeDAO recipeDAO;
     private final IngredientDAO ingredientDAO;
@@ -49,6 +52,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         ingredientDAO = new IngredientDAO();
         reviewDAO = new ReviewDAO();
         userDAO = new UserDAO();
+        drinkCntFavDAO = new DrinkCntFavDAO();
 
         currentUserId = String.valueOf(SessionManager.getInstance().getUser().getUuid());
     }
@@ -124,17 +128,21 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         loadFavCount(drink.getUuid());
     }
 
-    private void loadFavCount(String uuid) {
-        favoriteDAO.getFavoriteDrinkId(uuid, new FavoriteDAO.FavoriteListCallback() {
+    @Override
+    public void loadFavCount(String uuid) {
+        drinkCntFavDAO.getDrinkCntFavByDrinkId(uuid, new DrinkCntFavDAO.DrinkCntFavCallback() {
             @Override
-            public void onFavoriteListLoaded(List<Favorite> favorites) {
-                if(view == null) return;
-                view.showCountFavourite(favorites.size());
+            public void onDrinkCntFavLoaded(DrinkCntFav drinkCntFav) {
+                if(drinkCntFav == null) {
+                    view.showCountFavourite(0);
+                    return;
+                }
+                view.showCountFavourite(drinkCntFav.getCount());
             }
 
             @Override
             public void onError(Exception e) {
-
+                view.showCountFavourite(0);
             }
         });
     }
@@ -211,6 +219,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
 
         if (isFavorite && currentFavorite != null) {
             favoriteDAO.deleteFavorite(currentFavorite.getUuid(), unused -> {
+                loadFavCount(drink.getUuid());
                 isFavorite = false;
                 currentFavorite = null;
                 isFavoriteProcessing = false;
@@ -226,6 +235,7 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
             favorite.generateUUID();
 
             favoriteDAO.addFavorite(favorite, unused -> {
+                loadFavCount(drink.getUuid());
                 isFavorite = true;
                 currentFavorite = favorite;
                 isFavoriteProcessing = false;

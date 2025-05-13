@@ -3,10 +3,13 @@ package com.b21dccn216.pocketcocktail.view.DetailDrink;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +53,13 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         presenter = createPresenter();
+        // Hide status bar
+        try {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }catch (Exception e){
+
+        }
+
         super.onCreate(savedInstanceState);
         binding = ActivityDetailDrinkBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
