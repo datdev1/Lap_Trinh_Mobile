@@ -164,7 +164,7 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
     @Override
     public void searchDrinks(String categoryId, String query, List<String> ingredientIds, String sortField, Query.Direction sortOrder) {
         view.showLoading();
-        drinkDAO.searchDrinkTotal(query,categoryId,ingredientIds,100, new DrinkDAO.DrinkListCallback(){
+        drinkDAO.searchDrinkTotalWithSort(query,categoryId,ingredientIds,100, DrinkDAO.DRINK_FIELD.fromString(sortField),sortOrder, new DrinkDAO.DrinkListCallback(){
 
             @Override
             public void onDrinkListLoaded(List<Drink> drinks) {
@@ -316,3 +316,5 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
         });
     }
 }
+
+

@@ -897,5 +897,18 @@ public class DrinkDAO {
         public String getValue() {
             return value;
         }
+        public static DRINK_FIELD fromString(String text) {
+            if (text == null || text.isEmpty()) {
+                return NAME;
+            }
+
+            for (DRINK_FIELD field : DRINK_FIELD.values()) {
+                if (field.value.equalsIgnoreCase(text)) {
+                    return field;
+                }
+            }
+
+            return NAME;
+        }
     }
 }
