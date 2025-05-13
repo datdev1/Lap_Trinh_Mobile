@@ -59,7 +59,7 @@ public class CategoryDiscoverAdapter extends RecyclerView.Adapter<CategoryDiscov
                 intent.putExtra(SearchActivity.EXTRA_CATEGORY_OBJECT, category);
                 context.startActivity(intent);
             });
-            
+
             Glide.with(context)
                     .load(category.getImage())
                     .placeholder(R.drawable.baseline_downloading_24)
