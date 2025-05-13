@@ -12,6 +12,7 @@ import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemSearchDrinkBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +69,14 @@ public class DrinkAdapter extends RecyclerView.Adapter<DrinkAdapter.DrinkViewHol
                     .load(drink.getImage())
                     .placeholder(R.drawable.sample_cocktail_2)
                     .into(binding.imageDrink);
+
+            binding.rateDrink.setText(String.format("Rate: %.1f", drink.getRate()));
+            if (drink.getCreatedAt() != null) {
+                String dateText = DateFormat.getDateInstance(DateFormat.MEDIUM).format(drink.getCreatedAt());
+                binding.createAtDrink.setText("Created: " + dateText);
+            } else {
+                binding.createAtDrink.setText("Created: N/A");
+            }
 
             binding.layout.setOnClickListener(v -> listener.onDrinkClick(drink));
         }

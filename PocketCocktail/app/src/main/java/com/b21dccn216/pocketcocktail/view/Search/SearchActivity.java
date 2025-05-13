@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -24,6 +22,7 @@ import com.b21dccn216.pocketcocktail.view.Search.adapter.IngredientAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.b21dccn216.pocketcocktail.view.Search.helper.GridSpacingItemDecoration;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     public static final String EXTRA_CATEGORY_OBJECT = "category_object";
     public static final String EXTRA_INGREDIENT_OBJECT = "ingredient_object";
     public static final String EXTRA_DRINK_OBJECT = "drink_id";
-    public static final String SORT_FIELD = "search_field";
+    public static final String SORT_FIELD = "sort_field";
     public static final String SORT_ORDER = "sort_order";
 
 
@@ -79,6 +78,12 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         // Received data from intend
         category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
         ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
+        String sortField = getIntent().getStringExtra(SORT_FIELD);
+        Query.Direction sortOrder = (Query.Direction) getIntent().getSerializableExtra(SORT_ORDER);
+        Log.d("SORT_FIELD", "SORT_FIELD: " + sortField);
+        Log.d("SORT_ORDER", "SORT_ORDER: " + sortOrder);
+
+        //Load Data
         presenter.loadIngredients();
         if (category != null) {
             presenter.loadDrinksByCategory(category.getUuid());
@@ -91,7 +96,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             selectedIngredientIds.add(ingredient.getUuid());
             presenter.searchDrinks(null, "", selectedIngredientIds);
         } else {
-            presenter.loadDrinks();
+            presenter.loadDrinks(sortField, sortOrder);
         }
 
 
@@ -121,7 +126,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             if (category != null) {
                 presenter.loadDrinksByCategory(category.getUuid());
             } else {
-                presenter.loadDrinks();
+                presenter.loadDrinks(sortField, sortOrder);
             }
             // Hide keyboard
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
