@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.test_database.fragment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.ArrayAdapter;
@@ -121,6 +122,13 @@ public class IngredientFragment extends BaseModelFragment {
         });
     }
 
+    private void setButtonsEnabled(boolean enabled) {
+        btnChooseImage.setEnabled(enabled);
+        btnSave.setEnabled(enabled);
+        btnUpdate.setEnabled(enabled && selectedIngredient != null);
+        btnDelete.setEnabled(enabled && selectedIngredient != null);
+    }
+
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -132,6 +140,7 @@ public class IngredientFragment extends BaseModelFragment {
         ingredientDAO.getAllIngredients(new IngredientDAO.IngredientListCallback() {
             @Override
             public void onIngredientListLoaded(List<Ingredient> ingredientList) {
+                ingredientList.sort((c1, c2) -> c2.getUpdatedAt().compareTo(c1.getUpdatedAt()));
                 ingredients.clear();
                 ingredients.addAll(ingredientList);
                 adapter.notifyDataSetChanged();
@@ -197,12 +206,28 @@ public class IngredientFragment extends BaseModelFragment {
 
     @Override
     protected void saveItem() {
+        if (selectedIngredient != null) {
+            new AlertDialog.Builder(requireContext())
+                .setTitle("Cảnh báo")
+                .setMessage("Bạn đang chọn một nguyên liệu. Bạn có muốn tạo mới không?")
+                .setPositiveButton("Có", (dialog, which) -> {
+
+                    performSave();
+                })
+                .setNegativeButton("Không", null)
+                .show();
+        } else {
+            performSave();
+        }
+    }
+
+    private void performSave() {
         String name = etName.getText().toString();
         String description = etDescription.getText().toString();
         int unitPosition = spinnerUnit.getSelectedItemPosition();
 
         if (name.isEmpty() || description.isEmpty() || unitPosition <= 0) {
-            showToast("Please fill all required fields");
+            showToast("Vui lòng điền đầy đủ thông tin");
             return;
         }
 
@@ -210,29 +235,38 @@ public class IngredientFragment extends BaseModelFragment {
         Ingredient ingredient = new Ingredient(name, description, unit);
         ingredient.generateUUID();
 
+        setButtonsEnabled(false);
         if (selectedImageUri != null) {
             ingredientDAO.addIngredientWithImage(getContext(), ingredient, selectedImageUri,
                     aVoid -> {
-                        showToast("Ingredient added successfully");
+                        showToast("Thêm nguyên liệu thành công");
                         clearInputs();
                         loadData();
+                        setButtonsEnabled(true);
                     },
-                    e -> showToast("Error adding ingredient: " + e.getMessage()));
+                    e -> {
+                        showToast("Lỗi khi thêm nguyên liệu: " + e.getMessage());
+                        setButtonsEnabled(true);
+                    });
         } else {
             ingredientDAO.addIngredient(ingredient,
                     aVoid -> {
-                        showToast("Ingredient added successfully");
+                        showToast("Thêm nguyên liệu thành công");
                         clearInputs();
                         loadData();
+                        setButtonsEnabled(true);
                     },
-                    e -> showToast("Error adding ingredient: " + e.getMessage()));
+                    e -> {
+                        showToast("Lỗi khi thêm nguyên liệu: " + e.getMessage());
+                        setButtonsEnabled(true);
+                    });
         }
     }
 
     @Override
     protected void updateItem() {
         if (selectedIngredient == null) {
-            showToast("Please select an ingredient first");
+            showToast("Vui lòng chọn một nguyên liệu");
             return;
         }
 
@@ -241,7 +275,7 @@ public class IngredientFragment extends BaseModelFragment {
         int unitPosition = spinnerUnit.getSelectedItemPosition();
 
         if (name.isEmpty() || description.isEmpty() || unitPosition <= 0) {
-            showToast("Please fill all required fields");
+            showToast("Vui lòng điền đầy đủ thông tin");
             return;
         }
 
@@ -250,38 +284,59 @@ public class IngredientFragment extends BaseModelFragment {
         selectedIngredient.setDescription(description);
         selectedIngredient.setUnit(unit);
 
+        setButtonsEnabled(false);
         if (selectedImageUri != null) {
             ingredientDAO.updateIngredientWithImage(getContext(), selectedIngredient, selectedImageUri,
                     aVoid -> {
-                        showToast("Ingredient updated successfully");
+                        showToast("Cập nhật nguyên liệu thành công");
                         clearInputs();
                         loadData();
+                        setButtonsEnabled(true);
                     },
-                    e -> showToast("Error updating ingredient: " + e.getMessage()));
+                    e -> {
+                        showToast("Lỗi khi cập nhật nguyên liệu: " + e.getMessage());
+                        setButtonsEnabled(true);
+                    });
         } else {
             ingredientDAO.updateIngredient(selectedIngredient,
                     aVoid -> {
-                        showToast("Ingredient updated successfully");
+                        showToast("Cập nhật nguyên liệu thành công");
                         clearInputs();
                         loadData();
+                        setButtonsEnabled(true);
                     },
-                    e -> showToast("Error updating ingredient: " + e.getMessage()));
+                    e -> {
+                        showToast("Lỗi khi cập nhật nguyên liệu: " + e.getMessage());
+                        setButtonsEnabled(true);
+                    });
         }
     }
 
     @Override
     protected void deleteItem() {
         if (selectedIngredient == null) {
-            showToast("Please select an ingredient first");
+            showToast("Vui lòng chọn một nguyên liệu");
             return;
         }
 
-        ingredientDAO.deleteIngredient(selectedIngredient.getUuid(),
-                aVoid -> {
-                    showToast("Ingredient deleted successfully");
-                    clearInputs();
-                    loadData();
-                },
-                e -> showToast(e.getMessage()));
+        new AlertDialog.Builder(requireContext())
+            .setTitle("Xác nhận xóa")
+            .setMessage("Bạn có chắc chắn muốn xóa nguyên liệu này?")
+            .setPositiveButton("Có", (dialog, which) -> {
+                setButtonsEnabled(false);
+                ingredientDAO.deleteIngredient(selectedIngredient.getUuid(),
+                    aVoid -> {
+                        showToast("Xóa nguyên liệu thành công");
+                        clearInputs();
+                        loadData();
+                        setButtonsEnabled(true);
+                    },
+                    e -> {
+                        showToast(e.getMessage());
+                        setButtonsEnabled(true);
+                    });
+            })
+            .setNegativeButton("Không", null)
+            .show();
     }
 } 

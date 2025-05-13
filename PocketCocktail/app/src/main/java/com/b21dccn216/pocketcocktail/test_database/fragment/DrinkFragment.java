@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.dao.CategoryDAO;
@@ -125,6 +126,7 @@ public class DrinkFragment extends BaseModelFragment {
         userDAO.getAllUsers(new UserDAO.UserListCallback() {
             @Override
             public void onUserListLoaded(List<User> userList) {
+                userList.sort((c1, c2) -> c2.getUpdatedAt().compareTo(c1.getUpdatedAt()));
                 users.clear();
                 users.addAll(userList);
                 List<String> userDisplayList = new ArrayList<>();
@@ -154,6 +156,7 @@ public class DrinkFragment extends BaseModelFragment {
         categoryDAO.getAllCategorys(new CategoryDAO.CategoryListCallback() {
             @Override
             public void onCategoryListLoaded(List<Category> categoryList) {
+                categoryList.sort((c1, c2) -> c2.getUpdatedAt().compareTo(c1.getUpdatedAt()));
                 categories.clear();
                 categories.addAll(categoryList);
                 List<String> categoryDisplayList = new ArrayList<>();
@@ -194,6 +197,14 @@ public class DrinkFragment extends BaseModelFragment {
             btnUpdate.setEnabled(true);
             btnDelete.setEnabled(true);
         });
+    }
+
+    private void setButtonsEnabled(boolean enabled) {
+        btnSelectImage.setEnabled(enabled);
+        btnSave.setEnabled(enabled);
+        btnUpdate.setEnabled(enabled && selectedDrink != null);
+        btnDelete.setEnabled(enabled && selectedDrink != null);
+        btnLoadMore.setEnabled(enabled);
     }
 
     private void setupSearchListener() {
@@ -261,7 +272,7 @@ public class DrinkFragment extends BaseModelFragment {
         btnLoadMore.setVisibility(View.VISIBLE); // Show load more button for normal pagination
         btnLoadMore.setEnabled(false);
         drinkDAO.getAllDrinksWithLimitAndSort(
-                DrinkDAO.DRINK_FIELD.CREATED_AT,
+                DrinkDAO.DRINK_FIELD.UPDATED_AT,
                 Query.Direction.DESCENDING,
                 PAGE_SIZE,
                 null,
@@ -439,6 +450,22 @@ public class DrinkFragment extends BaseModelFragment {
 
     @Override
     protected void saveItem() {
+        if (selectedDrink != null) {
+            new AlertDialog.Builder(requireContext())
+                .setTitle("Cảnh báo")
+                .setMessage("Bạn đang chọn một đồ uống. Bạn có muốn tạo mới không?")
+                .setPositiveButton("Có", (dialog, which) -> {
+
+                    performSave();
+                })
+                .setNegativeButton("Không", null)
+                .show();
+        } else {
+            performSave();
+        }
+    }
+
+    private void performSave() {
         String name = etName.getText().toString();
         String description = etDescription.getText().toString();
         String instruction = etInstruction.getText().toString();
@@ -446,7 +473,7 @@ public class DrinkFragment extends BaseModelFragment {
 
         if (name.isEmpty() || description.isEmpty() || instruction.isEmpty() || rateStr.isEmpty()) {
             Log.w(TAG, "Save failed: Required fields are empty");
-            showToast("Please fill all required fields");
+            showToast("Vui lòng điền đầy đủ thông tin");
             return;
         }
 
@@ -455,7 +482,7 @@ public class DrinkFragment extends BaseModelFragment {
             rate = Double.parseDouble(rateStr);
         } catch (NumberFormatException e) {
             Log.e(TAG, "Save failed: Invalid rate value", e);
-            showToast("Invalid rate value");
+            showToast("Giá trị đánh giá không hợp lệ");
             return;
         }
 
@@ -464,7 +491,7 @@ public class DrinkFragment extends BaseModelFragment {
         int categoryPosition = spinnerCategory.getSelectedItemPosition();
         
         if (userPosition <= 0 || categoryPosition <= 0) { // Check if empty option is selected
-            showToast("Please select both user and category");
+            showToast("Vui lòng chọn người dùng và danh mục");
             return;
         }
 
@@ -475,31 +502,37 @@ public class DrinkFragment extends BaseModelFragment {
         drink.generateUUID();
         Log.d(TAG, "Creating new drink: " + drink.getName() + " with UUID: " + drink.getUuid());
 
+        setButtonsEnabled(false);
+
         if (selectedImageUri != null) {
             Log.d(TAG, "Saving drink with image");
             drinkDAO.addDrinkWithImage(getContext(), drink, selectedImageUri,
                     aVoid -> {
                         Log.d(TAG, "Drink saved successfully with image");
-                        showToast("Drink added successfully");
+                        showToast("Thêm đồ uống thành công");
                         clearInputs();
                         loadFirstPage(); // Reload first page after adding new drink
+                        setButtonsEnabled(true);
                     },
                     e -> {
                         Log.e(TAG, "Error saving drink with image", e);
-                        showToast("Error adding drink: " + e.getMessage());
+                        showToast("Lỗi khi thêm đồ uống: " + e.getMessage());
+                        setButtonsEnabled(true);
                     });
         } else {
             Log.d(TAG, "Saving drink without image");
             drinkDAO.addDrink(drink,
                     aVoid -> {
                         Log.d(TAG, "Drink saved successfully");
-                        showToast("Drink added successfully");
+                        showToast("Thêm đồ uống thành công");
                         clearInputs();
                         loadFirstPage(); // Reload first page after adding new drink
+                        setButtonsEnabled(true);
                     },
                     e -> {
                         Log.e(TAG, "Error saving drink", e);
-                        showToast("Error adding drink: " + e.getMessage());
+                        showToast("Lỗi khi thêm đồ uống: " + e.getMessage());
+                        setButtonsEnabled(true);
                     });
         }
     }
@@ -508,7 +541,7 @@ public class DrinkFragment extends BaseModelFragment {
     protected void updateItem() {
         if (selectedDrink == null) {
             Log.w(TAG, "Update failed: No drink selected");
-            showToast("Please select a drink first");
+            showToast("Vui lòng chọn một đồ uống");
             return;
         }
 
@@ -519,7 +552,7 @@ public class DrinkFragment extends BaseModelFragment {
 
         if (name.isEmpty() || description.isEmpty() || instruction.isEmpty() || rateStr.isEmpty()) {
             Log.w(TAG, "Update failed: Required fields are empty");
-            showToast("Please fill all required fields");
+            showToast("Vui lòng điền đầy đủ thông tin");
             return;
         }
 
@@ -528,7 +561,7 @@ public class DrinkFragment extends BaseModelFragment {
             rate = Double.parseDouble(rateStr);
         } catch (NumberFormatException e) {
             Log.e(TAG, "Update failed: Invalid rate value", e);
-            showToast("Invalid rate value");
+            showToast("Giá trị đánh giá không hợp lệ");
             return;
         }
 
@@ -537,7 +570,7 @@ public class DrinkFragment extends BaseModelFragment {
         int categoryPosition = spinnerCategory.getSelectedItemPosition();
         
         if (userPosition <= 0 || categoryPosition <= 0) { // Check if empty option is selected
-            showToast("Please select both user and category");
+            showToast("Vui lòng chọn người dùng và danh mục");
             return;
         }
 
@@ -553,31 +586,37 @@ public class DrinkFragment extends BaseModelFragment {
         
         Log.d(TAG, "Updating drink: " + selectedDrink.getName() + " with UUID: " + selectedDrink.getUuid());
 
+        setButtonsEnabled(false);
+
         if (selectedImageUri != null) {
             Log.d(TAG, "Updating drink with new image");
             drinkDAO.updateDrinkWithImage(getContext(), selectedDrink, selectedImageUri,
                     aVoid -> {
                         Log.d(TAG, "Drink updated successfully with image");
-                        showToast("Drink updated successfully");
+                        showToast("Cập nhật đồ uống thành công");
                         clearInputs();
                         loadFirstPage(); // Reload first page after updating drink
+                        setButtonsEnabled(true);
                     },
                     e -> {
                         Log.e(TAG, "Error updating drink with image", e);
-                        showToast("Error updating drink: " + e.getMessage());
+                        showToast("Lỗi khi cập nhật đồ uống: " + e.getMessage());
+                        setButtonsEnabled(true);
                     });
         } else {
             Log.d(TAG, "Updating drink without image change");
             drinkDAO.updateDrink(selectedDrink,
                     aVoid -> {
                         Log.d(TAG, "Drink updated successfully");
-                        showToast("Drink updated successfully");
+                        showToast("Cập nhật đồ uống thành công");
                         clearInputs();
                         loadFirstPage(); // Reload first page after updating drink
+                        setButtonsEnabled(true);
                     },
                     e -> {
                         Log.e(TAG, "Error updating drink", e);
-                        showToast("Error updating drink: " + e.getMessage());
+                        showToast("Lỗi khi cập nhật đồ uống: " + e.getMessage());
+                        setButtonsEnabled(true);
                     });
         }
     }
@@ -586,21 +625,33 @@ public class DrinkFragment extends BaseModelFragment {
     protected void deleteItem() {
         if (selectedDrink == null) {
             Log.w(TAG, "Delete failed: No drink selected");
-            showToast("Please select a drink first");
+            showToast("Vui lòng chọn một đồ uống");
             return;
         }
 
-        Log.d(TAG, "Deleting drink: " + selectedDrink.getName() + " with UUID: " + selectedDrink.getUuid());
-        drinkDAO.deleteDrink(selectedDrink.getUuid(),
-                aVoid -> {
-                    Log.d(TAG, "Drink deleted successfully");
-                    showToast("Drink deleted successfully");
-                    clearInputs();
-                    loadFirstPage(); // Reload first page after deleting drink
-                },
-                e -> {
-                    Log.e(TAG, "Error deleting drink", e);
-                    showToast(e.getMessage());
-                });
+        new AlertDialog.Builder(requireContext())
+            .setTitle("Xác nhận xóa")
+            .setMessage("Bạn có chắc chắn muốn xóa đồ uống này?")
+            .setPositiveButton("Có", (dialog, which) -> {
+                Log.d(TAG, "Deleting drink: " + selectedDrink.getName() + " with UUID: " + selectedDrink.getUuid());
+                setButtonsEnabled(false);
+                drinkDAO.deleteDrink(selectedDrink.getUuid(),
+                    aVoid -> {
+                        Log.d(TAG, "Drink deleted successfully");
+                        showToast("Xóa đồ uống thành công");
+                        clearInputs();
+                        loadFirstPage(); // Reload first page after deleting drink
+                        setButtonsEnabled(true);
+                    },
+                    e -> {
+                        Log.e(TAG, "Error deleting drink", e);
+                        showToast(e.getMessage());
+                        setButtonsEnabled(true);
+                    });
+            })
+            .setNegativeButton("Không", null)
+            .show();
     }
+
+
 } 
