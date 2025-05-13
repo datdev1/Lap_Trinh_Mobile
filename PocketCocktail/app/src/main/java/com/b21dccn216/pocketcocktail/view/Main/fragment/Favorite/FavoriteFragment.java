@@ -73,9 +73,8 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
     @Override
     public void showFavoriteDrinkList(List<Drink> list) {
         if (list.isEmpty()) {
-            binding.recyclerFavorites.setVisibility(View.GONE);
             binding.emptyFavorite.setVisibility(View.VISIBLE);
-            binding.emptyFavorite.setText("Hãy thêm vào đồ uống yêu thích của bạn!");
+            binding.recyclerFavorites.setVisibility(View.GONE);
         } else {
             binding.emptyFavorite.setVisibility(View.GONE);
             binding.recyclerFavorites.setVisibility(View.VISIBLE);
@@ -89,19 +88,18 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
 
     @Override
     public void showFavoriteDrinkCreateByUserId(List<Drink> favoriteDrinkCreateListByUserId) {
-        binding.emptyCreation.setVisibility(View.GONE);
-        binding.recyclerDrinkCreateByUser.setVisibility(View.VISIBLE);
+        if(favoriteDrinkCreateListByUserId.isEmpty()){
+            binding.emptyCreation.setVisibility(View.VISIBLE);
+            binding.recyclerDrinkCreateByUser.setVisibility(View.GONE);
+        }
+        else{
+            binding.emptyCreation.setVisibility(View.GONE);
+            binding.recyclerDrinkCreateByUser.setVisibility(View.VISIBLE);
 
-        favoriteCreateList.clear();
-        favoriteCreateList.addAll(favoriteDrinkCreateListByUserId);
-        favoriteCreateAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void showNoCreatedDrinksMessage() {
-        binding.emptyCreation.setVisibility(View.VISIBLE);
-        binding.recyclerDrinkCreateByUser.setVisibility(View.GONE);
-        binding.emptyCreation.setText("Hiện bạn chưa tạo công thức nào");
+            favoriteCreateList.clear();
+            favoriteCreateList.addAll(favoriteDrinkCreateListByUserId);
+            favoriteCreateAdapter.notifyDataSetChanged();
+        }
     }
 
 }

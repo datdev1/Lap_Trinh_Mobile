@@ -10,7 +10,6 @@ public interface FavoriteContract {
     interface View extends BaseContract.View{
         void showFavoriteDrinkList(List<Drink> favoriteList);
         void showFavoriteDrinkCreateByUserId(List<Drink> favoriteDrinkCreateListByUserId);
-        void showNoCreatedDrinksMessage();
     }
 
     interface Presenter extends BaseContract.Presenter<View>{

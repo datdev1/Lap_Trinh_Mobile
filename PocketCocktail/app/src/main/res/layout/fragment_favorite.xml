@@ -34,9 +34,9 @@
             android:id="@+id/emptyFavorite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Hãy thêm vào đồ uống yêu thích của bạn!"
             android:textSize="16sp"
             android:gravity="center"
-            android:visibility="gone"
             android:padding="16dp" />
 
         <TextView
@@ -61,12 +61,11 @@
             android:id="@+id/emptyCreation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Hiện bạn chưa tạo mới công thức pha chế nào!"
             android:gravity="center"
-            android:visibility="gone"
             android:textSize="16sp"
             android:padding="16dp"
             />
-
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

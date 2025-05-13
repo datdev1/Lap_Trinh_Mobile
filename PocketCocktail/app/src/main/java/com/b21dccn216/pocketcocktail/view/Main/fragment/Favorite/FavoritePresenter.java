@@ -90,10 +90,11 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
             public void onDrinkListLoaded(List<Drink> drinks) {
                 Log.d("drink", "Drinks created by user: " + drinks.size());
                 if (drinks.isEmpty()) {
-                    view.showNoCreatedDrinksMessage(); // Hiển thị thông báo nếu rỗng
-                } else {
-                    view.showFavoriteDrinkCreateByUserId(drinks); // Hiển thị danh sách nếu có
+                    view.showFavoriteDrinkList(new ArrayList<>()); // Truyền list rỗng để xử lý hiển thị thông báo
+                    return;
                 }
+
+                view.showFavoriteDrinkCreateByUserId(drinks); // Hiển thị danh sách nếu có
             }
 
             @Override
