@@ -464,4 +464,19 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
     public List<Recipe> getRecipes() {
         return this.ingredientList;
     }
+
+    @Override
+    public void checkIfUserHasReviewed(String drinkId, String userId) {
+        reviewDAO.getReviewByUserAndDrink(userId, drinkId, new ReviewDAO.ReviewCallback() {
+            @Override
+            public void onReviewLoaded(Review review) {
+                view.showUserHasReviewed(review != null);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                view.showError("Failed to check review: " + e.getMessage());
+            }
+        });
+    }
 }
