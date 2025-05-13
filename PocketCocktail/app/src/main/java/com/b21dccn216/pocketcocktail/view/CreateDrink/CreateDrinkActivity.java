@@ -537,7 +537,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
             Toast.makeText(this, "Thêm đồ uống thành công", Toast.LENGTH_SHORT).show();
             // Trả về kết quả và đồ uống đã cập nhật
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("drink", editingDrink);
+            resultIntent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, editingDrink);
             setResult(RESULT_OK, resultIntent);
             finish();
             return;
@@ -553,7 +553,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
                                     "Thêm đồ uống thành công", Toast.LENGTH_SHORT).show();
                             // Trả về kết quả và đồ uống đã cập nhật
                             Intent resultIntent = new Intent();
-                            resultIntent.putExtra("drink", editingDrink);
+                            resultIntent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, editingDrink);
                             setResult(RESULT_OK, resultIntent);
                             finish();
                         }
