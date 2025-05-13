@@ -78,7 +78,6 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
 
         // Received data from intend
-
         category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
         ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
         sortField = getIntent().getStringExtra(SORT_FIELD);
@@ -168,6 +167,11 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             if (imm != null) {
                 imm.hideSoftInputFromWindow(binding.ingredientSearch.getWindowToken(), 0);
             }
+        });
+
+        // Filter
+        binding.sortByContainer.setOnClickListener(v->{
+
         });
     }
 
