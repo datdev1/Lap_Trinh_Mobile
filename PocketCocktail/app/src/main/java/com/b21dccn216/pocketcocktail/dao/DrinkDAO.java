@@ -825,6 +825,57 @@ public class DrinkDAO {
         
     }
 
+    public void searchDrinkTotalWithSort(@Nullable String query, @Nullable String categoryId, @Nullable List<String> ingredientIds, int limit, @Nullable DRINK_FIELD sortTag, @Nullable Query.Direction sortOrder, DrinkListCallback callback) {
+        Log.d("DrinkDAO", "------------------------------------------------");
+        Log.d("DrinkDAO", "searchDrinkTotal: \n");
+        Log.d("DrinkDAO", "query: " + query);
+        Log.d("DrinkDAO", "categoryId: " + categoryId);
+        Log.d("DrinkDAO", "List<String> ingredientIds: " + ingredientIds);
+        Log.d("DrinkDAO", "limit: " + limit);
+        Log.d("DrinkDAO", "sortField: " + (sortTag != null ? sortTag.getValue() : "null"));
+        Log.d("DrinkDAO", "sortOrder: " + (sortOrder != null ? sortOrder : "null"));
+        Log.d("DrinkDAO", "------------------------------------------------");
+        
+        if (query == null) {
+            query = "";
+        }
+
+        // Create a wrapper callback to handle sorting
+        DrinkListCallback sortingCallback = new DrinkListCallback() {
+            @Override
+            public void onDrinkListLoaded(List<Drink> drinks) {
+                // Sort the drinks list only if both sortTag and sortOrder are not null
+                if (sortTag != null && sortOrder != null) {
+                    sortDrinks(drinks, sortTag, sortOrder);
+                }
+                // Return the list (sorted or unsorted)
+                callback.onDrinkListLoaded(drinks);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                callback.onError(e);
+            }
+        };
+        
+        // Trường hợp 1: Nếu có Category / Name và có list IngredientID
+        if (categoryId != null && !categoryId.isEmpty() && ingredientIds != null && !ingredientIds.isEmpty()) {
+            searchDrinksByCategoryAndIngredientID(query, categoryId, ingredientIds, sortingCallback);
+        }
+        // Trường hợp 2: Nếu có Category / Name và không có list IngredientID
+        else if (categoryId != null && !categoryId.isEmpty() && (ingredientIds == null)) {
+            searchDrinksByCategory(query, categoryId, sortingCallback);
+        }
+        // Trường hợp 3: Nếu không có Category / Name và có list IngredientID
+        else if (categoryId == null || ingredientIds != null && !ingredientIds.isEmpty()) {
+            getAllDrinkWithListIngredientID(ingredientIds, sortingCallback);
+        }
+        // Trường hợp 4: Nếu không có Category / Name và không có list IngredientID
+        else {
+            getAllDrinkWithLimit(limit, sortingCallback);
+        }
+    }
+
     public enum DRINK_FIELD {
         NAME("name"),
         DESCRIPTION("description"),
