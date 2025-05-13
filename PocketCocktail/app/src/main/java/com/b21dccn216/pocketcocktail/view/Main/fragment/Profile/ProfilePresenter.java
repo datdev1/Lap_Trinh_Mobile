@@ -119,27 +119,31 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                 changeEmailFirebase(editingUser.getEmail(), editingUser.getPassword());
             }
 
+            try{
+                userDAO.updateUserWithImage(((Fragment) view).requireActivity(), editingUser, selectedImageUri,
+                        avoid -> {
+                            userDAO.getUserByUuidAuthen(mAuth.getCurrentUser().getUid(),
+                                    new UserDAO.UserCallback() {
+                                        @Override
+                                        public void onUserLoaded(User user) {
+                                            SessionManager.getInstance().setUser(user);
+                                            view.updateInfoSuccess();
+                                        }
 
-            userDAO.updateUserWithImage(((Fragment) view).requireActivity(), editingUser, selectedImageUri,
-                    avoid -> {
-                        userDAO.getUserByUuidAuthen(mAuth.getCurrentUser().getUid(),
-                                new UserDAO.UserCallback() {
-                                    @Override
-                                    public void onUserLoaded(User user) {
-                                        SessionManager.getInstance().setUser(user);
-                                        view.updateInfoSuccess();
+                                        @Override
+                                        public void onError(Exception e) {
+                                            view.updateInfoFail(e.getMessage());
+                                        }
                                     }
+                            );
+                        },
+                        e -> {
+                            view.updateInfoFail(e.getMessage());
+                        });
+            }catch (Exception e){
+                view.updateInfoFail(e.getMessage());
+            }
 
-                                    @Override
-                                    public void onError(Exception e) {
-                                        view.updateInfoFail(e.getMessage());
-                                    }
-                                }
-                        );
-                    },
-                    e -> {
-                        view.updateInfoFail(e.getMessage());
-                    });
         }
     }
 

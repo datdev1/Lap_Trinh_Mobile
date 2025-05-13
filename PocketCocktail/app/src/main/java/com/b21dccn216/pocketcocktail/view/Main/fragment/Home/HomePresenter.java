@@ -18,6 +18,7 @@ import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class HomePresenter
     extends BasePresenter<HomeContract.View>
@@ -63,13 +64,23 @@ public class HomePresenter
     }
 
     private void getOneCategoryDrinkList(){
+
         categoryDAO.getAllCategorys(new CategoryDAO.CategoryListCallback() {
             @Override
             public void onCategoryListLoaded(List<Category> categoryList) {
                 if(categoryList != null && !categoryList.isEmpty()){
-                    Category category = categoryList.get(0);
-                    loadOneCategoryDrinkList(category);
-                    Log.d("datdev1", "onCategoryListLoaded: " + category.getUuid());
+
+                    CallBackLoadDrink callBackLoadDrink = new CallBackLoadDrink() {
+                        @Override
+                        public void onEmptyDrink() {
+                            int index = new Random().nextInt(categoryList.size());
+                            Category category = categoryList.get(index);
+                            loadOneCategoryDrinkList(category, this);
+                            Log.d("datdev1", "onCategoryListLoaded: " + category.getUuid());
+                        }
+                    };
+
+                    callBackLoadDrink.onEmptyDrink();
                 }
             }
             @Override
@@ -114,7 +125,7 @@ public class HomePresenter
         });
     }
 
-    private void loadOneCategoryDrinkList(Category category){
+    private void loadOneCategoryDrinkList(Category category, CallBackLoadDrink callBackLoadDrink){
         drinkDAO.getDrinksByCategoryIdWithLimit(category.getUuid(), 10,
                 new DrinkDAO.DrinkListCallback()
                 {
@@ -122,6 +133,10 @@ public class HomePresenter
                     public void onDrinkListLoaded(List<Drink> drinkList) {
                         Log.d("datdev1", "loadOneCategoryDrinkList: " + drinkList.size());
                         if(view == null) return;
+                        if(drinkList.isEmpty()){
+                            callBackLoadDrink.onEmptyDrink();
+                            return;
+                        }
                         view.showOneCategoryDrinkList(category, drinkList);
                     }
 
@@ -175,4 +190,8 @@ public class HomePresenter
         getRecommendDrinkList();
     }
 
+
+    public interface CallBackLoadDrink{
+        void onEmptyDrink();
+    }
 }

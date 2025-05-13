@@ -127,6 +127,24 @@ public class ReviewDAO {
                 .addOnFailureListener(callback::onError);
     }
 
+    // Loc add
+    public void getReviewByUserAndDrink(String userId, String drinkId, ReviewCallback callback) {
+        reviewRef.whereEqualTo("userId", userId)
+                .whereEqualTo("drinkId", drinkId)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
+                        Review review = convertDocumentToReview(doc);
+                        callback.onReviewLoaded(review);
+                    } else {
+                        callback.onReviewLoaded(null);
+                    }
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
 //    public void getAllReviews(OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
 //        reviewRef.get()
 //                .addOnSuccessListener(onSuccess)
