@@ -25,6 +25,7 @@ public interface DetailDrinkContract {
         void showAddReviewDialog(String drinkId, Review review);
         void showCreatorInfo(User creator);
         void showCountFavourite(int count);
+        void showUserHasReviewed(boolean hasReviewed);
     }
 
 
@@ -42,6 +43,7 @@ public interface DetailDrinkContract {
         void updateReview(String comment, String drinkId, float rating, Review review);
         void onEditReviewClicked(Review review);
         void onDeleteReviewClicked(Review review);
+        void checkIfUserHasReviewed(String drinkId, String userId);
 
         List<Recipe> getRecipes();
     }

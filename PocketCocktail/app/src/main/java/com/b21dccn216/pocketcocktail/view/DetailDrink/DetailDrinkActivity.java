@@ -42,10 +42,15 @@ import java.util.List;
 
 
 public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContract.View, DetailDrinkContract.Presenter> implements DetailDrinkContract.View{
+
+    public static final String EXTRA_DRINK_OBJECT = "drink_id";
+
     private ActivityDetailDrinkBinding binding;
     private ReviewAdapter reviewAdapter;
     private SimilarDrinkAdapter similarDrinkAdapter;
-    public static final String EXTRA_DRINK_OBJECT = "drink_id";
+    private final String currentUserId = String.valueOf(SessionManager.getInstance().getUser().getUuid());
+    private boolean hasUserReviewed = false;
+
 
     @Override
     protected DetailDrinkContract.Presenter createPresenter() {
@@ -66,14 +71,14 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         }catch (Exception e){
 
         }
-
         super.onCreate(savedInstanceState);
         binding = ActivityDetailDrinkBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-
         binding.instructionsLayout.removeAllViews();
         binding.ingredientsLayout.removeAllViews();
+
+
+        // Get current drink
         Drink currentDrink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_OBJECT);
         if (currentDrink != null) {
             presenter.loadDrinkDetails(currentDrink);
@@ -82,20 +87,35 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
             Toast.makeText(this, "Drink data not found", Toast.LENGTH_SHORT).show();
             finish();
         }
+
+        // Check comment user
+//        if (currentUserId != null && currentDrink != null) {
+//            presenter.checkIfUserHasReviewed(currentDrink.getUuid(), currentUserId);
+//        }
+
+
+        // Binding data
         binding.favoriteButton.setOnClickListener(v -> presenter.toggleFavorite(currentDrink));
         binding.shareButton.setOnClickListener(v -> presenter.shareDrink(currentDrink));
         binding.addCommentButton.setOnClickListener(v -> {
+            presenter.checkIfUserHasReviewed(currentDrink.getUuid(), currentUserId);
+            if (hasUserReviewed) {
+                Toast.makeText(this, "You have already reviewed this drink", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            else{
+
+            }
             String drinkId = currentDrink.getUuid();
             presenter.onAddReviewClicked(drinkId);
         });
-
         binding.btnEditOrCopy.setOnClickListener(v -> {
             Intent intent = new Intent(this, CreateDrinkActivity.class);
             User currentUser = SessionManager.getInstance().getUser();
             if(currentUser == null){
                 return;
             }
-            String mode = currentUser.getUuid().equals(currentDrink.getUuid()) ? "edit" : "copy";
+            String mode = currentUser.getUuid().equals(currentDrink.getUserId()) ? "edit" : "copy";
             intent.putExtra("mode", mode);
             intent.putExtra("drink", currentDrink);
             intent.putExtra("categoryId", currentDrink.getCategoryId());
@@ -256,6 +276,15 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     @Override
     public void showCountFavourite(int count) {
         binding.numberFav.setText(String.valueOf(count));
+    }
+
+    @Override
+    public void showUserHasReviewed(boolean hasReviewed) {
+        this.hasUserReviewed = hasReviewed;
+        if (hasReviewed) {
+            binding.addCommentButton.setEnabled(false);
+            binding.addCommentButton.setAlpha(0.5f);
+        }
     }
 
     @Override
