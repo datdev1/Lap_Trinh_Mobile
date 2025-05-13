@@ -3,6 +3,7 @@ package com.b21dccn216.pocketcocktail.view.DetailDrink;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.base.BaseContract;
 import com.b21dccn216.pocketcocktail.model.Review;
+import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
 
 import java.util.List;
@@ -20,6 +21,8 @@ public interface DetailDrinkContract {
         void showAddReviewSuccess();
         void showAddReviewError(String message);
         void showAddReviewDialog(String drinkId, Review review);
+        void showCreatorInfo(User creator);
+        void showCountFavourite(int count);
     }
 
 

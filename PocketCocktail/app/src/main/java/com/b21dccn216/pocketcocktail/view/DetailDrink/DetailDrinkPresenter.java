@@ -9,6 +9,7 @@ import com.b21dccn216.pocketcocktail.dao.IngredientDAO;
 import com.b21dccn216.pocketcocktail.dao.RecipeDAO;
 import com.b21dccn216.pocketcocktail.dao.ReviewDAO;
 import com.b21dccn216.pocketcocktail.dao.UserDAO;
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Favorite;
@@ -33,7 +34,6 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
     private final IngredientDAO ingredientDAO;
     private final ReviewDAO reviewDAO;
     private final UserDAO userDAO;
-
 
     private boolean isFavorite = false;
     private boolean isFavoriteProcessing = false;
@@ -118,7 +118,44 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
         //Load review
         loadReviews(drink.getUuid());
 
+        // Load creator info
+        loadCreatorInfo(drink.getUserId());
+        // Load fav count
+        loadFavCount(drink.getUuid());
     }
+
+    private void loadFavCount(String uuid) {
+        favoriteDAO.getFavoriteDrinkId(uuid, new FavoriteDAO.FavoriteListCallback() {
+            @Override
+            public void onFavoriteListLoaded(List<Favorite> favorites) {
+                if(view == null) return;
+                view.showCountFavourite(favorites.size());
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+    private void loadCreatorInfo(String userId) {
+        if(userId == null) return;
+        userDAO.getUser(userId, new UserDAO.UserCallback() {
+            @Override
+            public void onUserLoaded(User user) {
+                if(view != null){
+                    view.showCreatorInfo(user);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
 
     @Override
     public void checkFavorite(String drinkId) {

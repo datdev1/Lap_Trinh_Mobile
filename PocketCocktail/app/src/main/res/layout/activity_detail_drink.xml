@@ -13,25 +13,72 @@
         android:orientation="vertical">
 
         <!-- Back button and image container -->
-        <FrameLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.b21dccn216.pocketcocktail.customView.CenterTopCropImageView
                 android:id="@+id/drink_image"
+                app:layout_constraintTop_toTopOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
                 android:src="@drawable/sample_cocktail_5"/>
 
-            <ImageButton
+            <ImageView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 android:id="@+id/back_button"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="16dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="12dp"
+                android:background="@drawable/bg_icon_btn"
                 android:contentDescription="Back"
-                android:src="@drawable/dtd_ic_back" />
-        </FrameLayout>
+                app:tint="@color/secondary"
+                android:src="@drawable/angle_left" />
+            <LinearLayout
+                android:layout_margin="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <!-- Edit and Copy -->
+                <ImageButton
+                    android:id="@+id/btnEditOrCopy"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:background="@drawable/bg_icon_btn"
+                    android:contentDescription="Edit or Copy"
+                    android:src="@drawable/ic_edit"
+                    android:visibility="visible"
+                    app:tint="@color/secondary" />
+
+                <!-- Favorite button -->
+                <ImageButton
+                    android:id="@+id/favorite_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:background="@drawable/bg_icon_btn"
+                    android:contentDescription="Favorite"
+                    android:src="@drawable/dtd_ic_favorite_outline"
+                    app:tint="@color/secondary" />
+
+                <!-- Share button -->
+                <ImageButton
+                    android:id="@+id/share_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:background="@drawable/bg_icon_btn"
+                    android:contentDescription="Share"
+                    android:src="@drawable/dtd_ic_share"
+                    app:tint="@color/secondary" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Drink details card -->
         <androidx.cardview.widget.CardView
@@ -47,20 +94,7 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!--Badge-->
-                <TextView
-                    android:id="@+id/badge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_badge_iba"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:text="IBA Official"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:gravity="center_vertical"
-                    android:drawablePadding="8dp"
-                    app:drawableStartCompat="@drawable/dtd_ic_badge" />
+
 
                 <!-- Title and actions -->
                 <LinearLayout
@@ -84,38 +118,70 @@
                         android:textSize="28sp"
                         android:textStyle="bold" />
 
-                    <!-- Edit and Copy -->
-                    <ImageButton
-                            android:id="@+id/btnEditOrCopy"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:layout_marginStart="8dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Edit or Copy"
-                            android:src="@drawable/ic_edit"
-                            android:visibility="visible"
-                            app:tint="@color/secondary" />
+
+                    <TextView
+                        android:id="@+id/numberFav"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="250"
+                        android:textAlignment="center"
+                        style="@style/BaseString"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
 
                     <!-- Favorite button -->
                     <ImageButton
-                        android:id="@+id/favorite_button"
+                        android:id="@+id/numberFavIcon"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
+                        android:scaleType="fitCenter"
+                        android:layout_marginStart="4dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="Favorite"
-                        android:src="@drawable/dtd_ic_favorite_outline"
+                        android:src="@drawable/dtd_ic_favorite_filled"
                         app:tint="@color/secondary" />
 
-                    <!-- Share button -->
-                    <ImageButton
-                        android:id="@+id/share_button"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Share"
-                        android:src="@drawable/dtd_ic_share"
-                        app:tint="@color/ripple_dark" />
+
                 </LinearLayout>
+
+                <!--Badge-->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:background="@drawable/bg_badge_iba"
+                        android:padding="12dp"
+                        android:gravity="center"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/creatorImage"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/user"
+                            app:shapeAppearanceOverlay="@style/CircleImageView"
+                            />
+                        <TextView
+                            android:id="@+id/creatorName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Unknown Artist"
+                            style="@style/BaseString"
+                            android:layout_marginStart="4dp"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
                 <!-- Drink description -->
                 <TextView

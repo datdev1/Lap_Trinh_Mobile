@@ -2,6 +2,7 @@ package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.b21dccn216.pocketcocktail.R;
@@ -20,6 +22,7 @@ import com.b21dccn216.pocketcocktail.databinding.ActivityDetailDrinkBinding;
 import com.b21dccn216.pocketcocktail.databinding.DialogAddReviewBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Review;
+import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.ReviewAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.SimilarDrinkAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
@@ -69,6 +72,10 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
             presenter.onAddReviewClicked(drinkId);
         });
 
+        binding.btnEditOrCopy.setOnClickListener(v -> {
+
+        });
+
 
         binding.backButton.setOnClickListener(v -> finish());
     }
@@ -81,6 +88,9 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         textView.setPadding(4, 4, 4, 4);
         textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dtd_ic_bullet, 0, 0, 0);
         textView.setCompoundDrawablePadding(8);
+        // Set custom font
+        Typeface typeface = ResourcesCompat.getFont(this, R.font.kanit);
+        textView.setTypeface(typeface);
         return textView;
     }
 
@@ -204,6 +214,21 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         });
 
         dialog.show();
+    }
+
+    @Override
+    public void showCreatorInfo(User creator) {
+        binding.creatorName.setText(creator.getName());
+        Glide.with(this)
+                .load(creator.getImage())
+                .placeholder(R.drawable.baseline_downloading_24)
+                .placeholder(R.drawable.user)
+                .into(binding.creatorImage);
+    }
+
+    @Override
+    public void showCountFavourite(int count) {
+        binding.numberFav.setText(String.valueOf(count));
     }
 
     @Override
