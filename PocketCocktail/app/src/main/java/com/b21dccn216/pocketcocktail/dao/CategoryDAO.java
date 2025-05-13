@@ -208,6 +208,27 @@ public class CategoryDAO {
         });
     }
 
+    private void checkCategoryDependencies(String categoryId, OnSuccessListener<Boolean> onSuccess, OnFailureListener onFailure) {
+        // Check Drink dependencies
+        DrinkDAO drinkDAO = new DrinkDAO();
+        drinkDAO.getDrinksByCategoryId(categoryId, new DrinkDAO.DrinkListCallback() {
+            @Override
+            public void onDrinkListLoaded(List<Drink> drinks) {
+                if (!drinks.isEmpty()) {
+                    onFailure.onFailure(new Exception("Cannot delete category: It has associated drinks"));
+                    return;
+                }
+                // If no dependencies found, allow deletion
+                onSuccess.onSuccess(true);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
+    }
+
     public void deleteCategory(String id, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         //waitForAuthentication();
         if (!isAuthenticated) {
@@ -215,32 +236,40 @@ public class CategoryDAO {
             return;
         }
 
-        // First get the category to get its image URL
-        categoryRef.document(id).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    Category category = convertDocumentToCategory(documentSnapshot);
-                    if (category != null && category.getImage() != null && !category.getImage().isEmpty()) {
-                        // Delete the image first
-                        imageDAO.deleteImageFromImgur(category.getImage(), new ImageDAO.DeleteCallback() {
-                            @Override
-                            public void onSuccess() {
-                                // After image is deleted, delete the category document
-                                deleteCategoryDocument(id, onSuccess, onFailure);
-                            }
+        // First check dependencies
+        checkCategoryDependencies(id, 
+            canDelete -> {
+                if (canDelete) {
+                    // First get the category to get its image URL
+                    categoryRef.document(id).get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                Category category = convertDocumentToCategory(documentSnapshot);
+                                if (category != null && category.getImage() != null && !category.getImage().isEmpty()) {
+                                    // Delete the image first
+                                    imageDAO.deleteImageFromImgur(category.getImage(), new ImageDAO.DeleteCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            // After image is deleted, delete the category document
+                                            deleteCategoryDocument(id, onSuccess, onFailure);
+                                        }
 
-                            @Override
-                            public void onFailure(Exception e) {
-                                // Even if image deletion fails, continue with category deletion
-                                Log.e("CategoryDAO", "Failed to delete image for category " + id + ": " + e.getMessage());
-                                deleteCategoryDocument(id, onSuccess, onFailure);
-                            }
-                        });
-                    } else {
-                        // If no image, just delete the category
-                        deleteCategoryDocument(id, onSuccess, onFailure);
-                    }
-                })
-                .addOnFailureListener(onFailure);
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            // Even if image deletion fails, continue with category deletion
+                                            Log.e("CategoryDAO", "Failed to delete image for category " + id + ": " + e.getMessage());
+                                            deleteCategoryDocument(id, onSuccess, onFailure);
+                                        }
+                                    });
+                                } else {
+                                    // If no image, just delete the category
+                                    deleteCategoryDocument(id, onSuccess, onFailure);
+                                }
+                            })
+                            .addOnFailureListener(onFailure);
+                }
+            },
+            onFailure
+        );
     }
 
     private void deleteCategoryDocument(String id, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {

@@ -251,7 +251,7 @@ public class UserFragment extends BaseModelFragment {
                         loadData();
                     },
                     e -> {
-                        showToast("Error adding user: " + e.getMessage());
+                        showToast(e.getMessage());
                         Log.d("UserDAO", "Error adding user: " + e.getMessage());
                     });
         }

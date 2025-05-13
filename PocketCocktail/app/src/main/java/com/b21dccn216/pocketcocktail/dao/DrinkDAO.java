@@ -9,6 +9,9 @@ import androidx.annotation.Nullable;
 
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.model.Favorite;
+import com.b21dccn216.pocketcocktail.model.Recipe;
+import com.b21dccn216.pocketcocktail.model.Review;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
@@ -232,6 +235,62 @@ public class DrinkDAO {
         });
     }
 
+    private void checkDrinkDependencies(String drinkId, OnSuccessListener<Boolean> onSuccess, OnFailureListener onFailure) {
+        // Check Recipe dependencies
+        RecipeDAO recipeDAO = new RecipeDAO();
+        recipeDAO.getRecipesByDrinkId(drinkId, new RecipeDAO.RecipeListCallback() {
+            @Override
+            public void onRecipeListLoaded(List<Recipe> recipes) {
+                if (!recipes.isEmpty()) {
+                    onFailure.onFailure(new Exception("Cannot delete drink: It has associated recipes"));
+                    return;
+                }
+                
+                // Check Review dependencies
+                ReviewDAO reviewDAO = new ReviewDAO();
+                reviewDAO.getReviewsByDrinkId(drinkId, new ReviewDAO.ReviewListCallback() {
+                    @Override
+                    public void onReviewListLoaded(List<Review> reviews) {
+                        if (!reviews.isEmpty()) {
+                            onFailure.onFailure(new Exception("Cannot delete drink: It has associated reviews"));
+                            return;
+                        }
+                        
+                        // Check Favorite dependencies
+                        FavoriteDAO favoriteDAO = new FavoriteDAO();
+                        favoriteDAO.getFavoriteDrinkId(drinkId, new FavoriteDAO.FavoriteListCallback() {
+                            @Override
+                            public void onFavoriteListLoaded(List<Favorite> favorites) {
+                                if (!favorites.isEmpty()) {
+                                    onFailure.onFailure(new Exception("Cannot delete drink: It has associated favorites"));
+                                    return;
+                                }
+                                
+                                // If no dependencies found, allow deletion
+                                onSuccess.onSuccess(true);
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                onFailure.onFailure(e);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        onFailure.onFailure(e);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
+    }
+
     public void deleteDrink(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         //waitForAuthentication();
         if (!isAuthenticated) {
@@ -239,32 +298,40 @@ public class DrinkDAO {
             return;
         }
 
-        // First get the drink to get its image URL
-        drinkRef.document(uuid).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    Drink drink = convertDocumentToDrink(documentSnapshot);
-                    if (drink != null && drink.getImage() != null && !drink.getImage().isEmpty()) {
-                        // Delete the image first
-                        imageDAO.deleteImageFromImgur(drink.getImage(), new ImageDAO.DeleteCallback() {
-                            @Override
-                            public void onSuccess() {
-                                // After image is deleted, delete the drink document
-                                deleteDrinkDocument(uuid, onSuccess, onFailure);
-                            }
+        // First check dependencies
+        checkDrinkDependencies(uuid, 
+            canDelete -> {
+                if (canDelete) {
+                    // First get the drink to get its image URL
+                    drinkRef.document(uuid).get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                Drink drink = convertDocumentToDrink(documentSnapshot);
+                                if (drink != null && drink.getImage() != null && !drink.getImage().isEmpty()) {
+                                    // Delete the image first
+                                    imageDAO.deleteImageFromImgur(drink.getImage(), new ImageDAO.DeleteCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            // After image is deleted, delete the drink document
+                                            deleteDrinkDocument(uuid, onSuccess, onFailure);
+                                        }
 
-                            @Override
-                            public void onFailure(Exception e) {
-                                // Even if image deletion fails, continue with drink deletion
-                                Log.e("DrinkDAO", "Failed to delete image for drink " + uuid + ": " + e.getMessage());
-                                deleteDrinkDocument(uuid, onSuccess, onFailure);
-                            }
-                        });
-                    } else {
-                        // If no image, just delete the drink
-                        deleteDrinkDocument(uuid, onSuccess, onFailure);
-                    }
-                })
-                .addOnFailureListener(onFailure);
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            // Even if image deletion fails, continue with drink deletion
+                                            Log.e("DrinkDAO", "Failed to delete image for drink " + uuid + ": " + e.getMessage());
+                                            deleteDrinkDocument(uuid, onSuccess, onFailure);
+                                        }
+                                    });
+                                } else {
+                                    // If no image, just delete the drink
+                                    deleteDrinkDocument(uuid, onSuccess, onFailure);
+                                }
+                            })
+                            .addOnFailureListener(onFailure);
+                }
+            },
+            onFailure
+        );
     }
 
     private void deleteDrinkDocument(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {

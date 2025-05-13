@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
+import com.b21dccn216.pocketcocktail.model.Recipe;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
@@ -270,6 +271,27 @@ public class IngredientDAO {
         });
     }
 
+    private void checkIngredientDependencies(String ingredientId, OnSuccessListener<Boolean> onSuccess, OnFailureListener onFailure) {
+        // Check Recipe dependencies
+        RecipeDAO recipeDAO = new RecipeDAO();
+        recipeDAO.getRecipesByIngredientId(ingredientId, new RecipeDAO.RecipeListCallback() {
+            @Override
+            public void onRecipeListLoaded(List<Recipe> recipes) {
+                if (!recipes.isEmpty()) {
+                    onFailure.onFailure(new Exception("Cannot delete ingredient: It is used in recipes"));
+                    return;
+                }
+                // If no dependencies found, allow deletion
+                onSuccess.onSuccess(true);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
+    }
+
     public void deleteIngredient(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         //waitForAuthentication();
         if (!isAuthenticated) {
@@ -277,32 +299,40 @@ public class IngredientDAO {
             return;
         }
 
-        // First get the ingredient to get its image URL
-        ingredientRef.document(uuid).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    Ingredient ingredient = convertDocumentToIngredient(documentSnapshot);
-                    if (ingredient != null && ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
-                        // Delete the image first
-                        imageDAO.deleteImageFromImgur(ingredient.getImage(), new ImageDAO.DeleteCallback() {
-                            @Override
-                            public void onSuccess() {
-                                // After image is deleted, delete the ingredient document
-                                deleteIngredientDocument(uuid, onSuccess, onFailure);
-                            }
+        // First check dependencies
+        checkIngredientDependencies(uuid, 
+            canDelete -> {
+                if (canDelete) {
+                    // First get the ingredient to get its image URL
+                    ingredientRef.document(uuid).get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                Ingredient ingredient = convertDocumentToIngredient(documentSnapshot);
+                                if (ingredient != null && ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
+                                    // Delete the image first
+                                    imageDAO.deleteImageFromImgur(ingredient.getImage(), new ImageDAO.DeleteCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            // After image is deleted, delete the ingredient document
+                                            deleteIngredientDocument(uuid, onSuccess, onFailure);
+                                        }
 
-                            @Override
-                            public void onFailure(Exception e) {
-                                // Even if image deletion fails, continue with ingredient deletion
-                                Log.e("IngredientDAO", "Failed to delete image for ingredient " + uuid + ": " + e.getMessage());
-                                deleteIngredientDocument(uuid, onSuccess, onFailure);
-                            }
-                        });
-                    } else {
-                        // If no image, just delete the ingredient
-                        deleteIngredientDocument(uuid, onSuccess, onFailure);
-                    }
-                })
-                .addOnFailureListener(onFailure);
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            // Even if image deletion fails, continue with ingredient deletion
+                                            Log.e("IngredientDAO", "Failed to delete image for ingredient " + uuid + ": " + e.getMessage());
+                                            deleteIngredientDocument(uuid, onSuccess, onFailure);
+                                        }
+                                    });
+                                } else {
+                                    // If no image, just delete the ingredient
+                                    deleteIngredientDocument(uuid, onSuccess, onFailure);
+                                }
+                            })
+                            .addOnFailureListener(onFailure);
+                }
+            },
+            onFailure
+        );
     }
 
     private void deleteIngredientDocument(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
