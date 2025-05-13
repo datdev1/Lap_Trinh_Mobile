@@ -45,6 +45,8 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     private Category category;
 
     private Ingredient ingredient;
+    private String sortField;
+    private  Query.Direction sortOrder;
 
 
 
@@ -76,10 +78,11 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
 
         // Received data from intend
+
         category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
         ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
-        String sortField = getIntent().getStringExtra(SORT_FIELD);
-        Query.Direction sortOrder = (Query.Direction) getIntent().getSerializableExtra(SORT_ORDER);
+        sortField = getIntent().getStringExtra(SORT_FIELD);
+        sortOrder = (Query.Direction) getIntent().getSerializableExtra(SORT_ORDER);
         Log.d("SORT_FIELD", "SORT_FIELD: " + sortField);
         Log.d("SORT_ORDER", "SORT_ORDER: " + sortOrder);
 
@@ -94,9 +97,10 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
             List<String> selectedIngredientIds = new ArrayList<>();
             selectedIngredientIds.add(ingredient.getUuid());
-            presenter.searchDrinks(null, "", selectedIngredientIds);
+            presenter.searchDrinks(null, "", selectedIngredientIds, sortField, sortOrder);
         } else {
-            presenter.loadDrinks(sortField, sortOrder);
+            presenter.searchDrinks(null, "", null, sortField, sortOrder);
+//            presenter.loadDrinks(sortField, sortOrder);
         }
 
 
@@ -111,9 +115,9 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
 
                 List<String> selectedIngredientIds = ingredientAdapter.getSelectedIngredientIds();
                 if (category != null) {
-                    presenter.searchDrinks(category.getUuid(), query, selectedIngredientIds);
+                    presenter.searchDrinks(category.getUuid(), query, selectedIngredientIds, sortField, sortOrder);
                 } else {
-                    presenter.searchDrinks(null, query, selectedIngredientIds);
+                    presenter.searchDrinks(null, query, selectedIngredientIds, sortField, sortOrder);
                 }
                 binding.clearButton.setVisibility(query.isEmpty() ? View.GONE : View.VISIBLE);
             }
@@ -194,9 +198,9 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             String query = binding.searchEditText.getText().toString().trim();
             List<String> selectedIngredientIds = ingredientAdapter.getSelectedIngredientIds();
             if (category != null) {
-                presenter.searchDrinks(category.getUuid(), query, selectedIngredientIds);
+                presenter.searchDrinks(category.getUuid(), query, selectedIngredientIds, sortField, sortOrder);
             } else {
-                presenter.searchDrinks(null, query, selectedIngredientIds);
+                presenter.searchDrinks(null, query, selectedIngredientIds, sortField, sortOrder);
             }
         });
 

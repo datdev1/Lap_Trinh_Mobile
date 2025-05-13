@@ -24,7 +24,7 @@ public interface SearchContract {
         void loadDrinksByCategory(String categoryId);
         void loadDrinksByIngredient(String ingredientId);
         void loadIngredients();
-        void searchDrinks(String categoryId, String query, List<String> ingredientIds);
+        void searchDrinks(String categoryId, String query, List<String> ingredientIds,String sortField, Query.Direction sortOrder);
         void searchIngredients(String query);
         void onDestroy();
     }

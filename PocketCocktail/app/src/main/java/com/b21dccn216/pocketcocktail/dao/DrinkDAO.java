@@ -448,6 +448,32 @@ public class DrinkDAO {
                 .addOnFailureListener(callback::onError);
     }
 
+    public void getDrinksSorted(String sortField, Query.Direction sortDirection, DrinkListCallback callback) {
+        Query query = drinkRef;
+
+        if (sortField != null && sortDirection != null) {
+            query = drinkRef.orderBy(sortField, sortDirection);
+        }
+
+        query.get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Drink> drinks = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Drink drink = convertDocumentToDrink(doc);
+                        if (drink != null) {
+                            drinks.add(drink);
+                        }
+                    }
+
+                    Log.d("DrinkDAO", "Loaded " + drinks.size() + " drinks, sorted by: " + sortField);
+                    callback.onDrinkListLoaded(drinks);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("DrinkDAO", "Error getting drinks", e);
+                    callback.onError(e);
+                });
+    }
+
 
 
     public void getFeatureDrink(DrinkCallback callback) {
