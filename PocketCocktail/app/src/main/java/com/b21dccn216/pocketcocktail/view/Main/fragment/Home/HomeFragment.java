@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     private List<Drink> latestDrinkList = new ArrayList<>();
     private List<Drink> highestRateDrinkList = new ArrayList<>();
     private List<Drink> categoryDrinkList = new ArrayList<>();
+    private Category category;
     private List<DrinkWithFavCount> recommendDrinkList = new ArrayList<>();
     private Drink bannerDrink;
 
@@ -67,13 +69,21 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        showBannerDrink();
+        showCategoryAndDrinkList();
+        Log.e("datdev1", "H onResume: ");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
+        Log.e("datdev1", "H onCreateView: ");
 
         latestCocktailAdapter = new CocktailHomeItemAdapter(getActivity(), latestDrinkList);
         highestRateDrinkAdapter = new CocktailHomeItemAdapter(getActivity(), highestRateDrinkList);
@@ -135,6 +145,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
             dialog.show();
         });
 
+
         return binding.getRoot();
     }
 
@@ -142,23 +153,30 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void showOneCategoryDrinkList(Category category, List<Drink> drinkList) {
-        binding.titleMocktails.setText(category.getName());
+    public void updateCateoryAndDrinkList(Category cate, List<Drink> drinkList) {
+        if(binding == null) return;
         categoryDrinkList.clear();
         categoryDrinkList.addAll(drinkList);
         categoryCocktailAdapter.notifyDataSetChanged();
+        category = cate;
+        showCategoryAndDrinkList();
+    }
+
+    private void showCategoryAndDrinkList(){
+        if(category == null) return;
         binding.btnSeeAllMocktail.setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), SearchActivity.class);
             intent.putExtra(SearchActivity.EXTRA_CATEGORY_OBJECT, category);
             intent.putExtra(SearchActivity.SORT_ORDER, Query.Direction.DESCENDING);
             startActivity(intent);
         });
-
+        binding.titleMocktails.setText(category.getName());
     }
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void showHighestRateDrinkList(List<Drink> drinkList) {
+    public void updateHighestRatedDrinks(List<Drink> drinkList) {
+        if(binding == null) return;
         highestRateDrinkList.clear();
         highestRateDrinkList.addAll(drinkList);
         highestRateDrinkAdapter.notifyDataSetChanged();
@@ -167,6 +185,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showLatestDrinkList(List<Drink> drinkList) {
+        if(binding == null) return;
         latestDrinkList.clear();
         latestDrinkList.addAll(drinkList);
         latestCocktailAdapter.notifyDataSetChanged();
@@ -176,17 +195,25 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showRecommendDrinkList(List<DrinkWithFavCount> drinkList) {
+        if(binding == null) return;
         recommendDrinkList.clear();
         drinkList.sort((drinkWithFavCount, t1) -> Integer.compare(t1.getCount(), drinkWithFavCount.getCount()));
-
-
         recommendDrinkList.addAll(drinkList);
         recommendDrinkAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void showBannerDrink(Drink drink) {
-        bannerDrink = drink;
+    public void updateBannerDrink(Drink drink) {
+        if(drink != null) bannerDrink = drink;
+        if(binding == null) return;
+        showBannerDrink();
+        binding.swipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void showBannerDrink(){
+        if(bannerDrink == null) return;
+        if(binding == null) return;
+        Log.e("datdev1", "showBannerDrink " + bannerDrink.getImage());
         Glide
                 .with(requireActivity())
                 .load(bannerDrink.getImage())
@@ -200,9 +227,9 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
             intent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, bannerDrink);
             startActivity(intent);
         });
-
-        binding.swipeRefreshLayout.setRefreshing(false);
     }
+
+
 }
 
 

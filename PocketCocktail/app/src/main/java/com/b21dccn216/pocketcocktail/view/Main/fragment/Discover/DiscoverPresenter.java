@@ -22,8 +22,8 @@ public class DiscoverPresenter extends BasePresenter<DiscoverContract.View>
     @Override
     public void onCreate() {
         super.onCreate();
-        getCategories();
-        getIngredients();
+//        getCategories();
+//        getIngredients();
     }
 
     @Override
@@ -64,6 +64,12 @@ public class DiscoverPresenter extends BasePresenter<DiscoverContract.View>
 
             }
         });
+    }
+
+    @Override
+    public void refreshScreen() {
+        getCategories();
+        getIngredients();
     }
 
 }

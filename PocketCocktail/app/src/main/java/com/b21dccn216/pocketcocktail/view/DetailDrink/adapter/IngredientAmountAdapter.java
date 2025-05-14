@@ -56,11 +56,12 @@ public class IngredientAmountAdapter extends RecyclerView.Adapter<IngredientAmou
             binding.nameText.setText(ingredient.getIngredient().getName());
             String text = ingredient.getAmount() + " " + ingredient.getIngredient().getUnit();
             binding.quantityText.setText(text);
-            if (!ingredient.isHave()) {
+            if (ingredient.isHave()) {
                 binding.nameText.setTextColor(context.getResources().getColor(R.color.text_hint));
                 binding.quantityText.setTextColor(context.getResources().getColor(R.color.text_hint));
-                binding.nameText.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-                binding.quantityText.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+                Typeface t = binding.nameText.getTypeface();
+                binding.nameText.setTypeface(t, Typeface.NORMAL);
+                binding.quantityText.setTypeface(t, Typeface.NORMAL);
             }
             Glide
                     .with(context)

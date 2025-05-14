@@ -1,19 +1,15 @@
 package com.b21dccn216.pocketcocktail.view.Main.fragment.Home;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
 import com.b21dccn216.pocketcocktail.dao.CategoryDAO;
 import com.b21dccn216.pocketcocktail.dao.DrinkCntFavDAO;
 import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
-import com.b21dccn216.pocketcocktail.helper.DialogHelper;
-import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.DrinkCntFav;
 import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithFavCount;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
@@ -31,30 +27,29 @@ public class HomePresenter
 
     public HomePresenter() {
         super();
-
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-
         refreshScreen();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getBannerDrink();
+//        getBannerDrink();
+//        getOneCategoryDrinkList();
         Log.d("datdev1", "onResume:");
-
     }
+
 
     private void getBannerDrink(){
         drinkDAO.getFeatureDrink(new DrinkDAO.DrinkCallback() {
             @Override
             public void onDrinkLoaded(Drink drink) {
                 if(view == null) return;
-                view.showBannerDrink(drink);
+                view.updateBannerDrink(drink);
             }
             @Override
             public void onError(Exception e) {
@@ -98,7 +93,7 @@ public class HomePresenter
                     @Override
                     public void onDrinkListLoaded(List<Drink> drinks) {
                         if(view == null) return;
-                        view.showHighestRateDrinkList(drinks);
+                        view.updateHighestRatedDrinks(drinks);
                     }
                     @Override
                     public void onError(Exception e) {
@@ -140,7 +135,7 @@ public class HomePresenter
                             callBackLoadDrink.onEmptyDrink();
                             return;
                         }
-                        view.showOneCategoryDrinkList(category, drinkList);
+                        view.updateCateoryAndDrinkList(category, drinkList);
                     }
 
                     @Override

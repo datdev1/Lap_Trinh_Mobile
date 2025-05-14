@@ -12,9 +12,9 @@ public interface HomeContract {
     interface View extends BaseContract.View {
         // Define view methods
 
-        void showBannerDrink(Drink drink);
-        void showOneCategoryDrinkList(Category category, List<Drink> drinkList);
-        void showHighestRateDrinkList(List<Drink> drinkList);
+        void updateBannerDrink(Drink drink);
+        void updateCateoryAndDrinkList(Category category, List<Drink> drinkList);
+        void updateHighestRatedDrinks(List<Drink> drinkList);
         void showLatestDrinkList(List<Drink> drinkList);
         void showRecommendDrinkList(List<DrinkWithFavCount> drinkList);
 
