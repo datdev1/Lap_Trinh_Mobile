@@ -38,7 +38,6 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
     public void onCreate(){
         super.onCreate();
         currentUserId = SessionManager.getInstance().getUser().getUuid();
-        getAllFavoriteByUserId();
         getAllDrinksCreatedByCurrentUser();
     }
 

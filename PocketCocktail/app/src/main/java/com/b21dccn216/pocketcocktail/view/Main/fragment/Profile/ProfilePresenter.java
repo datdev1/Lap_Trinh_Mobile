@@ -3,7 +3,6 @@ package com.b21dccn216.pocketcocktail.view.Main.fragment.Profile;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -80,10 +79,14 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
     }
 
     private void showAlertDialog(String title, String message, HelperDialog.DialogType type){
-        DialogHelper.showAlertDialog(((Fragment)view).requireContext(),
-                title,
-                message,
-                type);
+        if(view == null) return;
+        if(((Fragment)view).getActivity() == null) return;
+        ((Fragment)view).getActivity().runOnUiThread(() -> {
+            DialogHelper.showAlertDialog(((Fragment)view).requireContext(),
+                    title,
+                    message,
+                    type);
+        });
     }
 
     private void changeEmailFirebase(String email, String password){
@@ -137,7 +140,8 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                             );
                         },
                         e -> {
-                            view.updateInfoFail(e.getMessage());
+                            showAlertDialog("Fail to save",
+                                    e.getMessage(), HelperDialog.DialogType.ERROR);
                         });
             }catch (Exception e){
                 view.updateInfoFail(e.getMessage());
@@ -160,8 +164,8 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                         view.updateInfoSuccess();
                     },
                     e -> {
-
-                        view.updateInfoFail(e.getMessage());
+                        showAlertDialog("Fail to save",
+                                e.getMessage(), HelperDialog.DialogType.ERROR);
                     });
         }
     }
@@ -186,6 +190,9 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                 user.updatePassword(newPassword)
                         .addOnCompleteListener(updateTask -> {
                             if (updateTask.isSuccessful()) {
+                                User dbUser = SessionManager.getInstance().getUser();
+                                dbUser.setPassword(newPassword);
+                                saveUserInformation(dbUser);
                                 showAlertDialog("Success", "Password has been updated successfully.",
                                         HelperDialog.DialogType.SUCCESS);
                             } else {
@@ -198,22 +205,8 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                         HelperDialog.DialogType.ERROR);
             }
         });
-        UserDAO userDAO = new UserDAO();
-        userDAO.getUserByUuidAuthen(mAuth.getCurrentUser().getUid(), new UserDAO.UserCallback()
-        {
 
-            @Override
-            public void onUserLoaded(User user) {
-                userDAO.updateUser(user, aVoid -> {
 
-                }, e -> {});
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
 
     }
 }
