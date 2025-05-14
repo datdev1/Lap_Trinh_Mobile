@@ -101,7 +101,7 @@ public class CreateIngredientActivity extends AppCompatActivity {
                     finish();
                 },
                 e -> {
-                    Toast.makeText(CreateIngredientActivity.this, "Lỗi khi thêm nguyên liệu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(CreateIngredientActivity.this, "Lỗi khi thêm nguyên liệu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     btnSave.setEnabled(true); // Enable lại nếu lỗi
                 });
     }
