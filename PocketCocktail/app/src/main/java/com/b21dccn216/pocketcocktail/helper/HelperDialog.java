@@ -51,8 +51,14 @@ public class HelperDialog extends Dialog {
         if(onDialogButtonClickListener != null){
             binding.btnNo.setVisibility(VISIBLE);
             binding.btnYes.setVisibility(VISIBLE);
-            binding.btnNo.setOnClickListener(v -> onDialogButtonClickListener.onPressNegative());
-            binding.btnYes.setOnClickListener(v -> onDialogButtonClickListener.onPressPositive());
+            binding.btnNo.setOnClickListener(v -> {
+                        onDialogButtonClickListener.onPressNegative();
+                        dismiss();
+                    });
+            binding.btnYes.setOnClickListener(v -> {
+                        onDialogButtonClickListener.onPressPositive();
+                        dismiss();
+                    });
         }
 
 
