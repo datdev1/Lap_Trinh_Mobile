@@ -28,6 +28,7 @@ import com.b21dccn216.pocketcocktail.view.Search.adapter.DrinkAdapter;
 import com.b21dccn216.pocketcocktail.view.Search.adapter.IngredientAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.b21dccn216.pocketcocktail.view.Search.helper.GridSpacingItemDecoration;
+import com.b21dccn216.pocketcocktail.view.Search.helper.TestItemDecoration;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.firestore.Query;
 
@@ -314,7 +315,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
 
         binding.drinksRecyclerView.addItemDecoration(
-                new GridSpacingItemDecoration(2, horizontalSpacing, verticalSpacing, true)
+                new TestItemDecoration(2, 50, true)
         );
 
         binding.drinksRecyclerView.setClipToPadding(false);
@@ -340,7 +341,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         int horizontalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_spacing);
         int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
         binding.ingredientsRecyclerView.addItemDecoration(
-                new GridSpacingItemDecoration(3, horizontalSpacing, verticalSpacing, true)
+                new TestItemDecoration(3, 50, true)
         );
         binding.ingredientsRecyclerView.setClipToPadding(false);
         binding.ingredientsRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);

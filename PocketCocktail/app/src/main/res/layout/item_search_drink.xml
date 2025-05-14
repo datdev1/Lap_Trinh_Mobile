@@ -5,8 +5,9 @@
     android:layout_width="150dp"
     android:layout_height="200dp"
     app:cardCornerRadius="16dp"
+    android:layout_gravity="center_horizontal"
     app:cardElevation="8dp"
-    android:layout_marginHorizontal="8dp"
+    android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp">
 
 
@@ -45,6 +46,7 @@
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:text="4.8"
+                android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="6sp" />
             <ImageView
@@ -78,6 +80,7 @@
                 android:id="@+id/createAtDrink"
                 android:layout_width="wrap_content"
                 android:layout_height="10dp"
+                android:textAlignment="center"
                 android:layout_marginStart="1dp"
                 android:text="2023"
                 android:textColor="@color/white"
