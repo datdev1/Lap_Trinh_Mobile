@@ -107,7 +107,6 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             presenter.searchDrinks(null, "", selectedIngredientIds, sortField, sortOrder);
         } else {
             presenter.searchDrinks(null, "", null, sortField, sortOrder);
-//            presenter.loadDrinks(sortField, sortOrder);
         }
 
 
@@ -135,9 +134,9 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         binding.clearButton.setOnClickListener(v -> {
             binding.searchEditText.setText("");
             if (category != null) {
-                presenter.loadDrinksByCategory(category.getUuid());
+                presenter.searchDrinks(category.getUuid(), "", null, sortField, sortOrder);
             } else {
-                presenter.loadDrinks(sortField, sortOrder);
+                presenter.searchDrinks(null, "", null, sortField, sortOrder);
             }
             // Hide keyboard
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
