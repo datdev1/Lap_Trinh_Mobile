@@ -13,6 +13,6 @@ public interface FavoriteContract {
     }
 
     interface Presenter extends BaseContract.Presenter<View>{
-
+        void refreshScreen();
     }
 }

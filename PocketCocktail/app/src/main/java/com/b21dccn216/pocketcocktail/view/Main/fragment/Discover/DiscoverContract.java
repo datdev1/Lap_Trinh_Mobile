@@ -15,5 +15,6 @@ public interface DiscoverContract {
 
     interface Presenter extends BaseContract.Presenter<View>{
         // Define presenter methods
+        void refreshScreen();
     }
 }

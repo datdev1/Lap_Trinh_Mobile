@@ -38,7 +38,6 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
     public void onCreate(){
         super.onCreate();
         currentUserId = SessionManager.getInstance().getUser().getUuid();
-        getAllDrinksCreatedByCurrentUser();
     }
 
     @Override
@@ -113,4 +112,9 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
         });
     }
 
+    @Override
+    public void refreshScreen() {
+        getAllDrinksCreatedByCurrentUser();
+        getAllFavoriteByUserId(); // Gọi lại để refresh danh sách
+    }
 }

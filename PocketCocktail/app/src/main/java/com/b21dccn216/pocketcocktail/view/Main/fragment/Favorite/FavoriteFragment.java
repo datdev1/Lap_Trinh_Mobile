@@ -2,11 +2,14 @@ package com.b21dccn216.pocketcocktail.view.Main.fragment.Favorite;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +24,7 @@ import com.b21dccn216.pocketcocktail.test_database.adapter.FavoriteAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.FavoriteCreateAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.ItemFavoriteAdapter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,13 +52,28 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("favoriteList", (Serializable) favoriteList);
+        outState.putSerializable("favoriteCreateList", (Serializable) favoriteCreateList);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null){
+            favoriteList = (List<Drink>) savedInstanceState.getSerializable("favoriteList");
+            favoriteCreateList = (List<Drink>) savedInstanceState.getSerializable("favoriteCreateList");
+        }else{
+            presenter.refreshScreen();
+        }
+        Log.e("datdev1", "F onCreate: ");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
+        Log.e("datdev1", "F onCreateView: ");
         binding = FragmentFavoriteBinding.inflate(inflater, container, false);
         itemFavoriteAdapter = new ItemFavoriteAdapter(getActivity(), favoriteList);
         favoriteCreateAdapter = new FavoriteCreateAdapter(getActivity(), favoriteCreateList);
@@ -79,16 +98,18 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
             binding.emptyFavorite.setVisibility(View.GONE);
             binding.recyclerFavorites.setVisibility(View.VISIBLE);
 
+            ItemDiffCallback diffCallback = new ItemDiffCallback(favoriteList, list);
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
             favoriteList.clear();
             favoriteList.addAll(list);
-            itemFavoriteAdapter.notifyDataSetChanged();
+            diffResult.dispatchUpdatesTo(itemFavoriteAdapter);
         }
     }
 
 
     @Override
-    public void showFavoriteDrinkCreateByUserId(List<Drink> favoriteDrinkCreateListByUserId) {
-        if(favoriteDrinkCreateListByUserId.isEmpty()){
+    public void showFavoriteDrinkCreateByUserId(List<Drink> list) {
+        if(list.isEmpty()){
             binding.emptyCreation.setVisibility(View.VISIBLE);
             binding.recyclerDrinkCreateByUser.setVisibility(View.GONE);
         }
@@ -96,9 +117,11 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
             binding.emptyCreation.setVisibility(View.GONE);
             binding.recyclerDrinkCreateByUser.setVisibility(View.VISIBLE);
 
+            ItemDiffCallback diffCallback = new ItemDiffCallback(favoriteCreateList, list);
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
             favoriteCreateList.clear();
-            favoriteCreateList.addAll(favoriteDrinkCreateListByUserId);
-            favoriteCreateAdapter.notifyDataSetChanged();
+            favoriteCreateList.addAll(list);
+            diffResult.dispatchUpdatesTo(favoriteCreateAdapter);
         }
     }
 
