@@ -477,8 +477,23 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
                         saveRecipes(drink.getUuid());
                     },
                     e -> {
-                        Toast.makeText(CreateDrinkActivity.this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        btnSave.setEnabled(true);
+                        runOnUiThread(() -> {
+                            String errorMessage = "Lỗi: ";
+                            if (e.getMessage() != null) {
+                                String msg = e.getMessage();
+                                if (msg.contains("webp")) {
+                                    errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
+                                } else if (msg.contains("400") || msg.toLowerCase().contains("upload failed")) {
+                                    errorMessage = "Ảnh không hợp lệ hoặc không được hỗ trợ. Vui lòng chọn ảnh khác!";
+                                } else {
+                                    errorMessage += msg;
+                                }
+                            } else {
+                                errorMessage += "Không xác định";
+                            }
+                            Toast.makeText(CreateDrinkActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            btnSave.setEnabled(true);
+                        });
                     });
         }
     }

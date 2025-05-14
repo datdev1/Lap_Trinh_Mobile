@@ -101,8 +101,21 @@ public class CreateIngredientActivity extends AppCompatActivity {
                     finish();
                 },
                 e -> {
-                    //Toast.makeText(CreateIngredientActivity.this, "Lỗi khi thêm nguyên liệu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    btnSave.setEnabled(true); // Enable lại nếu lỗi
+                    runOnUiThread(() -> {
+                        String errorMessage = "Lỗi khi thêm nguyên liệu";
+                        if (e.getMessage() != null) {
+                            String msg = e.getMessage();
+                            if (msg.contains("webp")) {
+                                errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
+                            } else if (msg.contains("400") || msg.toLowerCase().contains("upload failed")) {
+                                errorMessage = "Ảnh không hợp lệ hoặc không được hỗ trợ. Vui lòng chọn ảnh khác!";
+                            } else {
+                                errorMessage += ": " + msg;
+                            }
+                        }
+                        Toast.makeText(CreateIngredientActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        btnSave.setEnabled(true); // Enable lại nếu lỗi
+                    });
                 });
     }
 } 
