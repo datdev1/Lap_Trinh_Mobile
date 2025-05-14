@@ -2,14 +2,19 @@ package com.b21dccn216.pocketcocktail.view.Search;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.PopupMenu;
 
+import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.b21dccn216.pocketcocktail.R;
@@ -47,8 +52,8 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     private Category category;
 
     private Ingredient ingredient;
-    private String sortField = DrinkDAO.DRINK_FIELD.RATE.getValue();
-    private  Query.Direction sortOrder = Query.Direction.DESCENDING;
+    private String sortField = DrinkDAO.DRINK_FIELD.NAME.getValue();
+    private  Query.Direction sortOrder = Query.Direction.ASCENDING;
 
 
 
@@ -105,7 +110,6 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             presenter.searchDrinks(null, "", selectedIngredientIds, sortField, sortOrder);
         } else {
             presenter.searchDrinks(null, "", null, sortField, sortOrder);
-//            presenter.loadDrinks(sortField, sortOrder);
         }
 
 
@@ -133,9 +137,9 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         binding.clearButton.setOnClickListener(v -> {
             binding.searchEditText.setText("");
             if (category != null) {
-                presenter.loadDrinksByCategory(category.getUuid());
+                presenter.searchDrinks(category.getUuid(), "", null, sortField, sortOrder);
             } else {
-                presenter.loadDrinks(sortField, sortOrder);
+                presenter.searchDrinks(null, "", null, sortField, sortOrder);
             }
             // Hide keyboard
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -178,6 +182,53 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         // Filter
         binding.sortByContainer.setOnClickListener(v -> showSortByMenu());
         binding.sortOrderButton.setOnClickListener(v -> toggleSortOrder());
+        binding.sortByText.setText(sortField);
+        if(sortOrder == Query.Direction.ASCENDING){
+            binding.sortOrderText.setText("Tăng dần");
+        }
+        else{
+            binding.sortOrderText.setText("Giảm dần");
+        }
+
+        //Fix margin nested scroll view
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainScrollview, (view, insets) -> {
+            boolean keyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
+            int topInset = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
+
+            int bottomPadding;
+            if (keyboardVisible) {
+                // Keyboard on
+                bottomPadding = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            } else {
+                // keyboard off
+                bottomPadding = dpToPx(80, view.getContext());
+            }
+
+            ViewCompat.setPaddingRelative(view, view.getPaddingStart(), topInset, view.getPaddingEnd(), bottomPadding);
+
+            return insets;
+        });
+        BottomSheetBehavior.from(binding.bottomSheet).addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    binding.mainScrollview.setPadding(
+                            binding.mainScrollview.getPaddingLeft(),
+                            binding.mainScrollview.getPaddingTop(),
+                            binding.mainScrollview.getPaddingRight(),
+                            0
+                    );
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+    }
+
+    public static int dpToPx(int dp, Context context) {
+        return Math.round(dp * context.getResources().getDisplayMetrics().density);
     }
 
 
@@ -255,7 +306,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             startActivity(intent);
         });
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         binding.drinksRecyclerView.setLayoutManager(layoutManager);
         binding.drinksRecyclerView.setAdapter(drinkAdapter);
 
@@ -263,7 +314,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
 
         binding.drinksRecyclerView.addItemDecoration(
-                new GridSpacingItemDecoration(3, horizontalSpacing, verticalSpacing, true)
+                new GridSpacingItemDecoration(2, horizontalSpacing, verticalSpacing, true)
         );
 
         binding.drinksRecyclerView.setClipToPadding(false);

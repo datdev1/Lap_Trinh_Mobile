@@ -5,9 +5,12 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.b21dccn216.pocketcocktail.view.Search.helper.DrinkDiffCallback;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemSearchDrinkBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
@@ -18,7 +21,7 @@ import java.util.List;
 
 public class DrinkAdapter extends RecyclerView.Adapter<DrinkAdapter.DrinkViewHolder> {
 
-    private List<Drink> drinks = new ArrayList<>();
+    private final List<Drink> drinks = new ArrayList<>();
     private final Context context;
     private final OnDrinkClickListener listener;
 
@@ -31,9 +34,11 @@ public class DrinkAdapter extends RecyclerView.Adapter<DrinkAdapter.DrinkViewHol
         this.listener = listener;
     }
 
-    public void setDrinks(List<Drink> drinks) {
-        this.drinks = drinks;
-        notifyDataSetChanged();
+    public void setDrinks(List<Drink> newDrinks) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DrinkDiffCallback(this.drinks, newDrinks));
+        this.drinks.clear();
+        this.drinks.addAll(newDrinks);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @NonNull
@@ -67,15 +72,17 @@ public class DrinkAdapter extends RecyclerView.Adapter<DrinkAdapter.DrinkViewHol
 
             Glide.with(context)
                     .load(drink.getImage())
-                    .placeholder(R.drawable.sample_cocktail_2)
+                    .placeholder(R.drawable.s_white_background)
+                    .error(R.drawable.sample_cocktail_2)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(binding.imageDrink);
 
-            binding.rateDrink.setText(String.format("Rate: %.1f", drink.getRate()));
+            binding.rateDrink.setText(String.format("%.1f", drink.getRate()));
             if (drink.getCreatedAt() != null) {
                 String dateText = DateFormat.getDateInstance(DateFormat.MEDIUM).format(drink.getCreatedAt());
-                binding.createAtDrink.setText("Created: " + dateText);
+                binding.createAtDrink.setText(dateText);
             } else {
-                binding.createAtDrink.setText("Created: N/A");
+                binding.createAtDrink.setText("N/A");
             }
 
             binding.layout.setOnClickListener(v -> listener.onDrinkClick(drink));

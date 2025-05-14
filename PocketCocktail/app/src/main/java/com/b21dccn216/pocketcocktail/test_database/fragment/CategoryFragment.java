@@ -197,26 +197,50 @@ public class CategoryFragment extends BaseModelFragment {
         if (selectedImageUri != null) {
             categoryDAO.addCategoryWithImage(getContext(), category, selectedImageUri,
                     aVoid -> {
-                        showToast("Thêm danh mục thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Thêm danh mục thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast("Lỗi khi thêm danh mục: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                String errorMessage = "Lỗi khi thêm danh mục";
+                                if (e.getMessage() != null) {
+                                    if (e.getMessage().contains("webp")) {
+                                        errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
+                                    } else {
+                                        errorMessage += ": " + e.getMessage();
+                                    }
+                                }
+                                showToast(errorMessage);
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         } else {
             categoryDAO.addCategory(category,
                     aVoid -> {
-                        showToast("Thêm danh mục thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Thêm danh mục thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast("Lỗi khi thêm danh mục: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Lỗi khi thêm danh mục: " + e.getMessage());
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         }
     }
@@ -243,26 +267,50 @@ public class CategoryFragment extends BaseModelFragment {
         if (selectedImageUri != null) {
             categoryDAO.updateCategoryWithImage(getContext(), selectedCategory, selectedImageUri,
                     aVoid -> {
-                        showToast("Cập nhật danh mục thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Cập nhật danh mục thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast("Lỗi khi cập nhật danh mục: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                String errorMessage = "Lỗi khi cập nhật danh mục";
+                                if (e.getMessage() != null) {
+                                    if (e.getMessage().contains("webp")) {
+                                        errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
+                                    } else {
+                                        errorMessage += ": " + e.getMessage();
+                                    }
+                                }
+                                showToast(errorMessage);
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         } else {
             categoryDAO.updateCategory(selectedCategory,
                     aVoid -> {
-                        showToast("Cập nhật danh mục thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Cập nhật danh mục thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast("Lỗi khi cập nhật danh mục: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Lỗi khi cập nhật danh mục: " + e.getMessage());
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         }
     }
@@ -288,14 +336,22 @@ public class CategoryFragment extends BaseModelFragment {
         setButtonsEnabled(false);
         categoryDAO.deleteCategory(selectedCategory.getUuid(),
                 aVoid -> {
-                    showToast("Xóa danh mục thành công");
-                    clearInputs();
-                    loadData();
-                    setButtonsEnabled(true);
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            showToast("Xóa danh mục thành công");
+                            clearInputs();
+                            loadData();
+                            setButtonsEnabled(true);
+                        });
+                    }
                 },
                 e -> {
-                    showToast(e.getMessage());
-                    setButtonsEnabled(true);
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            showToast(e.getMessage());
+                            setButtonsEnabled(true);
+                        });
+                    }
                 });
     }
 } 

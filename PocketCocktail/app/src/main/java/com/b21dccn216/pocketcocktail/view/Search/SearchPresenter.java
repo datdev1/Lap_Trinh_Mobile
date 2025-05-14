@@ -30,82 +30,6 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
         this.recipeDAO = new RecipeDAO();
     }
 
-    @SuppressWarnings("unchecked")
-    private Comparable getFieldValue(Drink drink, String field) {
-        if (drink == null || field == null) return null;
-
-        try {
-            switch (field) {
-                case "createdAt":
-                    return drink.getCreatedAt() != null ? drink.getCreatedAt() : new Date(0);
-                case "rate":
-                    return drink.getRate() != 0.0 ? (Double) drink.getRate() : 0.0;
-                default:
-                    return null;
-            }
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    // Load drinks
-    @Override
-    public void loadDrinks(String sortField, Query.Direction sortOrder) {
-        view.showLoading();
-        drinkDAO.getDrinksSorted(sortField,sortOrder, new DrinkDAO.DrinkListCallback(){
-
-            @Override
-            public void onDrinkListLoaded(List<Drink> drinks) {
-                view.hideLoading();
-                view.showDrinks(drinks);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                view.hideLoading();
-                view.showError("Failed to load drinks: " + e.getMessage());
-            }
-        });
-    }
-
-    // Load drinks by category
-    @Override
-    public void loadDrinksByCategory(String categoryId) {
-        drinkDAO.getDrinksByCategoryId(categoryId, new DrinkDAO.DrinkListCallback() {
-            @Override
-            public void onDrinkListLoaded(List<Drink> drinks) {
-                view.hideLoading();
-                view.showDrinks(drinks);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                view.hideLoading();
-                view.showError("Failed to load drinks: " + e.getMessage());
-            }
-        });
-    }
-
-    // Load drinks by ingredient
-    @Override
-    public  void loadDrinksByIngredient(String ingredientId){
-        view.showLoading();
-        List<String> ingredientIds = new ArrayList<>();
-        ingredientIds.add(ingredientId);
-        drinkDAO.searchDrinkTotal("",null,ingredientIds,100, new DrinkDAO.DrinkListCallback() {
-            @Override
-            public void onDrinkListLoaded(List<Drink> drinks) {
-                view.hideLoading();
-                view.showDrinks(drinks);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                view.hideLoading();
-                view.showError("Failed to load drinks by ingredient: " + e.getMessage());
-            }
-        });
-    }
 
     // Load ingredients
     @Override
@@ -122,6 +46,30 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
             }
         });
     }
+
+    // Search ingredient
+    @Override
+    public void searchIngredients(String query) {
+        ingredientDAO.getAllIngredients(new IngredientDAO.IngredientListCallback() {
+            @Override
+            public void onIngredientListLoaded(List<Ingredient> ingredients) {
+                List<Ingredient> filtered = new ArrayList<>();
+                for (Ingredient ingredient : ingredients) {
+                    if (ingredient.getName().toLowerCase().contains(query.toLowerCase())) {
+                        filtered.add(ingredient);
+                    }
+                }
+                view.showIngredients(filtered);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                view.showError("Ingredient search failed: " + e.getMessage());
+            }
+        });
+    }
+
+    // Search drinks
     @Override
     public void searchDrinks(String categoryId, String query, List<String> ingredientIds, String sortField, Query.Direction sortOrder) {
         view.showLoading();
@@ -251,30 +199,6 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
             view.hideLoading();
             view.showDrinks(filteredDrinks);
         }
-    }
-
-
-
-    // Search ingredient
-    @Override
-    public void searchIngredients(String query) {
-        ingredientDAO.getAllIngredients(new IngredientDAO.IngredientListCallback() {
-            @Override
-            public void onIngredientListLoaded(List<Ingredient> ingredients) {
-                List<Ingredient> filtered = new ArrayList<>();
-                for (Ingredient ingredient : ingredients) {
-                    if (ingredient.getName().toLowerCase().contains(query.toLowerCase())) {
-                        filtered.add(ingredient);
-                    }
-                }
-                view.showIngredients(filtered);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                view.showError("Ingredient search failed: " + e.getMessage());
-            }
-        });
     }
 }
 
