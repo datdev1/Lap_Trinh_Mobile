@@ -1,5 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Search;
 
+import static com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity.EXTRA_INGREDIENT_LIST;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -32,6 +34,7 @@ import com.b21dccn216.pocketcocktail.view.Search.helper.TestItemDecoration;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.firestore.Query;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -304,6 +307,8 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         drinkAdapter = new DrinkAdapter(this, drink -> {
             Intent intent = new Intent(this, DetailDrinkActivity.class);
             intent.putExtra(EXTRA_DRINK_OBJECT, drink);
+            List<Ingredient> selectedList = new ArrayList<>();
+            intent.putExtra(EXTRA_INGREDIENT_LIST, (Serializable) selectedList);
             startActivity(intent);
         });
 
