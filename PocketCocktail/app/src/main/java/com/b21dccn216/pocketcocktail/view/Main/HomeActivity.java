@@ -1,5 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.Main;
 
+import static com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity.FAIL_TO_SAVE_DRINK_RESULT_CODE;
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -176,10 +178,12 @@ public class HomeActivity extends BaseAppCompatActivity<BaseContract.View, BaseC
             if(requestCode == EVENT_CREATE_NEW_DRINK){
                 DialogHelper.showAlertDialog(HomeActivity.this, "Success", "Create new drink successfully", HelperDialog.DialogType.SUCCESS);
             }
-        }else if(resultCode == RESULT_CANCELED){
+        }else if(resultCode == FAIL_TO_SAVE_DRINK_RESULT_CODE){
             if(requestCode == EVENT_CREATE_NEW_DRINK){
                 DialogHelper.showAlertDialog(HomeActivity.this, "Fail", "Fail to create new drink", HelperDialog.DialogType.ERROR);
             }
+        }else if(resultCode == RESULT_CANCELED){
+            //do nothing
         }
     }
 }
