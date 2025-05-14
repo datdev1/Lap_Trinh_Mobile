@@ -202,64 +202,80 @@
                     android:layout_marginTop="24dp"
                     android:text="Ingredients"
                     style="@style/DetailDrinkTitle"/>
-
-                <LinearLayout
-                    android:id="@+id/ingredients_layout"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerIngredients"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="vertical">
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginTop="16dp"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Soda water"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/showMore"
+                    android:padding="8dp"
+                    style="@style/BaseString"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show more"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Light/white rum (45 ml)"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/ingredients_layout"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:orientation="vertical">-->
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Fresh lime juice (20 ml)"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:drawableStart="@drawable/dtd_ic_bullet"-->
+<!--                        android:drawablePadding="8dp"-->
+<!--                        android:padding="4dp"-->
+<!--                        android:text="Soda water"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="16sp" />-->
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Sugar (2 tsp)"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:drawableStart="@drawable/dtd_ic_bullet"-->
+<!--                        android:drawablePadding="8dp"-->
+<!--                        android:padding="4dp"-->
+<!--                        android:text="Light/white rum (45 ml)"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="16sp" />-->
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/dtd_ic_bullet"
-                        android:drawablePadding="8dp"
-                        android:padding="4dp"
-                        android:text="Mint (6 pcs)"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-                </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:drawableStart="@drawable/dtd_ic_bullet"-->
+<!--                        android:drawablePadding="8dp"-->
+<!--                        android:padding="4dp"-->
+<!--                        android:text="Fresh lime juice (20 ml)"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="16sp" />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:drawableStart="@drawable/dtd_ic_bullet"-->
+<!--                        android:drawablePadding="8dp"-->
+<!--                        android:padding="4dp"-->
+<!--                        android:text="Sugar (2 tsp)"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="16sp" />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:drawableStart="@drawable/dtd_ic_bullet"-->
+<!--                        android:drawablePadding="8dp"-->
+<!--                        android:padding="4dp"-->
+<!--                        android:text="Mint (6 pcs)"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="16sp" />-->
+<!--                </LinearLayout>-->
 
                 <!-- Instructions section -->
                 <TextView

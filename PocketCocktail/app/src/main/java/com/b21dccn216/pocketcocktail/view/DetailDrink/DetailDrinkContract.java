@@ -2,6 +2,7 @@ package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.base.BaseContract;
+import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.b21dccn216.pocketcocktail.model.Recipe;
 import com.b21dccn216.pocketcocktail.model.Review;
 import com.b21dccn216.pocketcocktail.model.User;
@@ -14,7 +15,7 @@ public interface DetailDrinkContract {
     interface View extends BaseContract.View {
         void showMessage(String message);
         void showDrinkDetail(Drink drink);
-        void showIngredient(String ingredientText);
+        void showIngredient(List<IngredientWithAmountDTO> list);
         void showInstruction(String instructionText);
         void updateFavoriteIcon(boolean isFavorite);
         void showShareIntent(String text);
@@ -46,5 +47,7 @@ public interface DetailDrinkContract {
         void checkIfUserHasReviewed(String drinkId, String userId);
 
         List<Recipe> getRecipes();
+
+        void setOwnedIngredientList(List<Ingredient> ingredientList);
     }
 }

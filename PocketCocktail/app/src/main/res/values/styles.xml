@@ -69,6 +69,23 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="IngredientText" parent="BaseString">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="IngredientDisableText" parent="BaseString">
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+
+
     <style name="ItemContent" parent="BaseString">
         <item name="android:textColor">@color/button_text_dark</item>
         <item name="android:textSize">12sp</item>

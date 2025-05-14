@@ -1,6 +1,7 @@
 package com.b21dccn216.pocketcocktail.view.DetailDrink.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -17,6 +18,9 @@ import java.util.List;
 public class IngredientAmountAdapter extends RecyclerView.Adapter<IngredientAmountAdapter.ViewHolder>{
     private List<IngredientWithAmountDTO> ingredientList;
     private Context context;
+    private static final int MIN_ITEMS = 3;
+    private boolean showAll = false;
+
 
     public IngredientAmountAdapter(Context context, List<IngredientWithAmountDTO> ingredientList) {
         this.ingredientList = ingredientList;
@@ -38,7 +42,7 @@ public class IngredientAmountAdapter extends RecyclerView.Adapter<IngredientAmou
 
     @Override
     public int getItemCount() {
-        return ingredientList.size();
+        return showAll ? ingredientList.size() : Math.min(ingredientList.size(), MIN_ITEMS);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -50,13 +54,28 @@ public class IngredientAmountAdapter extends RecyclerView.Adapter<IngredientAmou
         }
         public void bind(IngredientWithAmountDTO ingredient) {
             binding.nameText.setText(ingredient.getIngredient().getName());
-            binding.unitText.setText(ingredient.getIngredient().getUnit());
-            binding.valueText.setText(String.valueOf((int)ingredient.getAmount()));
+            String text = ingredient.getAmount() + " " + ingredient.getIngredient().getUnit();
+            binding.quantityText.setText(text);
+            if (!ingredient.isHave()) {
+                binding.nameText.setTextColor(context.getResources().getColor(R.color.text_hint));
+                binding.quantityText.setTextColor(context.getResources().getColor(R.color.text_hint));
+                binding.nameText.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+                binding.quantityText.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+            }
             Glide
                     .with(context)
                     .load(ingredient.getIngredient().getImage())
                     .placeholder(R.drawable.baseline_downloading_24)
                     .into(binding.imgIcon);
         }
+    }
+
+    public void toggleShowAll() {
+        showAll = !showAll;
+        notifyDataSetChanged();
+    }
+
+    public boolean isShowingAll() {
+        return showAll;
     }
 }

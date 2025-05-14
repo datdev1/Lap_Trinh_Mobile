@@ -50,6 +50,8 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
     private final String currentUserId;
     private final List<String> commentList = new ArrayList<>();
     private List<Recipe> ingredientList = new ArrayList<>();
+    private List<Ingredient> ownedIngredientList = new ArrayList<>();
+    private List<IngredientWithAmountDTO> ingredientWithAmountList = new ArrayList<>();
 
 
     public DetailDrinkPresenter() {
@@ -101,14 +103,22 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
             public void onRecipeListLoaded(List<Recipe> recipes) {
                 ingredientList.clear();
                 ingredientList.addAll(recipes);
+                ingredientWithAmountList.clear();
                 for (Recipe recipe : recipes) {
                     ingredientDAO.getIngredient(recipe.getIngredientId(), new IngredientDAO.IngredientCallback() {
                         @Override
                         public void onIngredientLoaded(Ingredient ingredient) {
-
-                            String line = ingredient.getName() + " (" + recipe.getAmount() + " " + ingredient.getUnit() + ")";
-                            Log.e("Ingredient", "Ingredient: " + line);
-                            view.showIngredient(line);
+                            boolean isHas = ownedIngredientList.stream()
+                                            .anyMatch(item -> item.getUuid().equals(ingredient.getUuid()));
+                            Log.e("Ingredient", "Ingredient: " + ingredient.getName() + " isHas: " + isHas);
+                            ingredientWithAmountList.add(new IngredientWithAmountDTO(
+                                    ingredient,
+                                    recipe.getAmount(),
+                                    isHas
+                            ));
+                            //String line = ingredient.getName() + " (" + recipe.getAmount() + " " + ingredient.getUnit() + ")";
+                            //Log.e("Ingredient", "Ingredient: " + line);
+                            view.showIngredient(ingredientWithAmountList);
                         }
 
                         @Override
@@ -478,5 +488,14 @@ public class DetailDrinkPresenter extends BasePresenter<DetailDrinkContract.View
                 view.showError("Failed to check review: " + e.getMessage());
             }
         });
+    }
+
+    public List<Ingredient> getOwnedIngredientList() {
+        return ownedIngredientList;
+    }
+
+    @Override
+    public void setOwnedIngredientList(List<Ingredient> ownedIngredientList) {
+        this.ownedIngredientList = ownedIngredientList;
     }
 }

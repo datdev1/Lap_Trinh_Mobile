@@ -4,6 +4,7 @@ import static androidx.core.content.ContextCompat.startActivity;
 
 import static com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity.FAIL_TO_SAVE_DRINK_RESULT_CODE;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -32,9 +33,11 @@ import com.b21dccn216.pocketcocktail.helper.DialogHelper;
 import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.Drink;
+import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.b21dccn216.pocketcocktail.model.Review;
 import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity;
+import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.IngredientAmountAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.ReviewAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.adapter.SimilarDrinkAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.model.IngredientWithAmountDTO;
@@ -42,6 +45,7 @@ import com.b21dccn216.pocketcocktail.view.DetailDrink.model.ReviewWithUserDTO;
 import com.bumptech.glide.Glide;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -57,6 +61,8 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     private User currentUser = SessionManager.getInstance().getUser();
     private Drink currentDrink;
     public boolean hasUserReviewed = false;
+    private List<IngredientWithAmountDTO> ingredientWithAmountList = new ArrayList<>();
+    private IngredientAmountAdapter ingredientAmountAdapter;
 
 
     @Override
@@ -82,11 +88,18 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         binding = ActivityDetailDrinkBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.instructionsLayout.removeAllViews();
-        binding.ingredientsLayout.removeAllViews();
+        //binding.ingredientsLayout.removeAllViews();
 
+        ingredientAmountAdapter = new IngredientAmountAdapter(this, ingredientWithAmountList);
+        binding.recyclerIngredients.setAdapter(ingredientAmountAdapter);
+        binding.recyclerIngredients.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         // Get current drink
         currentDrink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_OBJECT);
+        List<Ingredient> ingredientList = (List<Ingredient>) getIntent().getSerializableExtra(EXTRA_INGREDIENT_LIST);
+        if(ingredientList != null){
+            presenter.setOwnedIngredientList(ingredientList);
+        }
         if (currentDrink != null) {
             presenter.loadDrinkDetails(currentDrink);
             presenter.checkFavorite(currentDrink.getUuid());
@@ -101,6 +114,10 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
 
 
         // Binding data
+        binding.showMore.setOnClickListener(v -> {
+            ingredientAmountAdapter.toggleShowAll();
+            binding.showMore.setText(ingredientAmountAdapter.isShowingAll() ? "Show less" : "Show more");
+        });
         binding.favoriteButton.setOnClickListener(v -> presenter.toggleFavorite(currentDrink));
         binding.shareButton.setOnClickListener(v -> presenter.shareDrink(currentDrink));
         binding.addCommentButton.setOnClickListener(v -> {
@@ -154,10 +171,14 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         binding.drinkDescription.setText(drink.getDescription());
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void showIngredient(String ingredientText) {
-        TextView textView = createBulletTextView(ingredientText);
-        binding.ingredientsLayout.addView(textView);
+    public void showIngredient(List<IngredientWithAmountDTO> list){
+        ingredientWithAmountList.clear();
+        ingredientWithAmountList.addAll(list);
+        ingredientAmountAdapter.notifyDataSetChanged();
+        //TextView textView = createBulletTextView(ingredientText);
+        //binding.ingredientsLayout.addView(textView);
     }
 
     @Override
@@ -349,7 +370,7 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     }
 
     private void emptyIngredientAndInstruction() {
-        binding.ingredientsLayout.removeAllViews();
+        //binding.ingredientsLayout.removeAllViews();
         binding.instructionsLayout.removeAllViews();
     }
 

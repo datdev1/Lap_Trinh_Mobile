@@ -7,10 +7,12 @@ import java.io.Serializable;
 public class IngredientWithAmountDTO implements Serializable {
     private Ingredient ingredient;
     private double amount;
+    private boolean isHave;
 
-    public IngredientWithAmountDTO(Ingredient ingredient, double amount) {
+    public IngredientWithAmountDTO(Ingredient ingredient, double amount, boolean isHave) {
         this.ingredient = ingredient;
         this.amount = amount;
+        this.isHave = isHave;
     }
 
     public Ingredient getIngredient() {
@@ -27,5 +29,13 @@ public class IngredientWithAmountDTO implements Serializable {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public boolean isHave() {
+        return isHave;
+    }
+
+    public void setHave(boolean isHave) {
+        this.isHave = isHave;
     }
 }
