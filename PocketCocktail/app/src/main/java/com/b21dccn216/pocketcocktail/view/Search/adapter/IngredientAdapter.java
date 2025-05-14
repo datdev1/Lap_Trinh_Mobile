@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.b21dccn216.pocketcocktail.view.Search.helper.IngredientDiffCallback;
 import com.bumptech.glide.Glide;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemIngredientSearchBinding;
@@ -56,8 +59,11 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
             }
         }
 
+        IngredientDiffCallback diffCallback = new IngredientDiffCallback(this.ingredients, sorted);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
         this.ingredients = sorted;
-        notifyDataSetChanged();
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -75,27 +81,11 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void selectIngredient(String ingredientId) {
-        selectedIngredientIds.add(ingredientId);
-        notifyDataSetChanged();
-        if (listener != null) {
-            listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
-        }
-    }
 
     public List<String> getSelectedIngredientIds() {
         return new ArrayList<>(selectedIngredientIds);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void clearSelection() {
-        selectedIngredientIds.clear();
-        notifyDataSetChanged();
-        if (listener != null) {
-            listener.onIngredientSelected(new ArrayList<>(selectedIngredientIds));
-        }
-    }
 
     @NonNull
     @Override
