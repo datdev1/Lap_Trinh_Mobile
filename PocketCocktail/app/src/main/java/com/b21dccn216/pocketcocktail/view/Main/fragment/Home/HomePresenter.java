@@ -85,6 +85,7 @@ public class HomePresenter
             }
             @Override
             public void onError(Exception e) {
+                Log.e("datdev1", "getOneCategoryDrinkList-onError: " + e.getMessage());
 
             }
         });
@@ -101,6 +102,7 @@ public class HomePresenter
                     }
                     @Override
                     public void onError(Exception e) {
+                        Log.e("datdev1", "getHighestRateDrinks-onError: " + e.getMessage());
 
                     }
                 }
@@ -120,6 +122,7 @@ public class HomePresenter
 
             @Override
             public void onError(Exception e) {
+                Log.e("datdev1", "getLatestDrinkList-onError: " + e.getMessage());
 
             }
         });
@@ -142,6 +145,7 @@ public class HomePresenter
 
                     @Override
                     public void onError(Exception e) {
+                        Log.e("datdev1", "loadOneCategoryDrinkList-onError: " + e.getMessage());
                     }
                 }
         );
@@ -165,8 +169,7 @@ public class HomePresenter
 
                         @Override
                         public void onError(Exception e) {
-                            DialogHelper.showAlertDialog(((Context) view).getApplicationContext(),
-                                    "Error", e.getMessage(), HelperDialog.DialogType.ERROR);
+                            Log.e("datdev1", "getRecommendDrinkList-1onError: " + e.getMessage());
                         }
                     });
                 }
@@ -174,7 +177,7 @@ public class HomePresenter
 
             @Override
             public void onError(Exception e) {
-
+                Log.e("datdev1", "getRecommendDrinkList-2onError: " + e.getMessage());
             }
         });
 
