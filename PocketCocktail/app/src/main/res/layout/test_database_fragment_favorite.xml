@@ -4,57 +4,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:weightSum="80">
 
-    <EditText
-        android:id="@+id/etUuid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="UUID"
-        android:inputType="text"
-        android:enabled="false" />
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical">
+       <EditText
+           android:id="@+id/etUuid"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:hint="UUID"
+           android:inputType="text"
+           android:enabled="false"
+           android:textSize="8sp"/>
 
-    <EditText
-        android:id="@+id/etCreatedAt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Created At"
-        android:inputType="text"
-        android:enabled="false" />
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal">
+           <EditText
+               android:id="@+id/etCreatedAt"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:hint="Created At"
+               android:inputType="text"
+               android:enabled="false"
+               android:textSize="8sp"
+               android:layout_weight="1"/>
 
-    <EditText
-        android:id="@+id/etUpdatedAt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Updated At"
-        android:inputType="text"
-        android:enabled="false" />
+           <EditText
+               android:id="@+id/etUpdatedAt"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:hint="Updated At"
+               android:inputType="text"
+               android:enabled="false"
+               android:layout_weight="1"
+               android:textSize="8sp"/>
+       </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="User"
-        android:textStyle="bold"
-        android:layout_marginTop="8dp"/>
 
-    <Spinner
-        android:id="@+id/spinnerUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"/>
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="User"
+           android:textStyle="bold"
+           android:layout_marginTop="8dp"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Drink"
-        android:textStyle="bold"
-        android:layout_marginTop="8dp"/>
+       <Spinner
+           android:id="@+id/spinnerUser"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="4dp"/>
 
-    <Spinner
-        android:id="@+id/spinnerDrink"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"/>
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="Drink"
+           android:textStyle="bold"
+           android:layout_marginTop="8dp"/>
+
+       <Spinner
+           android:id="@+id/spinnerDrink"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="4dp"/>
+   </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -99,6 +116,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:layout_weight="1" />
+        android:layout_weight="80" />
 
 </LinearLayout> 

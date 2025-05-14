@@ -7,7 +7,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:paddingTop="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="2dp"
     android:background="@color/background_main">
 
     <!-- Spinner for model selection -->
@@ -15,7 +18,7 @@
         android:id="@+id/spinnerModelSelect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="1dp"
         android:minHeight="48dp" />
 
     <!-- Fragment container -->
@@ -27,10 +30,4 @@
 
     <!-- Nhập thông tin đồ uống -->
 
-    <!-- Danh sách đồ uống -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerHighestRate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" />
 </LinearLayout>
