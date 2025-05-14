@@ -1,102 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout"
-    android:layout_width="100dp"
-    android:layout_height="160dp"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:strokeColor="@color/secondary"
-    app:strokeWidth="@dimen/selected_stroke_width">
+    android:layout_width="150dp"
+    android:layout_height="200dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="8dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp">
+        >
 
-        <!-- ImageView -->
         <ImageView
             android:id="@+id/imageDrink"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:background="@drawable/bg_round_square"
-            android:clipToOutline="true"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:background="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/nameDrink"
-            app:layout_constraintDimensionRatio="1:1" />
-
-        <!-- Ingredient Name -->
-        <TextView
-            android:id="@+id/nameDrink"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAlignment="center"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            style="@style/BaseString"
-            app:layout_constraintTop_toBottomOf="@id/imageDrink"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Rating -->
+        <!-- Rating Badge -->
         <LinearLayout
             android:id="@+id/ratingLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_margin="6dp"
+            android:background="@drawable/s_bg_rounded_pill"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@id/nameDrink"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@drawable/ic_star"
-                app:tint="@color/star_color" />
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/rateDrink"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary" />
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:text="4.8"
+                android:textColor="@color/white"
+                android:textSize="6sp" />
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/ic_star"
+                app:tint="@color/star_color" />
         </LinearLayout>
 
-        <!-- Created At -->
-        <TextView
-            android:id="@+id/createAtDrink"
-            android:layout_width="0dp"
+        <!-- Creation Date Badge -->
+        <LinearLayout
+            android:id="@+id/dateBadge"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textSize="10sp"
-            android:textAlignment="center"
-            style="@style/BaseString"
-            android:textColor="@color/text_secondary"
-            app:layout_constraintTop_toBottomOf="@id/ratingLayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <!-- Selected Checkmark -->
-        <ImageView
-            android:id="@+id/selectedCheck"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/s_ic_check_circle"
-            android:visibility="gone"
-            app:tint="@color/secondary"
+            android:layout_margin="6dp"
+            android:background="@drawable/s_bg_rounded_pill"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="4dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_margin="4dp" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/s_ic_calendar"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/createAtDrink"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                android:layout_marginStart="1dp"
+                android:text="2023"
+                android:textColor="@color/white"
+                android:textSize="6sp" />
+        </LinearLayout>
+
+        <View
+            android:visibility="gone"
+            android:id="@+id/favourite"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="12dp"
+            android:backgroundTint="@color/white"
+            android:background="@drawable/baseline_favorite_border_24"
+            app:layout_constraintEnd_toEndOf="@id/imageDrink"
+            app:layout_constraintTop_toTopOf="@+id/imageDrink" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="10"
+            android:background="@drawable/bg_drink_itm_home"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/nameDrink"
+                android:layout_weight="8"
+                android:layout_width="0dp"
+                android:textAlignment="center"
+                android:layout_height="wrap_content"
+                style="@style/HomeItemName"
+                android:paddingVertical="8dp"
+                android:text="Red Rum" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<com.google.android.material.card.MaterialCardView-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:id="@+id/layout"-->
+<!--    android:layout_width="100dp"-->
+<!--    android:layout_height="160dp"-->
+<!--    android:layout_margin="8dp"-->
+<!--    app:cardCornerRadius="12dp"-->
+<!--    app:strokeColor="@color/secondary"-->
+<!--    app:strokeWidth="@dimen/selected_stroke_width">-->
+
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:padding="8dp">-->
+
+<!--        &lt;!&ndash; ImageView &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/imageDrink"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            android:background="@drawable/bg_round_square"-->
+<!--            android:clipToOutline="true"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/nameDrink"-->
+<!--            app:layout_constraintDimensionRatio="1:1" />-->
+
+<!--        &lt;!&ndash; Ingredient Name &ndash;&gt;-->
+<!--        <TextView-->
+<!--            android:id="@+id/nameDrink"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="4dp"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textColor="@color/text_primary"-->
+<!--            android:textSize="14sp"-->
+<!--            android:maxLines="1"-->
+<!--            android:ellipsize="end"-->
+<!--            style="@style/BaseString"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/imageDrink"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent" />-->
+
+<!--        &lt;!&ndash; Rating &ndash;&gt;-->
+<!--        <LinearLayout-->
+<!--            android:id="@+id/ratingLayout"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="4dp"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:gravity="center"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/nameDrink"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent">-->
+
+<!--            <ImageView-->
+<!--                android:layout_width="12dp"-->
+<!--                android:layout_height="12dp"-->
+<!--                android:src="@drawable/ic_star"-->
+<!--                app:tint="@color/star_color" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rateDrink"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="2dp"-->
+<!--                android:textSize="12sp"-->
+<!--                android:textColor="@color/text_secondary" />-->
+<!--        </LinearLayout>-->
+
+<!--        &lt;!&ndash; Created At &ndash;&gt;-->
+<!--        <TextView-->
+<!--            android:id="@+id/createAtDrink"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="2dp"-->
+<!--            android:textSize="10sp"-->
+<!--            android:textAlignment="center"-->
+<!--            style="@style/BaseString"-->
+<!--            android:textColor="@color/text_secondary"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/ratingLayout"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent" />-->
+
+<!--        &lt;!&ndash; Selected Checkmark &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/selectedCheck"-->
+<!--            android:layout_width="24dp"-->
+<!--            android:layout_height="24dp"-->
+<!--            android:src="@drawable/s_ic_check_circle"-->
+<!--            android:visibility="gone"-->
+<!--            app:tint="@color/secondary"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            android:layout_margin="4dp" />-->
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--    </com.google.android.material.card.MaterialCardView>-->

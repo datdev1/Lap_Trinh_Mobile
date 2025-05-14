@@ -70,12 +70,12 @@ public class DrinkAdapter extends RecyclerView.Adapter<DrinkAdapter.DrinkViewHol
                     .placeholder(R.drawable.sample_cocktail_2)
                     .into(binding.imageDrink);
 
-            binding.rateDrink.setText(String.format("Rate: %.1f", drink.getRate()));
+            binding.rateDrink.setText(String.format("%.1f", drink.getRate()));
             if (drink.getCreatedAt() != null) {
                 String dateText = DateFormat.getDateInstance(DateFormat.MEDIUM).format(drink.getCreatedAt());
-                binding.createAtDrink.setText("Created: " + dateText);
+                binding.createAtDrink.setText(dateText);
             } else {
-                binding.createAtDrink.setText("Created: N/A");
+                binding.createAtDrink.setText("N/A");
             }
 
             binding.layout.setOnClickListener(v -> listener.onDrinkClick(drink));

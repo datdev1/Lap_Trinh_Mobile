@@ -2,11 +2,13 @@ package com.b21dccn216.pocketcocktail.view.Search;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.PopupMenu;
 
@@ -47,8 +49,8 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     private Category category;
 
     private Ingredient ingredient;
-    private String sortField = DrinkDAO.DRINK_FIELD.RATE.getValue();
-    private  Query.Direction sortOrder = Query.Direction.DESCENDING;
+    private String sortField = DrinkDAO.DRINK_FIELD.NAME.getValue();
+    private  Query.Direction sortOrder = Query.Direction.ASCENDING;
 
 
 
@@ -178,6 +180,13 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         // Filter
         binding.sortByContainer.setOnClickListener(v -> showSortByMenu());
         binding.sortOrderButton.setOnClickListener(v -> toggleSortOrder());
+        binding.sortByText.setText(sortField);
+        if(sortOrder == Query.Direction.ASCENDING){
+            binding.sortOrderText.setText("Tăng dần");
+        }
+        else{
+            binding.sortOrderText.setText("Giảm dần");
+        }
     }
 
 
@@ -255,7 +264,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             startActivity(intent);
         });
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         binding.drinksRecyclerView.setLayoutManager(layoutManager);
         binding.drinksRecyclerView.setAdapter(drinkAdapter);
 
@@ -263,7 +272,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
 
         binding.drinksRecyclerView.addItemDecoration(
-                new GridSpacingItemDecoration(3, horizontalSpacing, verticalSpacing, true)
+                new GridSpacingItemDecoration(2, horizontalSpacing, verticalSpacing, true)
         );
 
         binding.drinksRecyclerView.setClipToPadding(false);

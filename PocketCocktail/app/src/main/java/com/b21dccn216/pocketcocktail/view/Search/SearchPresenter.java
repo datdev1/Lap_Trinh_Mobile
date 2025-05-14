@@ -30,23 +30,6 @@ public class SearchPresenter extends BasePresenter<SearchContract.View>
         this.recipeDAO = new RecipeDAO();
     }
 
-    @SuppressWarnings("unchecked")
-    private Comparable getFieldValue(Drink drink, String field) {
-        if (drink == null || field == null) return null;
-
-        try {
-            switch (field) {
-                case "createdAt":
-                    return drink.getCreatedAt() != null ? drink.getCreatedAt() : new Date(0);
-                case "rate":
-                    return drink.getRate() != 0.0 ? (Double) drink.getRate() : 0.0;
-                default:
-                    return null;
-            }
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
     // Load drinks
     @Override
