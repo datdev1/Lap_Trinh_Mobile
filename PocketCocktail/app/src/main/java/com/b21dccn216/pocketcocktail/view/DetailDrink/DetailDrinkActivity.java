@@ -26,6 +26,8 @@ import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.databinding.ActivityDetailDrinkBinding;
 import com.b21dccn216.pocketcocktail.databinding.DialogAddReviewBinding;
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.Drink;
 import com.b21dccn216.pocketcocktail.model.Review;
@@ -44,6 +46,7 @@ import java.util.List;
 public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContract.View, DetailDrinkContract.Presenter> implements DetailDrinkContract.View{
 
     public static final String EXTRA_DRINK_OBJECT = "drink_id";
+    private static final int EDIT_COPY_ACTIVITY_REQUEST_CODE = 1234;
 
     private ActivityDetailDrinkBinding binding;
     private ReviewAdapter reviewAdapter;
@@ -120,7 +123,7 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
             intent.putExtra("drink", currentDrink);
             intent.putExtra("categoryId", currentDrink.getCategoryId());
             intent.putExtra("recipes", (Serializable) presenter.getRecipes());
-            startActivity(intent);
+            startActivityForResult(intent, EDIT_COPY_ACTIVITY_REQUEST_CODE);
         });
 
 
@@ -313,5 +316,43 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     private void updateReviewButtonState() {
         binding.addCommentButton.setEnabled(!hasUserReviewed);
         binding.addCommentButton.setAlpha(hasUserReviewed ? 0.5f : 1f);
+    }
+
+
+    // TODO: Toast sai message
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == EDIT_COPY_ACTIVITY_REQUEST_CODE){
+            if(data == null){
+                showMessage("Error", "Fail to edit or copy", HelperDialog.DialogType.ERROR);
+                return;
+            }
+            Drink drink = (Drink) data.getSerializableExtra(EXTRA_DRINK_OBJECT);
+            if(drink == null){
+                showMessage("Error", "Fail to edit or copy", HelperDialog.DialogType.ERROR);
+                return;
+            }
+            String mess = "Copy recipe successful";
+            if(drink.getUuid().equals(currentDrink.getUuid())){
+                mess = "Edit recipe successful";
+            }
+            showMessage("Success", mess, HelperDialog.DialogType.SUCCESS);
+            currentDrink = (Drink) data.getSerializableExtra(EXTRA_DRINK_OBJECT);
+            // TODO:: Xử lý sau khi cập nhập thành công.
+            emptyIngredientAndInstruction();
+            presenter.loadDrinkDetails(currentDrink);
+        }else{
+            DialogHelper.showAlertDialog(this, "Error", "Fail to edit or copy", HelperDialog.DialogType.ERROR);
+        }
+    }
+
+    private void emptyIngredientAndInstruction() {
+        binding.ingredientsLayout.removeAllViews();
+        binding.instructionsLayout.removeAllViews();
+    }
+
+    public void showMessage(String title, String message, HelperDialog.DialogType type){
+        DialogHelper.showAlertDialog(this, title, message, type);
     }
 }

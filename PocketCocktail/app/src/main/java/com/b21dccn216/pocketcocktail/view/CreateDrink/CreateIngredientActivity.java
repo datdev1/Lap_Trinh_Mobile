@@ -68,19 +68,19 @@ public class CreateIngredientActivity extends AppCompatActivity {
 
     private boolean validateInput() {
         if (etName.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập tên nguyên liệu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CreateIngredientActivity.this, "Vui lòng nhập tên nguyên liệu", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (etDescription.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập mô tả", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CreateIngredientActivity.this, "Vui lòng nhập mô tả", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (etUnit.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập đơn vị", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CreateIngredientActivity.this, "Vui lòng nhập đơn vị", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (selectedImageUri == null) {
-            Toast.makeText(this, "Vui lòng thêm ảnh nguyên liệu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CreateIngredientActivity.this, "Vui lòng thêm ảnh nguyên liệu", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -97,11 +97,11 @@ public class CreateIngredientActivity extends AppCompatActivity {
 
         ingredientDAO.addIngredientWithImage(this, ingredient, selectedImageUri,
                 aVoid -> {
-                    Toast.makeText(this, "Thêm nguyên liệu thành công!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateIngredientActivity.this, "Thêm nguyên liệu thành công!", Toast.LENGTH_SHORT).show();
                     finish();
                 },
                 e -> {
-                    Toast.makeText(this, "Lỗi khi thêm nguyên liệu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateIngredientActivity.this, "Lỗi khi thêm nguyên liệu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     btnSave.setEnabled(true); // Enable lại nếu lỗi
                 });
     }
