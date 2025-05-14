@@ -239,26 +239,50 @@ public class IngredientFragment extends BaseModelFragment {
         if (selectedImageUri != null) {
             ingredientDAO.addIngredientWithImage(getContext(), ingredient, selectedImageUri,
                     aVoid -> {
-                        showToast("Thêm nguyên liệu thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Thêm nguyên liệu thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast("Lỗi khi thêm nguyên liệu: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                String errorMessage = "Lỗi khi thêm nguyên liệu";
+                                if (e.getMessage() != null) {
+                                    if (e.getMessage().contains("webp")) {
+                                        errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
+                                    } else {
+                                        errorMessage += ": " + e.getMessage();
+                                    }
+                                }
+                                showToast(errorMessage);
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         } else {
             ingredientDAO.addIngredient(ingredient,
                     aVoid -> {
-                        showToast("Thêm nguyên liệu thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Thêm nguyên liệu thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast("Lỗi khi thêm nguyên liệu: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Lỗi khi thêm nguyên liệu: " + e.getMessage());
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         }
     }
@@ -288,26 +312,50 @@ public class IngredientFragment extends BaseModelFragment {
         if (selectedImageUri != null) {
             ingredientDAO.updateIngredientWithImage(getContext(), selectedIngredient, selectedImageUri,
                     aVoid -> {
-                        showToast("Cập nhật nguyên liệu thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Cập nhật nguyên liệu thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast("Lỗi khi cập nhật nguyên liệu: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                String errorMessage = "Lỗi khi cập nhật nguyên liệu";
+                                if (e.getMessage() != null) {
+                                    if (e.getMessage().contains("webp")) {
+                                        errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
+                                    } else {
+                                        errorMessage += ": " + e.getMessage();
+                                    }
+                                }
+                                showToast(errorMessage);
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         } else {
             ingredientDAO.updateIngredient(selectedIngredient,
                     aVoid -> {
-                        showToast("Cập nhật nguyên liệu thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Cập nhật nguyên liệu thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast("Lỗi khi cập nhật nguyên liệu: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Lỗi khi cập nhật nguyên liệu: " + e.getMessage());
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         }
     }
@@ -326,14 +374,22 @@ public class IngredientFragment extends BaseModelFragment {
                 setButtonsEnabled(false);
                 ingredientDAO.deleteIngredient(selectedIngredient.getUuid(),
                     aVoid -> {
-                        showToast("Xóa nguyên liệu thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Xóa nguyên liệu thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast(e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast(e.getMessage());
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
             })
             .setNegativeButton("Không", null)

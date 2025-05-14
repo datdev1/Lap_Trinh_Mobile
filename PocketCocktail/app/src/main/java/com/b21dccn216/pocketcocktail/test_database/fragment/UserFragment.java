@@ -286,28 +286,50 @@ public class UserFragment extends BaseModelFragment {
         if (selectedImageUri != null) {
             userDAO.addUserWithImage(getContext(), user, selectedImageUri,
                     aVoid -> {
-                        showToast("Thêm người dùng thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Thêm người dùng thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast("Lỗi khi thêm người dùng: " + e.getMessage());
-                        Log.d("UserDAO", "Error adding user: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                String errorMessage = "Lỗi khi thêm người dùng";
+                                if (e.getMessage() != null) {
+                                    if (e.getMessage().contains("webp")) {
+                                        errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
+                                    } else {
+                                        errorMessage += ": " + e.getMessage();
+                                    }
+                                }
+                                showToast(errorMessage);
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         } else {
             userDAO.addUser(user,
                     aVoid -> {
-                        showToast("Thêm người dùng thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Thêm người dùng thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast("Lỗi khi thêm người dùng: " + e.getMessage());
-                        Log.d("UserDAO", "Error adding user: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Lỗi khi thêm người dùng: " + e.getMessage());
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         }
     }
@@ -343,26 +365,50 @@ public class UserFragment extends BaseModelFragment {
         if (selectedImageUri != null) {
             userDAO.updateUserWithImage(getContext(), selectedUser, selectedImageUri,
                     aVoid -> {
-                        showToast("Cập nhật người dùng thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Cập nhật người dùng thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast("Lỗi khi cập nhật người dùng: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                String errorMessage = "Lỗi khi cập nhật người dùng";
+                                if (e.getMessage() != null) {
+                                    if (e.getMessage().contains("webp")) {
+                                        errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
+                                    } else {
+                                        errorMessage += ": " + e.getMessage();
+                                    }
+                                }
+                                showToast(errorMessage);
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         } else {
             userDAO.updateUser(selectedUser,
                     aVoid -> {
-                        showToast("Cập nhật người dùng thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Cập nhật người dùng thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast("Lỗi khi cập nhật người dùng: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Lỗi khi cập nhật người dùng: " + e.getMessage());
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         }
     }
@@ -381,14 +427,22 @@ public class UserFragment extends BaseModelFragment {
                 setButtonsEnabled(false);
                 userDAO.deleteUser(selectedUser.getUuid(),
                     aVoid -> {
-                        showToast("Xóa người dùng thành công");
-                        clearInputs();
-                        loadData();
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast("Xóa người dùng thành công");
+                                clearInputs();
+                                loadData();
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        showToast(e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                showToast(e.getMessage());
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
             })
             .setNegativeButton("Không", null)

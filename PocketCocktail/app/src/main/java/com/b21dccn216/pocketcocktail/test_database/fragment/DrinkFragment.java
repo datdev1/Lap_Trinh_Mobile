@@ -508,31 +508,55 @@ public class DrinkFragment extends BaseModelFragment {
             Log.d(TAG, "Saving drink with image");
             drinkDAO.addDrinkWithImage(getContext(), drink, selectedImageUri,
                     aVoid -> {
-                        Log.d(TAG, "Drink saved successfully with image");
-                        showToast("Thêm đồ uống thành công");
-                        clearInputs();
-                        loadFirstPage(); // Reload first page after adding new drink
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                Log.d(TAG, "Drink saved successfully with image");
+                                showToast("Thêm đồ uống thành công");
+                                clearInputs();
+                                loadFirstPage(); // Reload first page after adding new drink
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        Log.e(TAG, "Error saving drink with image", e);
-                        showToast("Lỗi khi thêm đồ uống: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                Log.e(TAG, "Error saving drink with image", e);
+                                String errorMessage = "Lỗi khi thêm đồ uống";
+                                if (e.getMessage() != null) {
+                                    if (e.getMessage().contains("webp")) {
+                                        errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
+                                    } else {
+                                        errorMessage += ": " + e.getMessage();
+                                    }
+                                }
+                                showToast(errorMessage);
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         } else {
             Log.d(TAG, "Saving drink without image");
             drinkDAO.addDrink(drink,
                     aVoid -> {
-                        Log.d(TAG, "Drink saved successfully");
-                        showToast("Thêm đồ uống thành công");
-                        clearInputs();
-                        loadFirstPage(); // Reload first page after adding new drink
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                Log.d(TAG, "Drink saved successfully");
+                                showToast("Thêm đồ uống thành công");
+                                clearInputs();
+                                loadFirstPage(); // Reload first page after adding new drink
+                                setButtonsEnabled(true);
+                            });
+                        }
                     },
                     e -> {
-                        Log.e(TAG, "Error saving drink", e);
-                        showToast("Lỗi khi thêm đồ uống: " + e.getMessage());
-                        setButtonsEnabled(true);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                Log.e(TAG, "Error saving drink", e);
+                                showToast("Lỗi khi thêm đồ uống: " + e.getMessage());
+                                setButtonsEnabled(true);
+                            });
+                        }
                     });
         }
     }
