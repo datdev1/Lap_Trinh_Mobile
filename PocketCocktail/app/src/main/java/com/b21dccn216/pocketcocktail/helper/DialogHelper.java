@@ -16,9 +16,20 @@ public class DialogHelper {
         binding.tvTitle.setText(title != null ? title : "Message");
         binding.tvMessage.setText(message);
 
-        HelperDialog dialog = new HelperDialog(context, type, title, message);
+        HelperDialog dialog = new HelperDialog(context, type, title, message, null);
         dialog.show();
     }
 
+    public static void showAlertDialog(Context context, String title, String message,
+                                       HelperDialog.DialogType type, HelperDialog.OnDialogButtonClickListener onDialogButtonClickListener) {
+        if (context == null) return;
+        DialogCustomBinding binding = DialogCustomBinding.inflate(LayoutInflater.from(context));
+
+        binding.tvTitle.setText(title != null ? title : "Message");
+        binding.tvMessage.setText(message);
+
+        HelperDialog dialog = new HelperDialog(context, type, title, message, onDialogButtonClickListener);
+        dialog.show();
+    }
 
 }

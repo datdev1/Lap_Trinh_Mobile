@@ -154,7 +154,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>  implement
                     .addOnCompleteListener(task -> {
                         if(task.isSuccessful()){
                             // signup success
-                            // TODO:: Xử lý đối tượng user, lưu thông tin phone, fullname và firebase
+                            //  Xử lý đối tượng user, lưu thông tin phone, fullname và firebase
                             user.setSaveUuidFromAuthen(mAuth.getUid());
                             user.setRole("User");
                             userDAO.addUser(user,

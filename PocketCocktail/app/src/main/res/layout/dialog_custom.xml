@@ -67,10 +67,12 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             style="@style/ButtonOutlinePastel"
+            android:visibility="gone"
             android:text="No"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnNo"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"

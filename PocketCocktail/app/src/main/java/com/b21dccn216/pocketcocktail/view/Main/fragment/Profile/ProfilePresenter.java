@@ -99,8 +99,7 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-
-                            //TODO: Show to View
+                            //Show to View
                             showAlertDialog("WARN",
                                     "We has sent verification link to " + email +" address.\n" +
                                     "Pleas confirm to change email address",

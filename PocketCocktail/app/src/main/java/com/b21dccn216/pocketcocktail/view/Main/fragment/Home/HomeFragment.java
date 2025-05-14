@@ -110,15 +110,8 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // TODO:: RELOAD DRINK LIST
-
+                //RELOAD DRINK LIST
                 presenter.refreshScreen();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        binding.swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 2000);
             }
         });
 

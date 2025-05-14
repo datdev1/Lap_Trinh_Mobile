@@ -47,7 +47,7 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
         favoriteDAO.getFavoriteUserId(currentUserId, new FavoriteDAO.FavoriteListCallback() {
             @Override
             public void onFavoriteListLoaded(List<Favorite> favorites) {
-                // TODO
+
                 Log.d("favourite", "Size: " + favorites.size());
 
                 if (favorites.isEmpty() && view != null) {
