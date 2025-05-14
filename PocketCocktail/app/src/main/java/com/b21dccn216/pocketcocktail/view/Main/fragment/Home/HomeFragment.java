@@ -135,6 +135,8 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
             dialog.show();
         });
 
+//        presenter.refreshScreen();
+
         return binding.getRoot();
     }
 
@@ -143,6 +145,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showOneCategoryDrinkList(Category category, List<Drink> drinkList) {
+        if(binding == null) return;
         binding.titleMocktails.setText(category.getName());
         categoryDrinkList.clear();
         categoryDrinkList.addAll(drinkList);
@@ -159,6 +162,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showHighestRateDrinkList(List<Drink> drinkList) {
+        if(binding == null) return;
         highestRateDrinkList.clear();
         highestRateDrinkList.addAll(drinkList);
         highestRateDrinkAdapter.notifyDataSetChanged();
@@ -167,6 +171,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showLatestDrinkList(List<Drink> drinkList) {
+        if(binding == null) return;
         latestDrinkList.clear();
         latestDrinkList.addAll(drinkList);
         latestCocktailAdapter.notifyDataSetChanged();
@@ -176,6 +181,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showRecommendDrinkList(List<DrinkWithFavCount> drinkList) {
+        if(binding == null) return;
         recommendDrinkList.clear();
         drinkList.sort((drinkWithFavCount, t1) -> Integer.compare(t1.getCount(), drinkWithFavCount.getCount()));
 
@@ -186,6 +192,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
 
     @Override
     public void showBannerDrink(Drink drink) {
+        if(binding == null) return;
         bannerDrink = drink;
         Glide
                 .with(requireActivity())

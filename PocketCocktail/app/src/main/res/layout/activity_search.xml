@@ -112,6 +112,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Sắp xếp theo:"
+                        style="@style/BaseString"
                         android:textColor="@color/text_primary_y"
                         android:textSize="16sp" />
 
@@ -134,6 +135,7 @@
                             android:text="Đánh giá"
                             android:textColor="@color/text_primary_y"
                             android:textSize="16sp"
+                            style="@style/BaseString"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent" />
@@ -175,6 +177,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
                             android:text="Giảm dần"
+                            style="@style/BaseString"
                             android:textColor="@color/text_primary_y"
                             android:textSize="16sp" />
                     </LinearLayout>

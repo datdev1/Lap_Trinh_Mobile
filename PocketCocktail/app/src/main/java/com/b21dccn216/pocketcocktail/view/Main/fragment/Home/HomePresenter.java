@@ -3,6 +3,7 @@ package com.b21dccn216.pocketcocktail.view.Main.fragment.Home;
 import android.content.Context;
 import android.util.Log;
 
+import com.b21dccn216.pocketcocktail.base.BaseContract;
 import com.b21dccn216.pocketcocktail.base.BasePresenter;
 import com.b21dccn216.pocketcocktail.dao.CategoryDAO;
 import com.b21dccn216.pocketcocktail.dao.DrinkCntFavDAO;
@@ -45,9 +46,10 @@ public class HomePresenter
     public void onResume() {
         super.onResume();
         getBannerDrink();
+        getOneCategoryDrinkList();
         Log.d("datdev1", "onResume:");
-
     }
+
 
     private void getBannerDrink(){
         drinkDAO.getFeatureDrink(new DrinkDAO.DrinkCallback() {
