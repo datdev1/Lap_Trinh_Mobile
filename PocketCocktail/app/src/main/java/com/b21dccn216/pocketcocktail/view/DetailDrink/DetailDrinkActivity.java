@@ -324,11 +324,35 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK && requestCode == EDIT_COPY_ACTIVITY_REQUEST_CODE){
+            if(data == null){
+                showMessage("Error", "Fail to edit or copy", HelperDialog.DialogType.ERROR);
+                return;
+            }
+            Drink drink = (Drink) data.getSerializableExtra(EXTRA_DRINK_OBJECT);
+            if(drink == null){
+                showMessage("Error", "Fail to edit or copy", HelperDialog.DialogType.ERROR);
+                return;
+            }
+            String mess = "Copy recipe successful";
+            if(drink.getUuid().equals(currentDrink.getUuid())){
+                mess = "Edit recipe successful";
+            }
+            showMessage("Success", mess, HelperDialog.DialogType.SUCCESS);
             currentDrink = (Drink) data.getSerializableExtra(EXTRA_DRINK_OBJECT);
             // TODO:: Xử lý sau khi cập nhập thành công.
+            emptyIngredientAndInstruction();
             presenter.loadDrinkDetails(currentDrink);
         }else{
             DialogHelper.showAlertDialog(this, "Error", "Fail to edit or copy", HelperDialog.DialogType.ERROR);
         }
+    }
+
+    private void emptyIngredientAndInstruction() {
+        binding.ingredientsLayout.removeAllViews();
+        binding.instructionsLayout.removeAllViews();
+    }
+
+    public void showMessage(String title, String message, HelperDialog.DialogType type){
+        DialogHelper.showAlertDialog(this, title, message, type);
     }
 }

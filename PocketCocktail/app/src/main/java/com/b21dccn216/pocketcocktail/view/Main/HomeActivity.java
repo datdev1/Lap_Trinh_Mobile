@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -23,6 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.base.BaseContract;
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.test_database.TestDatabaseActivity;
@@ -45,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends BaseAppCompatActivity<BaseContract.View, BaseContract.Presenter> {
+    public static final int EVENT_CREATE_NEW_DRINK = 2003;
     private ActivityHomeBinding binding;
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
@@ -143,7 +147,7 @@ public class HomeActivity extends BaseAppCompatActivity<BaseContract.View, BaseC
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId() == R.id.nav_add){
                     Intent intent = new Intent(HomeActivity.this, CreateDrinkActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, EVENT_CREATE_NEW_DRINK);
                 }else if(item.getItemId() == R.id.nav_search){
                     Intent intent = new Intent(HomeActivity.this, SearchActivity.class);
                     startActivity(intent);
@@ -162,5 +166,20 @@ public class HomeActivity extends BaseAppCompatActivity<BaseContract.View, BaseC
     @Override
     public boolean onSupportNavigateUp() {
         return navController.navigateUp() || super.onSupportNavigateUp();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(requestCode == EVENT_CREATE_NEW_DRINK){
+                DialogHelper.showAlertDialog(HomeActivity.this, "Success", "Create new drink successfully", HelperDialog.DialogType.SUCCESS);
+            }
+        }else if(resultCode == RESULT_CANCELED){
+            if(requestCode == EVENT_CREATE_NEW_DRINK){
+                DialogHelper.showAlertDialog(HomeActivity.this, "Fail", "Fail to create new drink", HelperDialog.DialogType.ERROR);
+            }
+        }
     }
 }
