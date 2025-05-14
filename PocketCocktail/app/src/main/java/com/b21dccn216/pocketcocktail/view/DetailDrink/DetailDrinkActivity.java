@@ -2,6 +2,8 @@ package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
 import static androidx.core.content.ContextCompat.startActivity;
 
+import static com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity.FAIL_TO_SAVE_DRINK_RESULT_CODE;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -342,7 +344,7 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
             // TODO:: Xử lý sau khi cập nhập thành công.
             emptyIngredientAndInstruction();
             presenter.loadDrinkDetails(currentDrink);
-        }else{
+        }else if(resultCode == FAIL_TO_SAVE_DRINK_RESULT_CODE){
             DialogHelper.showAlertDialog(this, "Error", "Fail to edit or copy", HelperDialog.DialogType.ERROR);
         }
     }

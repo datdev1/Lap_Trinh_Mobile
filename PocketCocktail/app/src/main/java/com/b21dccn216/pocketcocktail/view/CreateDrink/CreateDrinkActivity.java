@@ -49,6 +49,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CreateDrinkActivity extends AppCompatActivity implements IngredientAdapter.OnIngredientRemoveListener {
 
+    public static final int FAIL_TO_SAVE_DRINK_RESULT_CODE = 2003;
+
     private EditText etDrinkName, etInstruction, etDescription;
     private TextView titleText;
     private ImageView ivDrinkImage;
@@ -515,7 +517,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
                                         "Lỗi khi xóa công thức cũ: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 // Trả về kết quả thất bại nếu cần
                                 Intent resultIntent = new Intent();
-                                setResult(RESULT_CANCELED, resultIntent);
+                                setResult(FAIL_TO_SAVE_DRINK_RESULT_CODE, resultIntent);
                                 finish();
                             });
                 }
@@ -527,7 +529,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
                         "Lỗi khi lấy công thức cũ: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 // Trả về kết quả thất bại
                 Intent resultIntent = new Intent();
-                setResult(RESULT_CANCELED, resultIntent);
+                setResult(FAIL_TO_SAVE_DRINK_RESULT_CODE, resultIntent);
                 finish();
             }
         });
@@ -575,4 +577,6 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         recipeList.remove(position);
         ingredientAdapter.notifyItemRemoved(position);
     }
+
+
 }
