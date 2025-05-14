@@ -12,6 +12,9 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.PopupMenu;
 
+import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.b21dccn216.pocketcocktail.R;
@@ -186,6 +189,46 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         else{
             binding.sortOrderText.setText("Giảm dần");
         }
+
+        //Fix margin nested scroll view
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainScrollview, (view, insets) -> {
+            boolean keyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
+            int topInset = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
+
+            int bottomPadding;
+            if (keyboardVisible) {
+                // Keyboard on
+                bottomPadding = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            } else {
+                // keyboard off
+                bottomPadding = dpToPx(80, view.getContext());
+            }
+
+            ViewCompat.setPaddingRelative(view, view.getPaddingStart(), topInset, view.getPaddingEnd(), bottomPadding);
+
+            return insets;
+        });
+        BottomSheetBehavior.from(binding.bottomSheet).addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    binding.mainScrollview.setPadding(
+                            binding.mainScrollview.getPaddingLeft(),
+                            binding.mainScrollview.getPaddingTop(),
+                            binding.mainScrollview.getPaddingRight(),
+                            0
+                    );
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+    }
+
+    public static int dpToPx(int dp, Context context) {
+        return Math.round(dp * context.getResources().getDisplayMetrics().density);
     }
 
 
