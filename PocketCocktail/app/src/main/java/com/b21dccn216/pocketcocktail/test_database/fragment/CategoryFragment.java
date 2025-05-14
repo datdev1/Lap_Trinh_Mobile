@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.test_database.fragment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Button;
@@ -12,6 +13,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.dao.CategoryDAO;
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.test_database.adapter.CategoryAdapter;
 import com.bumptech.glide.Glide;
@@ -92,11 +95,19 @@ public class CategoryFragment extends BaseModelFragment {
         });
     }
 
+    private void setButtonsEnabled(boolean enabled) {
+        btnSelectImage.setEnabled(enabled);
+        btnSave.setEnabled(enabled);
+        btnUpdate.setEnabled(enabled && selectedCategory != null);
+        btnDelete.setEnabled(enabled && selectedCategory != null);
+    }
+
     @Override
     protected void loadData() {
         categoryDAO.getAllCategorys(new CategoryDAO.CategoryListCallback() {
             @Override
             public void onCategoryListLoaded(List<Category> categoryList) {
+                categoryList.sort((c1, c2) -> c2.getUpdatedAt().compareTo(c1.getUpdatedAt()));
                 categories.clear();
                 categories.addAll(categoryList);
                 adapter.notifyDataSetChanged();
@@ -151,36 +162,69 @@ public class CategoryFragment extends BaseModelFragment {
         String description = etDescription.getText().toString();
 
         if (name.isEmpty() || description.isEmpty()) {
-            showToast("Please fill all fields");
+            showToast("Vui lòng điền đầy đủ thông tin");
             return;
         }
 
+        // Check if category with same name exists
+        boolean categoryExists = false;
+        for (Category category : categories) {
+            if (category.getName().equals(name)) {
+                categoryExists = true;
+                break;
+            }
+        }
+
+        if (categoryExists) {
+            new AlertDialog.Builder(requireContext())
+                .setTitle("Cảnh báo")
+                .setMessage("Đã tồn tại danh mục với tên này. Bạn có chắc chắn muốn tạo mới?")
+                .setPositiveButton("Có", (dialog, which) -> {
+                    performSave(name, description);
+                })
+                .setNegativeButton("Không", null)
+                .show();
+        } else {
+            performSave(name, description);
+        }
+    }
+
+    private void performSave(String name, String description) {
+        setButtonsEnabled(false);
         Category category = new Category(name, description, "");
         category.generateUUID();
 
         if (selectedImageUri != null) {
             categoryDAO.addCategoryWithImage(getContext(), category, selectedImageUri,
                     aVoid -> {
-                        showToast("Category added successfully");
+                        showToast("Thêm danh mục thành công");
                         clearInputs();
                         loadData();
+                        setButtonsEnabled(true);
                     },
-                    e -> showToast("Error adding category: " + e.getMessage()));
+                    e -> {
+                        showToast("Lỗi khi thêm danh mục: " + e.getMessage());
+                        setButtonsEnabled(true);
+                    });
         } else {
             categoryDAO.addCategory(category,
                     aVoid -> {
-                        showToast("Category added successfully");
+                        showToast("Thêm danh mục thành công");
                         clearInputs();
                         loadData();
+                        setButtonsEnabled(true);
                     },
-                    e -> showToast("Error adding category: " + e.getMessage()));
+                    e -> {
+                        showToast("Lỗi khi thêm danh mục: " + e.getMessage());
+                        setButtonsEnabled(true);
+                    });
         }
     }
 
     @Override
     protected void updateItem() {
         if (selectedCategory == null) {
-            showToast("Please select a category first");
+            showToast("Vui lòng chọn một danh mục");
             return;
         }
 
@@ -188,45 +232,70 @@ public class CategoryFragment extends BaseModelFragment {
         String description = etDescription.getText().toString();
 
         if (name.isEmpty() || description.isEmpty()) {
-            showToast("Please fill all fields");
+            showToast("Vui lòng điền đầy đủ thông tin");
             return;
         }
 
+        setButtonsEnabled(false);
         selectedCategory.setName(name);
         selectedCategory.setDescription(description);
 
         if (selectedImageUri != null) {
             categoryDAO.updateCategoryWithImage(getContext(), selectedCategory, selectedImageUri,
                     aVoid -> {
-                        showToast("Category updated successfully");
+                        showToast("Cập nhật danh mục thành công");
                         clearInputs();
                         loadData();
+                        setButtonsEnabled(true);
                     },
-                    e -> showToast("Error updating category: " + e.getMessage()));
+                    e -> {
+                        showToast("Lỗi khi cập nhật danh mục: " + e.getMessage());
+                        setButtonsEnabled(true);
+                    });
         } else {
             categoryDAO.updateCategory(selectedCategory,
                     aVoid -> {
-                        showToast("Category updated successfully");
+                        showToast("Cập nhật danh mục thành công");
                         clearInputs();
                         loadData();
+                        setButtonsEnabled(true);
                     },
-                    e -> showToast("Error updating category: " + e.getMessage()));
+                    e -> {
+                        showToast("Lỗi khi cập nhật danh mục: " + e.getMessage());
+                        setButtonsEnabled(true);
+                    });
         }
     }
 
     @Override
     protected void deleteItem() {
         if (selectedCategory == null) {
-            showToast("Please select a category first");
+            showToast("Vui lòng chọn một danh mục");
             return;
         }
 
+        new AlertDialog.Builder(requireContext())
+            .setTitle("Xác nhận xóa")
+            .setMessage("Bạn có chắc chắn muốn xóa danh mục này?")
+            .setPositiveButton("Có", (dialog, which) -> {
+                performDelete();
+            })
+            .setNegativeButton("Không", null)
+            .show();
+    }
+
+    private void performDelete() {
+        setButtonsEnabled(false);
         categoryDAO.deleteCategory(selectedCategory.getUuid(),
                 aVoid -> {
-                    showToast("Category deleted successfully");
+                    showToast("Xóa danh mục thành công");
                     clearInputs();
                     loadData();
+                    setButtonsEnabled(true);
                 },
-                e -> showToast(e.getMessage()));
+                e -> {
+                    showToast(e.getMessage());
+                    setButtonsEnabled(true);
+                });
     }
 } 

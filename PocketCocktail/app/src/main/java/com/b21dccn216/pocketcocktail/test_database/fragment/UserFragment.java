@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.test_database.fragment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -125,6 +126,14 @@ public class UserFragment extends BaseModelFragment {
         });
     }
 
+    private void setButtonsEnabled(boolean enabled) {
+        btnChooseImage.setEnabled(enabled);
+        btnSave.setEnabled(enabled);
+        btnUpdate.setEnabled(enabled && selectedUser != null);
+        btnDelete.setEnabled(enabled && selectedUser != null);
+        btnClear.setEnabled(enabled);
+    }
+
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -153,6 +162,7 @@ public class UserFragment extends BaseModelFragment {
         userDAO.getAllUsers(new UserDAO.UserListCallback() {
             @Override
             public void onUserListLoaded(List<User> userList) {
+                userList.sort((c1, c2) -> c2.getUpdatedAt().compareTo(c1.getUpdatedAt()));
                 users.clear();
                 users.addAll(userList);
                 adapter.notifyDataSetChanged();
@@ -215,16 +225,56 @@ public class UserFragment extends BaseModelFragment {
 
     @Override
     protected void saveItem() {
+        if (selectedUser != null) {
+            new AlertDialog.Builder(requireContext())
+                .setTitle("Cảnh báo")
+                .setMessage("Bạn đang chọn một người dùng. Bạn có muốn tạo mới không?")
+                .setPositiveButton("Có", (dialog, which) -> {
+
+                    performSave();
+                })
+                .setNegativeButton("Không", null)
+                .show();
+        } else {
+            performSave();
+        }
+    }
+
+    private void performSave() {
         String name = etName.getText().toString();
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
         String role = spinnerRole.getSelectedItem().toString();
 
         if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            showToast("Please fill all required fields");
+            showToast("Vui lòng điền đầy đủ thông tin");
             return;
         }
 
+        // Check if user with same email exists
+        boolean userExists = false;
+        for (User user : users) {
+            if (user.getEmail().equals(email)) {
+                userExists = true;
+                break;
+            }
+        }
+
+        if (userExists) {
+            new AlertDialog.Builder(requireContext())
+                .setTitle("Cảnh báo")
+                .setMessage("Đã tồn tại người dùng với email này. Bạn có chắc chắn muốn tạo mới?")
+                .setPositiveButton("Có", (dialog, which) -> {
+                    performSave(name, email, password, role);
+                })
+                .setNegativeButton("Không", null)
+                .show();
+        } else {
+            performSave(name, email, password, role);
+        }
+    }
+
+    private void performSave(String name, String email, String password, String role) {
         // Encrypt password
         String encryptedPassword = encryptPassword(password);
 
@@ -232,27 +282,32 @@ public class UserFragment extends BaseModelFragment {
         user.setRole(role);
         user.generateUUID();
 
+        setButtonsEnabled(false);
         if (selectedImageUri != null) {
             userDAO.addUserWithImage(getContext(), user, selectedImageUri,
                     aVoid -> {
-                        showToast("User added successfully");
+                        showToast("Thêm người dùng thành công");
                         clearInputs();
                         loadData();
+                        setButtonsEnabled(true);
                     },
                     e -> {
-                        showToast("Error adding user: " + e.getMessage());
+                        showToast("Lỗi khi thêm người dùng: " + e.getMessage());
                         Log.d("UserDAO", "Error adding user: " + e.getMessage());
+                        setButtonsEnabled(true);
                     });
         } else {
             userDAO.addUser(user,
                     aVoid -> {
-                        showToast("User added successfully");
+                        showToast("Thêm người dùng thành công");
                         clearInputs();
                         loadData();
+                        setButtonsEnabled(true);
                     },
                     e -> {
-                        showToast(e.getMessage());
+                        showToast("Lỗi khi thêm người dùng: " + e.getMessage());
                         Log.d("UserDAO", "Error adding user: " + e.getMessage());
+                        setButtonsEnabled(true);
                     });
         }
     }
@@ -260,7 +315,7 @@ public class UserFragment extends BaseModelFragment {
     @Override
     protected void updateItem() {
         if (selectedUser == null) {
-            showToast("Please select a user first");
+            showToast("Vui lòng chọn một người dùng");
             return;
         }
 
@@ -270,7 +325,7 @@ public class UserFragment extends BaseModelFragment {
         String role = spinnerRole.getSelectedItem().toString();
 
         if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            showToast("Please fill all required fields");
+            showToast("Vui lòng điền đầy đủ thông tin");
             return;
         }
 
@@ -284,38 +339,59 @@ public class UserFragment extends BaseModelFragment {
             selectedUser.setPassword(encryptedPassword);
         }
 
+        setButtonsEnabled(false);
         if (selectedImageUri != null) {
             userDAO.updateUserWithImage(getContext(), selectedUser, selectedImageUri,
                     aVoid -> {
-                        showToast("User updated successfully");
+                        showToast("Cập nhật người dùng thành công");
                         clearInputs();
                         loadData();
+                        setButtonsEnabled(true);
                     },
-                    e -> showToast("Error updating user: " + e.getMessage()));
+                    e -> {
+                        showToast("Lỗi khi cập nhật người dùng: " + e.getMessage());
+                        setButtonsEnabled(true);
+                    });
         } else {
             userDAO.updateUser(selectedUser,
                     aVoid -> {
-                        showToast("User updated successfully");
+                        showToast("Cập nhật người dùng thành công");
                         clearInputs();
                         loadData();
+                        setButtonsEnabled(true);
                     },
-                    e -> showToast("Error updating user: " + e.getMessage()));
+                    e -> {
+                        showToast("Lỗi khi cập nhật người dùng: " + e.getMessage());
+                        setButtonsEnabled(true);
+                    });
         }
     }
 
     @Override
     protected void deleteItem() {
         if (selectedUser == null) {
-            showToast("Please select a user first");
+            showToast("Vui lòng chọn một người dùng");
             return;
         }
 
-        userDAO.deleteUser(selectedUser.getUuid(),
-                aVoid -> {
-                    showToast("User deleted successfully");
-                    clearInputs();
-                    loadData();
-                },
-                e -> showToast("Error deleting user: " + e.getMessage()));
+        new AlertDialog.Builder(requireContext())
+            .setTitle("Xác nhận xóa")
+            .setMessage("Bạn có chắc chắn muốn xóa người dùng này?")
+            .setPositiveButton("Có", (dialog, which) -> {
+                setButtonsEnabled(false);
+                userDAO.deleteUser(selectedUser.getUuid(),
+                    aVoid -> {
+                        showToast("Xóa người dùng thành công");
+                        clearInputs();
+                        loadData();
+                        setButtonsEnabled(true);
+                    },
+                    e -> {
+                        showToast(e.getMessage());
+                        setButtonsEnabled(true);
+                    });
+            })
+            .setNegativeButton("Không", null)
+            .show();
     }
 } 

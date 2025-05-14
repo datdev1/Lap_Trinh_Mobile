@@ -1,5 +1,6 @@
 package com.b21dccn216.pocketcocktail.test_database.fragment;
 
+import android.app.AlertDialog;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,13 +44,13 @@ public class FavoriteFragment extends BaseModelFragment {
     @Override
     protected void initViews() {
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        
+
         etUuid = rootView.findViewById(R.id.etUuid);
         etCreatedAt = rootView.findViewById(R.id.etCreatedAt);
         etUpdatedAt = rootView.findViewById(R.id.etUpdatedAt);
         spinnerUser = rootView.findViewById(R.id.spinnerUser);
         spinnerDrink = rootView.findViewById(R.id.spinnerDrink);
-        
+
         btnSave = rootView.findViewById(R.id.btnSave);
         btnUpdate = rootView.findViewById(R.id.btnUpdate);
         btnDelete = rootView.findViewById(R.id.btnDelete);
@@ -58,10 +59,10 @@ public class FavoriteFragment extends BaseModelFragment {
         favorites = new ArrayList<>();
         drinks = new ArrayList<>();
         users = new ArrayList<>();
-        
+
         adapter = new FavoriteAdapter(getContext(), favorites);
         lvFavorites.setAdapter(adapter);
-        
+
         favoriteDAO = new FavoriteDAO();
         drinkDAO = new DrinkDAO();
         userDAO = new UserDAO();
@@ -76,9 +77,9 @@ public class FavoriteFragment extends BaseModelFragment {
         List<String> userItems = new ArrayList<>();
         userItems.add(""); // Add empty option
         ArrayAdapter<String> userAdapter = new ArrayAdapter<>(
-            getContext(),
-            android.R.layout.simple_spinner_item,
-            userItems
+                getContext(),
+                android.R.layout.simple_spinner_item,
+                userItems
         );
         userAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerUser.setAdapter(userAdapter);
@@ -87,9 +88,9 @@ public class FavoriteFragment extends BaseModelFragment {
         List<String> drinkItems = new ArrayList<>();
         drinkItems.add(""); // Add empty option
         ArrayAdapter<String> drinkAdapter = new ArrayAdapter<>(
-            getContext(),
-            android.R.layout.simple_spinner_item,
-            drinkItems
+                getContext(),
+                android.R.layout.simple_spinner_item,
+                drinkItems
         );
         drinkAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDrink.setAdapter(drinkAdapter);
@@ -103,15 +104,16 @@ public class FavoriteFragment extends BaseModelFragment {
         userDAO.getAllUsers(new UserDAO.UserListCallback() {
             @Override
             public void onUserListLoaded(List<User> userList) {
+                userList.sort((c1, c2) -> c2.getUpdatedAt().compareTo(c1.getUpdatedAt()));
                 users.clear();
                 users.addAll(userList);
-                
+
                 List<String> userItems = new ArrayList<>();
                 userItems.add(""); // Add empty option
                 for (User user : users) {
                     userItems.add(user.getName() + " (" + user.getUuid() + ")");
                 }
-                
+
                 ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinnerUser.getAdapter();
                 adapter.clear();
                 adapter.addAll(userItems);
@@ -129,15 +131,16 @@ public class FavoriteFragment extends BaseModelFragment {
         drinkDAO.getAllDrinks(new DrinkDAO.DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinkList) {
+                drinkList.sort((c1, c2) -> c2.getUpdatedAt().compareTo(c1.getUpdatedAt()));
                 drinks.clear();
                 drinks.addAll(drinkList);
-                
+
                 List<String> drinkItems = new ArrayList<>();
                 drinkItems.add(""); // Add empty option
                 for (Drink drink : drinks) {
                     drinkItems.add(drink.getName() + " (" + drink.getUuid() + ")");
                 }
-                
+
                 ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinnerDrink.getAdapter();
                 adapter.clear();
                 adapter.addAll(drinkItems);
@@ -169,6 +172,7 @@ public class FavoriteFragment extends BaseModelFragment {
         favoriteDAO.getAllFavorites(new FavoriteDAO.FavoriteListCallback() {
             @Override
             public void onFavoriteListLoaded(List<Favorite> favoriteList) {
+                favoriteList.sort((c1, c2) -> c2.getUpdatedAt().compareTo(c1.getUpdatedAt()));
                 favorites.clear();
                 favorites.addAll(favoriteList);
                 adapter.notifyDataSetChanged();
@@ -200,7 +204,7 @@ public class FavoriteFragment extends BaseModelFragment {
             etUuid.setText(favorite.getUuid());
             etCreatedAt.setText(dateFormat.format(favorite.getCreatedAt()));
             etUpdatedAt.setText(dateFormat.format(favorite.getUpdatedAt()));
-            
+
             // Set user spinner
             String userId = favorite.getUserId();
             boolean userFound = false;
@@ -214,7 +218,7 @@ public class FavoriteFragment extends BaseModelFragment {
             if (!userFound) {
                 spinnerUser.setSelection(0);
             }
-            
+
             // Set drink spinner
             String drinkId = favorite.getDrinkId();
             boolean drinkFound = false;
@@ -231,6 +235,12 @@ public class FavoriteFragment extends BaseModelFragment {
         }
     }
 
+    private void setButtonsEnabled(boolean enabled) {
+        btnSave.setEnabled(enabled);
+        btnUpdate.setEnabled(enabled && selectedFavorite != null);
+        btnDelete.setEnabled(enabled && selectedFavorite != null);
+    }
+
     @Override
     protected void saveItem() {
         int userPosition = spinnerUser.getSelectedItemPosition();
@@ -244,6 +254,31 @@ public class FavoriteFragment extends BaseModelFragment {
         String userId = users.get(userPosition - 1).getUuid();
         String drinkId = drinks.get(drinkPosition - 1).getUuid();
 
+        // Check if favorite already exists
+        boolean favoriteExists = false;
+        for (Favorite favorite : favorites) {
+            if (favorite.getUserId().equals(userId) && favorite.getDrinkId().equals(drinkId)) {
+                favoriteExists = true;
+                break;
+            }
+        }
+
+        if (favoriteExists) {
+            new AlertDialog.Builder(requireContext())
+                .setTitle("Warning")
+                .setMessage("This favorite already exists. Are you sure you want to create it?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    performSave(userId, drinkId);
+                })
+                .setNegativeButton("No", null)
+                .show();
+        } else {
+            performSave(userId, drinkId);
+        }
+    }
+
+    private void performSave(String userId, String drinkId) {
+        setButtonsEnabled(false);
         Favorite favorite = new Favorite(drinkId, userId);
         favorite.generateUUID();
 
@@ -252,8 +287,12 @@ public class FavoriteFragment extends BaseModelFragment {
                     showToast("Favorite added successfully");
                     clearInputs();
                     loadData();
+                    setButtonsEnabled(true);
                 },
-                e -> showToast("Error adding favorite: " + e.getMessage()));
+                e -> {
+                    showToast("Error adding favorite: " + e.getMessage());
+                    setButtonsEnabled(true);
+                });
     }
 
     @Override
@@ -271,6 +310,7 @@ public class FavoriteFragment extends BaseModelFragment {
             return;
         }
 
+        setButtonsEnabled(false);
         String userId = users.get(userPosition - 1).getUuid();
         String drinkId = drinks.get(drinkPosition - 1).getUuid();
 
@@ -282,8 +322,12 @@ public class FavoriteFragment extends BaseModelFragment {
                     showToast("Favorite updated successfully");
                     clearInputs();
                     loadData();
+                    setButtonsEnabled(true);
                 },
-                e -> showToast("Error updating favorite: " + e.getMessage()));
+                e -> {
+                    showToast("Error updating favorite: " + e.getMessage());
+                    setButtonsEnabled(true);
+                });
     }
 
     @Override
@@ -293,12 +337,28 @@ public class FavoriteFragment extends BaseModelFragment {
             return;
         }
 
+        new AlertDialog.Builder(requireContext())
+            .setTitle("Confirm Delete")
+            .setMessage("Are you sure you want to delete this favorite?")
+            .setPositiveButton("Yes", (dialog, which) -> {
+                performDelete();
+            })
+            .setNegativeButton("No", null)
+            .show();
+    }
+
+    private void performDelete() {
+        setButtonsEnabled(false);
         favoriteDAO.deleteFavorite(selectedFavorite.getUuid(),
                 aVoid -> {
                     showToast("Favorite deleted successfully");
                     clearInputs();
                     loadData();
+                    setButtonsEnabled(true);
                 },
-                e -> showToast("Error deleting favorite: " + e.getMessage()));
+                e -> {
+                    showToast(e.getMessage());
+                    setButtonsEnabled(true);
+                });
     }
 } 

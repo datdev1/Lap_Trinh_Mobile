@@ -8,11 +8,13 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.PopupMenu;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
+import com.b21dccn216.pocketcocktail.dao.DrinkDAO;
 import com.b21dccn216.pocketcocktail.databinding.ActivitySearchBinding;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Drink;
@@ -45,8 +47,8 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     private Category category;
 
     private Ingredient ingredient;
-    private String sortField;
-    private  Query.Direction sortOrder;
+    private String sortField = DrinkDAO.DRINK_FIELD.RATE.getValue();
+    private  Query.Direction sortOrder = Query.Direction.DESCENDING;
 
 
 
@@ -80,15 +82,19 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         // Received data from intend
         category = (Category) getIntent().getSerializableExtra(EXTRA_CATEGORY_OBJECT);
         ingredient = (Ingredient) getIntent().getSerializableExtra(EXTRA_INGREDIENT_OBJECT);
-        sortField = getIntent().getStringExtra(SORT_FIELD);
-        sortOrder = (Query.Direction) getIntent().getSerializableExtra(SORT_ORDER);
+        if(getIntent().getStringExtra(SORT_FIELD) != null){
+            sortField = getIntent().getStringExtra(SORT_FIELD);
+        }
+        if(getIntent().getSerializableExtra(SORT_ORDER) != null){
+            sortOrder = (Query.Direction) getIntent().getSerializableExtra(SORT_ORDER);
+        }
         Log.d("SORT_FIELD", "SORT_FIELD: " + sortField);
         Log.d("SORT_ORDER", "SORT_ORDER: " + sortOrder);
 
         //Load Data
         presenter.loadIngredients();
         if (category != null) {
-            presenter.loadDrinksByCategory(category.getUuid());
+            presenter.searchDrinks(category.getUuid(), "", null, sortField, sortOrder);
         } else if (ingredient != null) {
             List<Ingredient> initialSelection = new ArrayList<>();
             initialSelection.add(ingredient);
@@ -170,11 +176,78 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         });
 
         // Filter
-        binding.sortByContainer.setOnClickListener(v->{
-
-        });
+        binding.sortByContainer.setOnClickListener(v -> showSortByMenu());
+        binding.sortOrderButton.setOnClickListener(v -> toggleSortOrder());
     }
 
+
+    // Pop up sort
+    private void showSortByMenu() {
+        PopupMenu popup = new PopupMenu(this, binding.sortByContainer);
+        popup.getMenuInflater().inflate(R.menu.sort_menu, popup.getMenu());
+
+        switch (sortField) {
+            case "rate":
+                popup.getMenu().findItem(R.id.sort_by_rating).setChecked(true);
+                break;
+            case "name":
+                popup.getMenu().findItem(R.id.sort_by_name).setChecked(true);
+                break;
+            case "createdAt":
+                popup.getMenu().findItem(R.id.sort_by_date).setChecked(true);
+                break;
+        }
+
+        popup.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.sort_by_rating) {
+                sortField = "rate";
+                binding.sortByText.setText("Đánh giá");
+            } else if (itemId == R.id.sort_by_name) {
+                sortField = "name";
+                binding.sortByText.setText("Tên");
+            } else if (itemId == R.id.sort_by_date) {
+                sortField = "createdAt";
+                binding.sortByText.setText("Mới nhất");
+            }
+
+            applySorting();
+            return true;
+        });
+
+        popup.show();
+    }
+    private void toggleSortOrder() {
+        sortOrder = (sortOrder == Query.Direction.DESCENDING)
+                ? Query.Direction.ASCENDING
+                : Query.Direction.DESCENDING;
+        updateSortOrderUI();
+        applySorting();
+    }
+    private void updateSortOrderUI() {
+        if (sortOrder == Query.Direction.DESCENDING) {
+            binding.sortOrderText.setText("Giảm dần");
+            binding.sortOrderIcon.setImageResource(R.drawable.s_ic_sort_desc);
+        } else {
+            binding.sortOrderText.setText("Tăng dần");
+            binding.sortOrderIcon.setImageResource(R.drawable.s_ic_sort_asc);
+        }
+    }
+    private void applySorting() {
+        String query = binding.searchEditText.getText().toString().trim();
+        List<String> selectedIngredientIds = ingredientAdapter.getSelectedIngredientIds();
+
+        if (category != null) {
+            presenter.searchDrinks(category.getUuid(), query, selectedIngredientIds, sortField, sortOrder);
+        } else {
+            presenter.searchDrinks(null, query, selectedIngredientIds, sortField, sortOrder);
+        }
+    }
+
+
+
+
+    //Set up recycle view
     private void setUpDrinkRecycler(){
         drinkAdapter = new DrinkAdapter(this, drink -> {
             Intent intent = new Intent(this, DetailDrinkActivity.class);
@@ -222,6 +295,9 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         binding.ingredientsRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);
     }
 
+
+
+    // Exit NestedScrollView
     @Override
     public void onBackPressed() {
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
@@ -232,11 +308,8 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
     }
 
 
-    @Override
-    public void showMessage(String message) {
 
-    }
-
+    // Load data
     @Override
     public void showDrinks(List<Drink> drinks) {
         if (drinkAdapter != null) {
@@ -253,6 +326,11 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
             Log.e("Ingredients", "ingredients null");
         }
         ingredientAdapter.setIngredients(ingredients);
+    }
+
+    @Override
+    public void showMessage(String message) {
+
     }
 
     @Override
