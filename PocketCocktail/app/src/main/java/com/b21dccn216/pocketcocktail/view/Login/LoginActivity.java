@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.b21dccn216.pocketcocktail.base.BaseAppCompatActivity;
 import com.b21dccn216.pocketcocktail.dao.UserDAO;
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.view.Login.adapter.LoginViewPagerAdapter;
@@ -45,7 +47,6 @@ public class LoginActivity extends AppCompatActivity{
 //                        finish(); // close LoginActivity
 //                        return;
 //                    }, e -> {
-//                        // TODO: process error
 //                        return;
 //                    });
             userDAO.getUserByUuidAuthen(FirebaseAuth.getInstance().getCurrentUser().getUid(),
@@ -69,7 +70,8 @@ public class LoginActivity extends AppCompatActivity{
 
                         @Override
                         public void onError(Exception e) {
-                            // TODO: process error
+                            //process error
+                            DialogHelper.showAlertDialog(LoginActivity.this, "Error", e.getMessage(), HelperDialog.DialogType.ERROR);
                             return;
                         }
                     }

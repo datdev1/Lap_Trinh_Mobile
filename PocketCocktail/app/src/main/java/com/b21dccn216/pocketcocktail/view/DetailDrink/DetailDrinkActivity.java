@@ -320,8 +320,6 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         binding.addCommentButton.setAlpha(hasUserReviewed ? 0.5f : 1f);
     }
 
-
-    // TODO: Toast sai message
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -341,7 +339,7 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
             }
             showMessage("Success", mess, HelperDialog.DialogType.SUCCESS);
             currentDrink = (Drink) data.getSerializableExtra(EXTRA_DRINK_OBJECT);
-            // TODO:: Xử lý sau khi cập nhập thành công.
+            //Xử lý sau khi cập nhập thành công.
             emptyIngredientAndInstruction();
             presenter.loadDrinkDetails(currentDrink);
         }else if(resultCode == FAIL_TO_SAVE_DRINK_RESULT_CODE){

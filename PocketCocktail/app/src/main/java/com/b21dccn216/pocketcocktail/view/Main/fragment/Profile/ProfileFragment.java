@@ -75,8 +75,20 @@ public class ProfileFragment extends BaseFragment<ProfileContract.View, ProfileC
         binding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.signOut();
-                requireActivity().finish();
+                DialogHelper.showAlertDialog(requireContext(), "Warning",
+                        "Are you sure to Log out?", HelperDialog.DialogType.WARNING,
+                        new HelperDialog.OnDialogButtonClickListener() {
+                            @Override
+                            public void onPressNegative() {
+                                return;
+                            }
+
+                            @Override
+                            public void onPressPositive() {
+                                presenter.signOut();
+                                requireActivity().finish();
+                            }
+                        });
             }
         });
 

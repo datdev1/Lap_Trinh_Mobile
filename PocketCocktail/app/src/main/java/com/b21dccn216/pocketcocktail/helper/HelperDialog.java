@@ -1,5 +1,7 @@
 package com.b21dccn216.pocketcocktail.helper;
 
+import static android.view.View.VISIBLE;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -20,12 +22,16 @@ public class HelperDialog extends Dialog {
     private String title;
     private String message;
 
+    private OnDialogButtonClickListener onDialogButtonClickListener;
 
-    public HelperDialog(@NonNull Context context, DialogType type, String title, String message) {
+
+    public HelperDialog(@NonNull Context context, DialogType type, String title, String message,
+                        OnDialogButtonClickListener onDialogButtonClickListener) {
         super(context);
         this.type = type;
         this.title = title;
         this.message = message;
+        this.onDialogButtonClickListener = onDialogButtonClickListener;
     }
 
 
@@ -41,6 +47,20 @@ public class HelperDialog extends Dialog {
 
         binding.tvTitle.setText(title);
         binding.tvMessage.setText(message);
+
+        if(onDialogButtonClickListener != null){
+            binding.btnNo.setVisibility(VISIBLE);
+            binding.btnYes.setVisibility(VISIBLE);
+            binding.btnNo.setOnClickListener(v -> {
+                        onDialogButtonClickListener.onPressNegative();
+                        dismiss();
+                    });
+            binding.btnYes.setOnClickListener(v -> {
+                        onDialogButtonClickListener.onPressPositive();
+                        dismiss();
+                    });
+        }
+
 
         switch (type){
             case SUCCESS:
@@ -73,4 +93,8 @@ public class HelperDialog extends Dialog {
         INFO
     }
 
+    public interface OnDialogButtonClickListener{
+        void onPressNegative();
+        void onPressPositive();
+    }
 }
