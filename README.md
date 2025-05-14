@@ -8,9 +8,9 @@ Lượt thuyết trình 7 buổi 15/05
 | Họ và tên          | Mã sinh viên | Phân công                                                     |
 | :----------------- | :----------: | :------------------------------------------------------------ |
 | Trần Việt Dũng     |  B21DCCN036  | Nghiên cứu kết nối dữ liệu AtlasMongo và Imagekit Dao + Model |
-| Trần Đức Lộc       |  B21DCCN492  | Trang chi tiết đồ uống, trang tìm kiếm có filter, slide             |
+| Trần Đức Lộc       |  B21DCCN492  | Trang chi tiết đồ uống, trang tìm kiếm có filter           |
 | Nguyễn Trần Đạt    |  B21DCCN216  | Trang chủ, trang profile, Navigation, Login, Signup, Welcoming        |
-| Đặng Thị Hồng Ngát |  B21DCCN564  | Trang discover, , trang favorite, báo cáo                         |
+| Đặng Thị Hồng Ngát |  B21DCCN564  | Trang discover, trang favorite                         |
 | Nguyễn Quang Hà    |  B21DCCN312  | Chức năng tạo công thức mới (Logic + giao diện)               |
 
 Hẹn 21 thứ 2 12/05/2025
@@ -153,7 +153,7 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
 
 
 - Trang discover, trang favorite, (Ngát) (Fragment) (Package Discover)
-  - Discovery:
+  - Discover:
     - Category: Recycle view
     - Ingredient: Recycle view
     - Khi ấn gửi Intent chứa nội dung 
