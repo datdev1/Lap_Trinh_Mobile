@@ -307,7 +307,7 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         drinkAdapter = new DrinkAdapter(this, drink -> {
             Intent intent = new Intent(this, DetailDrinkActivity.class);
             intent.putExtra(EXTRA_DRINK_OBJECT, drink);
-            List<Ingredient> selectedList = new ArrayList<>();
+            List<Ingredient> selectedList = ingredientAdapter.getSelectedIngredientObject();
             intent.putExtra(EXTRA_INGREDIENT_LIST, (Serializable) selectedList);
             startActivity(intent);
         });

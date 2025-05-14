@@ -85,6 +85,15 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     public List<String> getSelectedIngredientIds() {
         return new ArrayList<>(selectedIngredientIds);
     }
+    public List<Ingredient> getSelectedIngredientObject() {
+        List<Ingredient> selectedIngredients = new ArrayList<>();
+        for (Ingredient ingredient : originalIngredients) {
+            if (selectedIngredientIds.contains(ingredient.getUuid())) {
+                selectedIngredients.add(ingredient);
+            }
+        }
+        return selectedIngredients;
+    }
 
 
     @NonNull
