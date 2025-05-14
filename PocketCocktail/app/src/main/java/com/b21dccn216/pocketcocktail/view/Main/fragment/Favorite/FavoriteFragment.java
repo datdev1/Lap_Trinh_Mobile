@@ -67,13 +67,12 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
         }else{
             presenter.refreshScreen();
         }
-        Log.e("datdev1", "F onCreate: ");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
-        Log.e("datdev1", "F onCreateView: ");
+        Log.e("hongngat", "F onCreateView: ");
         binding = FragmentFavoriteBinding.inflate(inflater, container, false);
         itemFavoriteAdapter = new ItemFavoriteAdapter(getActivity(), favoriteList);
         favoriteCreateAdapter = new FavoriteCreateAdapter(getActivity(), favoriteCreateList);

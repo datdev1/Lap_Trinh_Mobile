@@ -57,7 +57,7 @@ public class DiscoverFragment extends BaseFragment<DiscoverContract.View, Discov
             ingredientList = (List<Ingredient>) savedInstanceState.getSerializable("ingredientList");
         }
         presenter.refreshScreen();
-        Log.e("datdev1", "D onCreate: ");
+        Log.e("hongngat", "D onCreate: ");
     }
 
     @Override
@@ -71,7 +71,7 @@ public class DiscoverFragment extends BaseFragment<DiscoverContract.View, Discov
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Log.e("datdev1", "D onCreateView: ");
+        Log.e("hongngat", "D onCreateView: ");
         binding = FragmentDiscoverBinding.inflate(inflater, container, false);
         categoryDiscoverAdapter = new CategoryDiscoverAdapter(getActivity(), categoryList);
         ingredientDiscoverAdapter = new IngredientDiscoverAdapter(getActivity(), ingredientList);
