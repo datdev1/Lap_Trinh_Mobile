@@ -42,6 +42,12 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
         getAllDrinksCreatedByCurrentUser();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAllFavoriteByUserId(); // Gọi lại để refresh danh sách
+    }
+
     public void getAllFavoriteByUserId() {
         Log.d("favourite", "currentUserId: " + currentUserId);
         favoriteDAO.getFavoriteUserId(currentUserId, new FavoriteDAO.FavoriteListCallback() {
