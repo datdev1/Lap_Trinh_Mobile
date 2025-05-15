@@ -166,6 +166,7 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
 
     @Override
     public void showDrinkDetail(Drink drink) {
+        if(!drink.getUserId().equals(currentUser.getUuid())) binding.btnEditOrCopy.setImageDrawable(getResources().getDrawable(R.drawable.ic_copy));
         Glide.with(this).load(drink.getImage()).into(binding.drinkImage);
         binding.drinkTitle.setText(drink.getName());
         binding.drinkDescription.setText(drink.getDescription());
