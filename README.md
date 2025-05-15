@@ -200,39 +200,58 @@ Có 4 trường hợp chính:
 
 ### Homepage
 
-![Homepage](image.png)  
+<div align="center">
+  <img src="image.png" alt="Homepage" width="300"/>
+</div>
 
 ### Discover
 
-![Discover](image-2.png)
+<div align="center">
+  <img src="image-2.png" alt="Discover" width="300"/>
+</div>
 
 ### Favorite
 
-![Favorite](image-3.png)
+<div align="center">
+  <img src="image-3.png" alt="Favorite" width="300"/>
+</div>
 
 ### Profile
 
-![Profile](image-4.png)
+<div align="center">
+  <img src="image-4.png" alt="Profile" width="300"/>
+</div>
 
 ### Tìm kiếm
 
-![Tìm kiếm](image-5.png)
+<div align="center">
+  <img src="image-5.png" alt="Tìm kiếm" width="300"/>
+</div>
 
 ### Trang tạo, sửa, copy đồ uống
 
-![Trang tạo, sửa, copy đồ uống](image-6.png)
+<div align="center">
+  <img src="image-6.png" alt="Trang tạo, sửa, copy đồ uống" width="300"/>
+</div>
 
 ### Trang tạo nguyên liệu
 
-![Trang tạo nguyên liệu](image-8.png)
+<div align="center">
+  <img src="image-8.png" alt="Trang tạo nguyên liệu" width="300"/>
+</div>
 
 ### Trang chi tiết đồ uống
 
-![Trang chi tiết đồ uống](image-1.png)
+<div align="center">
+  <img src="image-1.png" alt="Trang chi tiết đồ uống" width="300"/>
+</div>
 
 ### Trang quản lý admin
 
-![Trang quản lý Drink](image-7.png)
+<div align="center">
+  <img src="image-7.png" alt="Trang quản lý Drink" width="300"/>
+</div>
+
 
 
 ## Hướng dẫn cài đặt
