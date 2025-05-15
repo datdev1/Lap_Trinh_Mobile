@@ -140,7 +140,7 @@ public class FavoriteDAO {
                             favorites.add(favorite);
                         }
                     }
-                    Log.e("load Drink", "getAllDrinks: " + favorites);
+                    Log.d("vietdung", "getAllDrinks: " + favorites);
                     callback.onFavoriteListLoaded(favorites);
                 })
                 .addOnFailureListener(callback::onError);
@@ -175,12 +175,12 @@ public class FavoriteDAO {
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<Favorite> favorites = new ArrayList<>();
-                    Log.d("favourite", "Size querySnapshot: " + querySnapshot.size());
+                    Log.d("vietdung", "Size querySnapshot: " + querySnapshot.size());
                     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                         Favorite favorite = convertDocumentToFavorite(doc);
                         if (favorite != null) {
                             favorites.add(favorite);
-                            Log.d("favourite", "getFavoriteUserId: " + favorite);
+                            Log.d("vietdung", "getFavoriteUserId: " + favorite);
                         }
                     }
                     callback.onFavoriteListLoaded(favorites);

@@ -134,7 +134,7 @@ public class RecipeDAO {
 //    }
 
     public void getRecipesByIngredientId(String ingredientId, RecipeListCallback callback) {
-        recipeRef.whereEqualTo("drinkId", ingredientId)
+        recipeRef.whereEqualTo("ingredientId", ingredientId)
                 .get()
                 .addOnSuccessListener(
                         querySnapshot -> {
@@ -230,7 +230,7 @@ public class RecipeDAO {
                 })
                 .addOnFailureListener(e ->
                 {
-                    Log.e("DrinkDAO","RecipeDAO Trường hợp 1: Nếu có Category / Name và có list IngredientID" + e.toString());
+                    Log.e("vietdung","RecipeDAO Trường hợp 1: Nếu có Category / Name và có list IngredientID" + e.toString());
                     callback.onError(e);
 
                 });
@@ -268,7 +268,7 @@ public class RecipeDAO {
                     callback.onDrinkIDListLoaded(matchingDrinkIds);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DrinkDAO","RecipeDAO Trường hợp 3: Nếu không có Category / Name và có list IngredientID" + e.toString());
+                    Log.e("vietdung","RecipeDAO Trường hợp 3: Nếu không có Category / Name và có list IngredientID" + e.toString());
                     callback.onError(e);
                 });
     }

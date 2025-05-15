@@ -111,14 +111,17 @@
             app:boxStrokeColor="@color/secondary"
             app:hintTextColor="@color/brown">
 
-            <EditText
-                android:id="@+id/etUnit"
+            <Spinner
+                android:id="@+id/spinnerUnit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Unit (ml, g, piece,...)"
-                android:inputType="text"
+                android:padding="16dp"
                 android:textColor="@color/brown"
-                android:fontFamily="@font/kanit"/>
+                android:fontFamily="@font/kanit"
+                android:background="@drawable/bg_spinner"
+                android:spinnerMode="dropdown"
+                />
+                
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton

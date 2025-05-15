@@ -302,7 +302,8 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         EditText etQuantity = dialog.findViewById(R.id.etQuantity);
-        EditText etUnit = dialog.findViewById(R.id.etUnit);
+        Spinner spinnerUnit = dialog.findViewById(R.id.spinnerUnit);
+//        EditText etUnit = dialog.findViewById(R.id.etUnit);
         Button btnCancel = dialog.findViewById(R.id.btnCancel);
         Button btnAdd = dialog.findViewById(R.id.btnAdd);
 
