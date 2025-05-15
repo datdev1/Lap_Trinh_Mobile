@@ -7,9 +7,9 @@ Lượt thuyết trình 7 buổi 15/05
 
 | Họ và tên          | Mã sinh viên | Phân công                                                     |
 | :----------------- | :----------: | :------------------------------------------------------------ |
-| Trần Việt Dũng     |  B21DCCN036  | Nghiên cứu kết nối dữ liệu AtlasMongo và Imagekit Dao + Model |
+| Trần Việt Dũng     |  B21DCCN036  | Nghiên cứu kết nối dữ liệu Firebase Cloud Store và Imagekit (Dao + Model) |
 | Trần Đức Lộc       |  B21DCCN492  | Trang chi tiết đồ uống, trang tìm kiếm có filter           |
-| Nguyễn Trần Đạt    |  B21DCCN216  | Trang chủ, trang profile, Navigation, Login, Signup, Welcoming        |
+| Nguyễn Trần Đạt    |  B21DCCN216  | Home, Profile, Navigation, Welcoming, Login, Signup       |
 | Đặng Thị Hồng Ngát |  B21DCCN564  | Trang discover, trang favorite                         |
 | Nguyễn Quang Hà    |  B21DCCN312  | Chức năng tạo công thức mới (Logic + giao diện)               |
 
@@ -19,18 +19,35 @@ Hẹn 21 thứ 2 12/05/2025
 
 App tạo và chia sẻ công thức pha chế các loại đồ uống hấp dẫn như: Trà, Nước trái cây, Cocktail không cồn, Cocktail có cồn, Thức uống nạp năng lượng,...
 
+## Các công nghệ áp dụng
+- Công cụ: Android studio
+- Ngôn ngữ: Java
+- UI framework: 
+  - XML: xây dựng giao diện
+  - View Binding
+- Architecture: MVP (Model - View - Presenter)
+- Database: 
+  - Firebase Authentication: Đăng nhập và xác thực người dùng.
+  - Firebase FireStore Database + Imgur
+  - SharedPreferences (lưu cài đặt người dùng cục bộ)
+- Các thư viện hỗ trợ:
+  - Retrofit: gọi API ngoài
+  - Glide: Thư viện load và caching ảnh từ link
+
 ## Các chức năng chính
 
-- Đăng nhập bằng Firebase
+- Đăng nhập, Đăng ký bằng Firebase AUthentication
 - Trang chủ có các danh mục: Nổi bật, Trà, Nước trái cây, Cocktail không cồn, Cocktail có cồn, Thức uống nạp năng lượng,...
-  - Thanh tìm kiếm, filter.
-  - Add button
+  - Nút tìm kiếm
+  - Nút thêm mới
+  - Các danh sách đồ uống theo phân loại cụ thể (Trending, Recommend, Latest, Highest Rate,...)
 - Trang discover
-  - Category, Ingredients
+  - Danh sách Category, Ingredients
   - Ấn vô 1 category/Ingredients -> Danh sách gồm tất cả các loại đồ uống tương ứng (  - Thanh tìm kiếm, filter.)
-- Trang Favorite
+- Trang Favorite: Danh sách các đồ uống được người dùng tạo, yêu thích.
 - Trang cài đặt tài khoản
   - Thay đổi thông tin cá nhân
+  - Đổi mật 
   - Đăng xuất
 
 ## Thiết kế model
@@ -102,7 +119,7 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
 
 ## Các đầu mục công việc
 - Nghiên cứu kết nối dữ liệu FireStore và Imagur, Dao + Model, các trang quản lý db (admin) (Dũng) (Package data)
-- Chức năng đăng kí, đăng nhập bằng Email, password (Package Login) (ĐạtĐạt)
+- Chức năng đăng kí, đăng nhập bằng Email, password với Firebase Authentication (Package Login) (Đạt)
 - Chức năng tạo công thức mới (Logic + giao diện) (Hà) (Activity) (Package CreateDrink)
   - Ô nhập tên đồ uống
   - Thêm ảnh đồ uống
@@ -166,20 +183,6 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
 
 
 
-## Các công nghệ áp dụng
-- Công cụ: Android studio
-- Ngôn ngữ: Java
-- UI framework: 
-  - XML: xây dựng giao diện
-  - View Binding
-- Architecture: MVP (Model - View - Presenter)
-- Database: 
-  - Firebase Authentication: Đăng nhập và xác thực người dùng.
-  - Firebase FireStore Database + Imgur
-  - SharedPreferences (lưu cài đặt người dùng cục bộ)
-- Các thư viện hỗ trợ:
-  - Retrofit: gọi API ngoài
-  - Glide: Thư viện load và caching ảnh từ link
 ## Hướng dẫn cài đặt
 
 Tài khoản sample:
