@@ -44,12 +44,12 @@ public class IngredientFragment extends BaseModelFragment {
     private Uri selectedImageUri;
     private SimpleDateFormat dateFormat;
     private final String[] donViDoLuong = {
-        "ml", "l", "oz", "cl",
-        "g", "kg",
-        "tsp - thìa cà phê ~ 5ml", "tbsp - muỗng canh ~ 15ml", 
-        "shot ~ 30ml", "pump ~ 10ml", 
-        "jigger", "cup ~ 250ml", "pt ~ 500ml", "qt ~ 1l", "gal ~ 4l", 
-        "piece", "leaves", "cup"
+        "ml", "l", "g", "kg",
+        "piece", "leaves", "slice", "cup",
+        "tsp ~ 5ml", "tbsp ~ 15ml",
+        "pinch ~ 1/8 tsp", "drop", "dash ~ 0.92ml",
+        "shot ~ 30ml", "pump ~ 5-10ml",
+        "oz ~ 30ml", "cl ~ 10ml", "pt ~ 500ml", "qt ~ 1l", "gal ~ 4l"
     };
     private android.os.Handler searchHandler = new android.os.Handler();
     private Runnable searchRunnable;

@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -18,12 +20,25 @@ import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.dao.IngredientDAO;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class CreateIngredientActivity extends AppCompatActivity {
-    private EditText etName, etDescription, etUnit;
+    private EditText etName, etDescription;
+    private Spinner spinnerUnit;
     private ImageView ivImage;
     private Button btnAddImage, btnSave;
     private Uri selectedImageUri;
     private IngredientDAO ingredientDAO;
+    private final String[] donViDoLuong = {
+        "ml", "l", "g", "kg",
+        "piece", "leaves", "slice", "cup",
+        "tsp ~ 5ml", "tbsp ~ 15ml",
+        "pinch ~ 1/8 tsp", "drop", "dash ~ 0.92ml",
+        "shot ~ 30ml", "pump ~ 5-10ml",
+        "oz ~ 30ml", "cl ~ 10ml", "pt ~ 500ml", "qt ~ 1l", "gal ~ 4l"
+    };
  
     private final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -47,10 +62,12 @@ public class CreateIngredientActivity extends AppCompatActivity {
         // Ánh xạ view
         etName = findViewById(R.id.etName);
         etDescription = findViewById(R.id.etDescription);
-        etUnit = findViewById(R.id.etUnit);
+        spinnerUnit = findViewById(R.id.spinnerUnit);
         ivImage = findViewById(R.id.ivImage);
         btnAddImage = findViewById(R.id.btnAddImage);
         btnSave = findViewById(R.id.btnSave);
+
+        setupUnitSpinner();
 
         // Xử lý sự kiện thêm ảnh
         btnAddImage.setOnClickListener(v -> {
@@ -66,6 +83,21 @@ public class CreateIngredientActivity extends AppCompatActivity {
         });
     }
 
+    private void setupUnitSpinner() {
+        List<String> unitList = new ArrayList<>();
+        unitList.add("Unit (ml, g, piece,...)"); // Add empty option
+        unitList.addAll(Arrays.asList(donViDoLuong));
+        
+        ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(
+            this,
+            R.layout.spinner_item,
+            unitList
+        );
+        unitAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinnerUnit.setAdapter(unitAdapter);
+        spinnerUnit.setSelection(0); // Set to empty by default
+    }
+
     private boolean validateInput() {
         if (etName.getText().toString().trim().isEmpty()) {
             Toast.makeText(CreateIngredientActivity.this, "Vui lòng nhập tên nguyên liệu", Toast.LENGTH_SHORT).show();
@@ -75,8 +107,8 @@ public class CreateIngredientActivity extends AppCompatActivity {
             Toast.makeText(CreateIngredientActivity.this, "Vui lòng nhập mô tả", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (etUnit.getText().toString().trim().isEmpty()) {
-            Toast.makeText(CreateIngredientActivity.this, "Vui lòng nhập đơn vị", Toast.LENGTH_SHORT).show();
+        if (spinnerUnit.getSelectedItemPosition() <= 0) {
+            Toast.makeText(CreateIngredientActivity.this, "Vui lòng chọn đơn vị", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (selectedImageUri == null) {
@@ -88,10 +120,11 @@ public class CreateIngredientActivity extends AppCompatActivity {
 
     private void saveIngredient() {
         btnSave.setEnabled(false); // Disable nút lưu ngay khi bắt đầu
+        String unit = donViDoLuong[spinnerUnit.getSelectedItemPosition() - 1]; // -1 because of empty option
         Ingredient ingredient = new Ingredient(
                 etName.getText().toString().trim(),
                 etDescription.getText().toString().trim(),
-                etUnit.getText().toString().trim()
+                unit
         );
         ingredient.generateUUID();
 
