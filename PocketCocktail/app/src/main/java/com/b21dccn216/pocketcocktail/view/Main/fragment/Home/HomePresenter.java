@@ -131,7 +131,7 @@ public class HomePresenter
                     public void onDrinkListLoaded(List<Drink> drinkList) {
                         Log.d("datdev1", "loadOneCategoryDrinkList: " + drinkList.size());
                         if(view == null) return;
-                        if(drinkList.isEmpty()){
+                        if(drinkList.size() < 3){
                             callBackLoadDrink.onEmptyDrink();
                             return;
                         }

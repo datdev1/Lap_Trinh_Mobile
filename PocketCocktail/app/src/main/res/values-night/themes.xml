@@ -1,16 +1,26 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- Base application theme. -->
     <style name="Base.Theme.PocketCocktail" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="android:statusBarColor">@color/secondary</item>
+        <item name="android:statusBarColor">@color/actionBarColor</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:titleTextColor">@color/text_on_primary</item>
 
+    </style>
 
-        <item name="actionButtonStyle">@style/MyActionButtonStyle</item>
-        <item name="android:actionButtonStyle">@style/MyActionButtonStyle</item>
-        <item name="actionBarDivider">@style/MyDividerStyle</item>
+
+    <style name="MyThemeOverlay_Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Surface">
+        <!-- color used by navigation icon and overflow icon -->
+        <item name="colorOnPrimary">@color/text_on_secondary</item>
+        <!-- color used by title text -->
+        <item name="colorControlNormal">@color/text_on_secondary</item>
+        <item name="android:iconTint" tools:targetApi="26">@color/text_on_secondary</item>
+        <item name="android:textColor">@color/text_on_secondary</item>
+        <item name="actionMenuTextColor">@color/text_on_secondary</item>
+        <item name="android:fontFamily">@font/kanit</item>
+        <item name="actionBarItemBackground">@color/transparent</item>
     </style>
 
     <style name="Theme.PocketCocktail" parent="Base.Theme.PocketCocktail" />
@@ -19,8 +29,13 @@
         <item name="android:minWidth">30dp</item>
         <item name="android:maxWidth">36dp</item>
         <item name="android:width">36dp</item>
-        <item name="android:tint">@color/text_on_secondary</item>
-        <item name="marginHorizontal">4dp</item>
+        <item name="marginHorizontal">8dp</item>
+
+        <!-- Background color -->
+        <item name="android:backgroundTint">#FF4081</item> <!-- Replace with desired color -->
+
+        <!-- Icon tint (if applicable) -->
+        <item name="android:tint">#FFFFFF</item> <!-- Optional: tint for icon inside button -->
     </style>
 
     <style name="MyDividerStyle" parent="Widget.Material3.MaterialDivider">
