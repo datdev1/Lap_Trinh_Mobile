@@ -316,11 +316,18 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         binding.drinksRecyclerView.setLayoutManager(layoutManager);
         binding.drinksRecyclerView.setAdapter(drinkAdapter);
 
+//        int horizontalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_spacing);
+//        int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
+//
+//        binding.drinksRecyclerView.addItemDecoration(
+//                new TestItemDecoration(2, 45, true)
+//        );
         int horizontalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_spacing);
         int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
 
         binding.drinksRecyclerView.addItemDecoration(
-                new TestItemDecoration(2, 50, true)
+                new GridSpacingItemDecoration(2, horizontalSpacing, verticalSpacing, true)
+//                new TestItemDecoration(2, 50, true)
         );
 
         binding.drinksRecyclerView.setClipToPadding(false);
@@ -343,11 +350,20 @@ public class SearchActivity extends BaseAppCompatActivity<SearchContract.View, S
         binding.ingredientsRecyclerView.setAdapter(ingredientAdapter);
         binding.ingredientsRecyclerView.setItemAnimator(null);
 
+//        int horizontalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_spacing);
+//        int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
+//        binding.ingredientsRecyclerView.addItemDecoration(
+//                new TestItemDecoration(3, 50, true)
+//        );
+
         int horizontalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_spacing);
         int verticalSpacing = getResources().getDimensionPixelSize(R.dimen.recycler_vertical_spacing);
+
         binding.ingredientsRecyclerView.addItemDecoration(
-                new TestItemDecoration(3, 50, true)
+                new GridSpacingItemDecoration(3, horizontalSpacing, verticalSpacing, true)
+//                new TestItemDecoration(2, 50, true)
         );
+
         binding.ingredientsRecyclerView.setClipToPadding(false);
         binding.ingredientsRecyclerView.setPadding(0, 0, verticalSpacing, verticalSpacing);
     }
