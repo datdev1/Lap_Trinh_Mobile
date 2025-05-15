@@ -92,7 +92,7 @@ public class ReviewDAO {
     }
 
     public void getReviewsByDrinkId(String drinkId, ReviewListCallback callback) {
-        Log.d("ReviewDAO", "getReviewsByDrinkId: " + drinkId);
+        Log.d("vietdung", "getReviewsByDrinkId: " + drinkId);
         reviewRef.whereEqualTo("drinkId", drinkId)
 //                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
@@ -104,7 +104,7 @@ public class ReviewDAO {
                             reviews.add(review);
                         }
                     }
-                    Log.d("ReviewDAO", "getReviewsByDrinkId: " + reviews);
+                    Log.d("vietdung", "getReviewsByDrinkId: " + reviews);
                     callback.onReviewListLoaded(reviews);
                 })
                 .addOnFailureListener(callback::onError);

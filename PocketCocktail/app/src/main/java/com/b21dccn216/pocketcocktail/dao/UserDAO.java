@@ -48,14 +48,14 @@ public class UserDAO {
         imageDAO.authenticate(IMGUR_REFRESH_TOKEN, new ImageDAO.AuthCallback() {
             @Override
             public void onSuccess() {
-                Log.d("UserDAO", "Imgur authentication successful");
+                Log.d("vietdung", "Imgur authentication successful");
                 isAuthenticated = true;
                 authLatch.countDown();
             }
 
             @Override
             public void onFailure(Exception e) {
-                Log.e("UserDAO", "Imgur authentication failed: " + e.getMessage());
+                Log.e("vietdung", "Imgur authentication failed: " + e.getMessage());
                 isAuthenticated = false;
                 authLatch.countDown();
             }
@@ -66,7 +66,7 @@ public class UserDAO {
         try {
             authLatch.await();
         } catch (InterruptedException e) {
-            Log.e("UserDAO", "Authentication wait interrupted", e);
+            Log.e("vietdung", "Authentication wait interrupted", e);
         }
     }
 
@@ -280,7 +280,7 @@ public class UserDAO {
 
                         @Override
                         public void onFailure(Exception e) {
-                            Log.e("UserDAO", "Failed to delete old image: " + e.getMessage());
+                            Log.e("vietdung", "Failed to delete old image: " + e.getMessage());
                             uploadNewImageAuthenticated(context, updatedUser, newImageUri, title, onSuccess, onFailure);
                         }
                     });
@@ -403,7 +403,7 @@ public class UserDAO {
 
                                     @Override
                                     public void onFailure(Exception e) {
-                                        Log.e("UserDAO", "Failed to delete image: " + e.getMessage());
+                                        Log.e("vietdungO", "Failed to delete image: " + e.getMessage());
                                         deleteUserDocument(uuid, onSuccess, onFailure);
                                     }
                                 });

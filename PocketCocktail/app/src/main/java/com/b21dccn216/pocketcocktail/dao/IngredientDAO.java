@@ -46,14 +46,14 @@ public class IngredientDAO {
         imageDAO.authenticate(IMGUR_REFRESH_TOKEN, new ImageDAO.AuthCallback() {
             @Override
             public void onSuccess() {
-                Log.d("IngredientDAO", "Imgur authentication successful");
+                Log.d("vietdung", "Imgur authentication successful");
                 isAuthenticated = true;
                 authLatch.countDown();
             }
 
             @Override
             public void onFailure(Exception e) {
-                Log.e("IngredientDAO", "Imgur authentication failed: " + e.getMessage());
+                Log.e("vietdung", "Imgur authentication failed: " + e.getMessage());
                 isAuthenticated = false;
                 authLatch.countDown();
             }
@@ -64,7 +64,7 @@ public class IngredientDAO {
         try {
             authLatch.await();
         } catch (InterruptedException e) {
-            Log.e("IngredientDAO", "Authentication wait interrupted", e);
+            Log.e("vietdung", "Authentication wait interrupted", e);
         }
     }
 
@@ -252,7 +252,7 @@ public class IngredientDAO {
 
                         @Override
                         public void onFailure(Exception e) {
-                            Log.e("IngredientDAO", "Failed to delete old image: " + e.getMessage());
+                            Log.e("vietdung", "Failed to delete old image: " + e.getMessage());
                             uploadNewImageAuthenticated(context, updatedIngredient, newImageUri, title, onSuccess, onFailure);
                         }
                     });
@@ -318,6 +318,7 @@ public class IngredientDAO {
         recipeDAO.getRecipesByIngredientId(ingredientId, new RecipeDAO.RecipeListCallback() {
             @Override
             public void onRecipeListLoaded(List<Recipe> recipes) {
+                Log.d("vietdung", "onRecipeListLoaded: " + recipes);
                 if (!recipes.isEmpty()) {
                     onFailure.onFailure(new Exception("Cannot delete ingredient: It is used in recipes"));
                     return;
@@ -352,7 +353,7 @@ public class IngredientDAO {
 
                                             @Override
                                             public void onFailure(Exception e) {
-                                                Log.e("IngredientDAO", "Failed to delete image: " + e.getMessage());
+                                                Log.e("vietdung", "Failed to delete image: " + e.getMessage());
                                                 deleteIngredientDocument(uuid, onSuccess, onFailure);
                                             }
                                         });

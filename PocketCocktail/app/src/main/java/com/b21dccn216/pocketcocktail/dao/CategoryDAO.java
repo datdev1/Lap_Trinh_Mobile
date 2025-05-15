@@ -53,7 +53,7 @@ public class CategoryDAO {
 
             @Override
             public void onFailure(Exception e) {
-                Log.e("CategoryDAO", "Imgur authentication failed: " + e.getMessage());
+                Log.e("vietdung", "Imgur authentication failed: " + e.getMessage());
                 isAuthenticated = false;
                 authLatch.countDown();
             }
@@ -64,7 +64,7 @@ public class CategoryDAO {
         try {
             authLatch.await();
         } catch (InterruptedException e) {
-            Log.e("CategoryDAO", "Authentication wait interrupted", e);
+            Log.e("vietdung", "Authentication wait interrupted", e);
         }
     }
 
@@ -188,7 +188,7 @@ public class CategoryDAO {
 
                         @Override
                         public void onFailure(Exception e) {
-                            Log.e("CategoryDAO", "Failed to delete old image: " + e.getMessage());
+                            Log.e("vietdung", "Failed to delete old image: " + e.getMessage());
                             uploadNewImageAuthenticated(context, updatedCategory, newImageUri, title, onSuccess, onFailure);
                         }
                     });
@@ -286,7 +286,7 @@ public class CategoryDAO {
 
                                             @Override
                                             public void onFailure(Exception e) {
-                                                Log.e("CategoryDAO", "Failed to delete image: " + e.getMessage());
+                                                Log.e("vietdung", "Failed to delete image: " + e.getMessage());
                                                 deleteCategoryDocument(uuid, onSuccess, onFailure);
                                             }
                                         });

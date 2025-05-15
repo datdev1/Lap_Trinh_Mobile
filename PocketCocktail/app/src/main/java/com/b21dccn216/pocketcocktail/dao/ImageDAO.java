@@ -219,7 +219,7 @@ public class ImageDAO {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e("ImageDAO", "Failed to delete image: " + e.getMessage());
+                Log.e("vietdung", "Failed to delete image: " + e.getMessage());
                 callback.onFailure(e);
             }
 
@@ -227,7 +227,7 @@ public class ImageDAO {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (!response.isSuccessful()) {
                     String error = "Delete failed: " + response;
-                    Log.e("ImageDAO", error);
+                    Log.e("vietdung", error);
                     callback.onFailure(new IOException(error));
                     return;
                 }

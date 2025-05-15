@@ -48,7 +48,7 @@ public class DrinkDAO {
     public DrinkDAO() {
         db = FirebaseFirestore.getInstance();
         drinkRef = db.collection(COLLECTION_NAME);
-        Log.d("DrinkDAO", "Initialized with collection: " + COLLECTION_NAME);
+        Log.d("vietdung", "Initialized with collection: " + COLLECTION_NAME);
         imageDAO = new ImageDAO();
         authenticateImgur();
     }
@@ -57,14 +57,14 @@ public class DrinkDAO {
         imageDAO.authenticate(IMGUR_REFRESH_TOKEN, new ImageDAO.AuthCallback() {
             @Override
             public void onSuccess() {
-                Log.d("DrinkDAO", "Imgur authentication successful");
+                Log.d("vietdung", "Imgur authentication successful");
                 isAuthenticated = true;
                 authLatch.countDown();
             }
 
             @Override
             public void onFailure(Exception e) {
-                Log.e("DrinkDAO", "Imgur authentication failed: " + e.getMessage());
+                Log.e("vietdung", "Imgur authentication failed: " + e.getMessage());
                 isAuthenticated = false;
                 authLatch.countDown();
             }
@@ -75,7 +75,7 @@ public class DrinkDAO {
         try {
             authLatch.await();
         } catch (InterruptedException e) {
-            Log.e("DrinkDAO", "Authentication wait interrupted", e);
+            Log.e("vietdung", "Authentication wait interrupted", e);
         }
     }
 
@@ -214,7 +214,7 @@ public class DrinkDAO {
 
                         @Override
                         public void onFailure(Exception e) {
-                            Log.e("DrinkDAO", "Failed to delete old image: " + e.getMessage());
+                            Log.e("vietdung", "Failed to delete old image: " + e.getMessage());
                             uploadNewImageAuthenticated(context, updatedDrink, newImageUri, title, onSuccess, onFailure);
                         }
                     });
@@ -349,7 +349,7 @@ public class DrinkDAO {
 
                                             @Override
                                             public void onFailure(Exception e) {
-                                                Log.e("DrinkDAO", "Failed to delete image: " + e.getMessage());
+                                                Log.e("vietdung", "Failed to delete image: " + e.getMessage());
                                                 deleteDrinkDocument(uuid, onSuccess, onFailure);
                                             }
                                         });
@@ -400,7 +400,7 @@ public class DrinkDAO {
                             drinks.add(drink);
                         }
                     }
-                    Log.e("load Drink", "getAllDrinks: " + drinks);
+                    Log.d("vietdung", "getAllDrinks: " + drinks);
                     callback.onDrinkListLoaded(drinks);
                 })
                 .addOnFailureListener(callback::onError);
@@ -417,7 +417,7 @@ public class DrinkDAO {
                             drinks.add(drink);
                         }
                     }
-                    Log.e("load Drink", "getAllDrinks: " + drinks);
+                    Log.d("vietdung", "getAllDrinks: " + drinks);
                     drinks.sort((a, b) -> a.getName().compareTo(b.getName()));
                     callback.onDrinkListLoaded(drinks);
                 })
@@ -436,7 +436,7 @@ public class DrinkDAO {
                             drinks.add(drink);
                         }
                     }
-                    Log.e("load Drink", "getAllDrinks: " + drinks);
+                    Log.d("vietdung", "getAllDrinks: " + drinks);
                     callback.onDrinkListLoaded(drinks);
                 })
                 .addOnFailureListener(callback::onError);
@@ -452,7 +452,7 @@ public class DrinkDAO {
                             drinks.add(drink);
                         }
                     }
-                    Log.e("load Drink", "getAllDrinks: " + drinks);
+                    Log.d("vietdung", "getAllDrinks: " + drinks);
                     callback.onDrinkListLoaded(drinks);
                 })
                 .addOnFailureListener(callback::onError);
@@ -475,11 +475,11 @@ public class DrinkDAO {
                         }
                     }
 
-                    Log.d("DrinkDAO", "Loaded " + drinks.size() + " drinks, sorted by: " + sortField);
+                    Log.d("vietdung", "Loaded " + drinks.size() + " drinks, sorted by: " + sortField);
                     callback.onDrinkListLoaded(drinks);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DrinkDAO", "Error getting drinks", e);
+                    Log.e("vietdung", "Error getting drinks", e);
                     callback.onError(e);
                 });
     }
@@ -521,7 +521,7 @@ public class DrinkDAO {
     public void getAllDrinksWithLimitAndSort(DRINK_FIELD sortField, Query.Direction sortOrder, int limit,
                                            @Nullable DocumentSnapshot startAfter,
                                            DrinkListWithLastDocCallback callback) {
-        Log.d("DrinkDAO", "Getting all drinks with sort field: " + sortField.getValue() + ", order: " + sortOrder);
+        Log.d("vietdung", "Getting all drinks with sort field: " + sortField.getValue() + ", order: " + sortOrder);
         
         Query query;
         query = drinkRef
@@ -538,25 +538,25 @@ public class DrinkDAO {
                     List<Drink> drinkList = new ArrayList<>();
                     DocumentSnapshot lastVisible = null;
 
-                    Log.d("DrinkDAO", "Query returned " + queryDocumentSnapshots.size() + " documents");
+                    Log.d("vietdung", "Query returned " + queryDocumentSnapshots.size() + " documents");
 
                     for (DocumentSnapshot drinkSnapshot : queryDocumentSnapshots.getDocuments()) {
-                        Log.d("DrinkDAO", "Document data: " + drinkSnapshot.getData());
+                        Log.d("vietdung", "Document data: " + drinkSnapshot.getData());
                         Drink drink = convertDocumentToDrink(drinkSnapshot);
                         if (drink != null) {
                             drinkList.add(drink);
                             lastVisible = drinkSnapshot;
-                            Log.d("DrinkDAO", "Added drink: " + drink.getName());
+                            Log.d("vietdung", "Added drink: " + drink.getName());
                         } else {
-                            Log.e("DrinkDAO", "Failed to convert document to Drink object");
+                            Log.e("vietdung", "Failed to convert document to Drink object");
                         }
                     }
                     
-                    Log.d("DrinkDAO", "Final list size: " + drinkList.size());
+                    Log.d("vietdung", "Final list size: " + drinkList.size());
                     callback.onDrinkListLoaded(drinkList, lastVisible);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DrinkDAO", "Error executing query", e);
+                    Log.e("vietdung", "Error executing query", e);
                     callback.onError(e);
                 });
     }
@@ -565,7 +565,7 @@ public class DrinkDAO {
                                    DRINK_FIELD sortField, Query.Direction sortOrder,
                                    DrinkListWithLastDocCallback callback) {
         String searchQuery = query.toLowerCase();
-        Log.d("DrinkDAO", "Searching with query: " + searchQuery);
+        Log.d("vietdung", "Searching with query: " + searchQuery);
         
         drinkRef.get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -573,7 +573,7 @@ public class DrinkDAO {
                     List<Drink> filteredDrinks = new ArrayList<>();
                     DocumentSnapshot lastVisible = null;
 
-                    Log.d("DrinkDAO", "Total documents: " + queryDocumentSnapshots.size());
+                    Log.d("vietdung", "Total documents: " + queryDocumentSnapshots.size());
 
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Drink drink = convertDocumentToDrink(document);
@@ -597,20 +597,20 @@ public class DrinkDAO {
                     int endIndex = Math.min(limit, filteredDrinks.size());
                     List<Drink> paginatedDrinks = filteredDrinks.subList(0, endIndex);
 
-                    Log.d("DrinkDAO", "Filtered list size: " + filteredDrinks.size());
-                    Log.d("DrinkDAO", "Paginated list size: " + paginatedDrinks.size());
+                    Log.d("vietdung", "Filtered list size: " + filteredDrinks.size());
+                    Log.d("vietdung", "Paginated list size: " + paginatedDrinks.size());
 
                     callback.onDrinkListLoaded(paginatedDrinks, lastVisible);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DrinkDAO", "Error searching drinks", e);
+                    Log.e("vietdung", "Error searching drinks", e);
                     callback.onError(e);
                 });
     }
 
     private void sortDrinks(List<Drink> drinks, DRINK_FIELD sortField, Query.Direction sortOrder) {
-        Log.d("DrinkDAO", "Sorting drinks by: " + sortField.getValue() + " in " + sortOrder + " order");
-        Log.d("DrinkDAO", "Before sorting: " + drinks.size() + " drinks");
+        Log.d("vietdung", "Sorting drinks by: " + sortField.getValue() + " in " + sortOrder + " order");
+        Log.d("vietdung", "Before sorting: " + drinks.size() + " drinks");
         
         drinks.sort((d1, d2) -> {
             int comparison = 0;
@@ -639,7 +639,7 @@ public class DrinkDAO {
                         break;
                 }
             } catch (NullPointerException e) {
-                Log.e("DrinkDAO", "Error comparing drinks: " + e.getMessage());
+                Log.e("vietdung", "Error comparing drinks: " + e.getMessage());
                 return 0;
             }
             
@@ -647,11 +647,11 @@ public class DrinkDAO {
             return sortOrder == Query.Direction.DESCENDING ? -comparison : comparison;
         });
         
-        Log.d("DrinkDAO", "After sorting: " + drinks.size() + " drinks");
+        Log.d("vietdung", "After sorting: " + drinks.size() + " drinks");
         // Log first few items to verify sorting
         for (int i = 0; i < Math.min(3, drinks.size()); i++) {
             Drink drink = drinks.get(i);
-            Log.d("DrinkDAO", "Sorted item " + i + ": " + 
+            Log.d("vietdung", "Sorted item " + i + ": " +
                 (sortField == DRINK_FIELD.NAME ? drink.getName() :
                  sortField == DRINK_FIELD.RATE ? String.valueOf(drink.getRate()) :
                  sortField == DRINK_FIELD.CREATED_AT ? drink.getCreatedAtTimestamp().toString() :
@@ -675,7 +675,7 @@ public class DrinkDAO {
                 (drink.getUserId() != null && drink.getUserId().toLowerCase().contains(searchQuery));
 
         if (matches) {
-            Log.d("DrinkDAO", "Drink matches search query: " + drink.getName());
+            Log.d("vietdung", "Drink matches search query: " + drink.getName());
         }
 
         return matches;
@@ -684,8 +684,8 @@ public class DrinkDAO {
     // Trường hợp 2  Nếu có Category / Name và không có list IngredientID
     public void searchDrinksByCategory(String query, String categoryId, DrinkListCallback callback) {
         String searchQuery = query != null ? query.toLowerCase() : "";
-        Log.d("DrinkDAO", "Searching with query: " + searchQuery);
-        Log.d("DrinkDAO", "Category ID: " + categoryId);
+        Log.d("vietdung", "Searching with query: " + searchQuery);
+        Log.d("vietdung", "Category ID: " + categoryId);
 
         Query drinkQuery = drinkRef;
         if (categoryId != null && !categoryId.isEmpty()) {
@@ -696,7 +696,7 @@ public class DrinkDAO {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Drink> filteredDrinks = new ArrayList<>();
 
-                    Log.d("DrinkDAO", "Total documents: " + queryDocumentSnapshots.size());
+                    Log.d("vietdung", "Total documents: " + queryDocumentSnapshots.size());
 
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Drink drink = convertDocumentToDrink(document);
@@ -704,11 +704,11 @@ public class DrinkDAO {
                             filteredDrinks.add(drink);
                         }
                     }
-                    Log.d("DrinkDAO", "Success Truong hop 2: " + formatDrinksListForLog(filteredDrinks));
+                    Log.d("vietdung", "Success Truong hop 2: " + formatDrinksListForLog(filteredDrinks));
                     callback.onDrinkListLoaded(filteredDrinks);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DrinkDAO", "Trường hợp 2  Nếu có Category / Name và không có list IngredientID" + e.toString());
+                    Log.e("vietdung", "Trường hợp 2  Nếu có Category / Name và không có list IngredientID" + e.toString());
                     callback.onError(e);
                 });
     }
@@ -729,7 +729,7 @@ public class DrinkDAO {
                                     filteredDrinks.add(drink);
                                 }
                             }
-                            Log.d("DrinkDAO", "Success Truong hop 1: " + formatDrinksListForLog(filteredDrinks));
+                            Log.d("vietdung", "Success Truong hop 1: " + formatDrinksListForLog(filteredDrinks));
                             callback.onDrinkListLoaded(filteredDrinks);
                         }
 
@@ -742,7 +742,7 @@ public class DrinkDAO {
             }
             @Override
             public void onError(Exception e) {
-                Log.e("DrinkDAO"," Trường hợp 1: Nếu có Category / Name và có list IngredientID" + e.toString());
+                Log.e("vietdung"," Trường hợp 1: Nếu có Category / Name và có list IngredientID" + e.toString());
                 callback.onError(e);
             }
         });
@@ -771,7 +771,7 @@ public class DrinkDAO {
                     callback.onDrinkListLoaded(drinks);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DrinkDAO", "Error getting drinks by IDs" +  e.toString());
+                    Log.e("vietdung", "Error getting drinks by IDs" +  e.toString());
                     callback.onError(e);
                 });
     }
@@ -786,13 +786,13 @@ public class DrinkDAO {
                 getAllDrinkWithListDrinkID(drinkIds, new DrinkListCallback() {
                     @Override
                     public void onDrinkListLoaded(List<Drink> drinks) {
-                        Log.d("DrinkDAO", "Success Truong hop 3: " + formatDrinksListForLog(drinks));
+                        Log.d("vietdung", "Success Truong hop 3: " + formatDrinksListForLog(drinks));
                         callback.onDrinkListLoaded(drinks);
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        Log.e("DrinkDAO"," Trường hợp 3, giai đoạn 1: Nếu không có Category / Name và có list IngredientID" + e.toString());
+                        Log.e("vietdung"," Trường hợp 3, giai đoạn 1: Nếu không có Category / Name và có list IngredientID" + e.toString());
                         callback.onError(e);
                     }
                 });
@@ -800,7 +800,7 @@ public class DrinkDAO {
 
             @Override
             public void onError(Exception e) {
-                Log.e("DrinkDAO","Trường hợp 3,giai đoạn 2: Nếu không có Category / Name và có list IngredientID" + e.toString());
+                Log.e("vietdung","Trường hợp 3,giai đoạn 2: Nếu không có Category / Name và có list IngredientID" + e.toString());
                 callback.onError(e);
             }
         });
@@ -820,24 +820,24 @@ public class DrinkDAO {
                             drinks.add(drink);
                         }
                     }
-                    Log.d("DrinkDAO", "Success Truong hop 4: " + formatDrinksListForLog(drinks));
+                    Log.d("vietdung", "Success Truong hop 4: " + formatDrinksListForLog(drinks));
                     callback.onDrinkListLoaded(drinks);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DrinkDAO", "Trường hợp 4: Nếu không có Category / Name và không có list IngredientID" + e.toString());
+                    Log.e("vietdung", "Trường hợp 4: Nếu không có Category / Name và không có list IngredientID" + e.toString());
                     callback.onError(e);
                 });
     }
 
     //Xử lý tổng quát 4 trường hợp
     public void searchDrinkTotal(String query, @Nullable String categoryId, @Nullable List<String> ingredientIds, int limit, DrinkListCallback callback) {
-        Log.d("DrinkDAO", "------------------------------------------------");
-        Log.d("DrinkDAO", "searchDrinkTotal: \n");
-        Log.d("DrinkDAO", "query: " + query);
-        Log.d("DrinkDAO", "categoryId: " + categoryId);
-        Log.d("DrinkDAO", "List<String> ingredientIds: " + ingredientIds);
-        Log.d("DrinkDAO", "limit: " + limit);
-        Log.d("DrinkDAO", "------------------------------------------------");
+        Log.d("vietdung", "------------------------------------------------");
+        Log.d("vietdung", "searchDrinkTotal: \n");
+        Log.d("vietdung", "query: " + query);
+        Log.d("vietdung", "categoryId: " + categoryId);
+        Log.d("vietdung", "List<String> ingredientIds: " + ingredientIds);
+        Log.d("vietdung", "limit: " + limit);
+        Log.d("vietdung", "------------------------------------------------");
         // Trường hợp 1: Nếu có Category / Name và có list IngredientID
         if ((categoryId != null && !categoryId.isEmpty() || (query != null && !query.isEmpty())) && ingredientIds != null && !ingredientIds.isEmpty()) {
             searchDrinksByCategoryAndIngredientID(query, categoryId, ingredientIds, callback);
@@ -857,15 +857,15 @@ public class DrinkDAO {
     }
 
     public void searchDrinkTotalWithSort(@Nullable String query, @Nullable String categoryId, @Nullable List<String> ingredientIds, int limit, @Nullable DRINK_FIELD sortTag, @Nullable Query.Direction sortOrder, DrinkListCallback callback) {
-        Log.d("DrinkDAO", "------------------------------------------------");
-        Log.d("DrinkDAO", "searchDrinkTotal: \n");
-        Log.d("DrinkDAO", "query: " + query);
-        Log.d("DrinkDAO", "categoryId: " + categoryId);
-        Log.d("DrinkDAO", "List<String> ingredientIds: " + ingredientIds);
-        Log.d("DrinkDAO", "limit: " + limit);
-        Log.d("DrinkDAO", "sortField: " + (sortTag != null ? sortTag.getValue() : "null"));
-        Log.d("DrinkDAO", "sortOrder: " + (sortOrder != null ? sortOrder : "null"));
-        Log.d("DrinkDAO", "------------------------------------------------");
+        Log.d("vietdung", "------------------------------------------------");
+        Log.d("vietdung", "searchDrinkTotal: \n");
+        Log.d("vietdung", "query: " + query);
+        Log.d("vietdung", "categoryId: " + categoryId);
+        Log.d("vietdung", "List<String> ingredientIds: " + ingredientIds);
+        Log.d("vietdung", "limit: " + limit);
+        Log.d("vietdung", "sortField: " + (sortTag != null ? sortTag.getValue() : "null"));
+        Log.d("vietdung", "sortOrder: " + (sortOrder != null ? sortOrder : "null"));
+        Log.d("vietdung", "------------------------------------------------");
         
         if (query == null) {
             query = "";
@@ -951,7 +951,7 @@ public class DrinkDAO {
             return value;
         }
         public static DRINK_FIELD fromString(String text) {
-            Log.d("DrinkDAO", "Sortquery: " + text);
+            Log.d("vietdung", "Sortquery: " + text);
             if (text == null || text.isEmpty()) {
                 return NAME;
             }
