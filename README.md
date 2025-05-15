@@ -1,25 +1,29 @@
-# Bài tập lớn Android
+# Bài tập lớn Android - Nhóm 04 - Lớp CNPM 06
 
-Nhóm 04
+
 Lượt thuyết trình 7 buổi 15/05
-3 14 15 7 5 9 4 (15/05) | 2 6 8 10 11 12 13 16 (23/05)
-## Thành viên
-
-| Họ và tên          | Mã sinh viên | Phân công                                                     |
-| :----------------- | :----------: | :------------------------------------------------------------ |
-| Trần Việt Dũng     |  B21DCCN036  | Nghiên cứu kết nối dữ liệu Firebase Cloud Store và Imagekit (Dao + Model) |
-| Trần Đức Lộc       |  B21DCCN492  | Trang chi tiết đồ uống, trang tìm kiếm có filter           |
-| Nguyễn Trần Đạt    |  B21DCCN216  | Home, Profile, Navigation, Welcoming, Login, Signup       |
-| Đặng Thị Hồng Ngát |  B21DCCN564  | Trang discover, trang favorite                         |
-| Nguyễn Quang Hà    |  B21DCCN312  | Chức năng tạo công thức mới (Logic + giao diện)               |
-
-Hẹn 21 thứ 2 12/05/2025
+<!-- 3 14 15 7 5 9 4 (15/05) | 2 6 8 10 11 12 13 16 (23/05) -->
 
 ## Chủ đề
 
-App tạo và chia sẻ công thức pha chế các loại đồ uống hấp dẫn như: Trà, Nước trái cây, Cocktail không cồn, Cocktail có cồn, Thức uống nạp năng lượng,...
+Mạng xã hội về tạo và chia sẻ công thức pha chế các loại đồ uống hấp dẫn. Có lưu trữ dữ liệu lên cloud, nên có thể truy cập từ mọi nơi, mọi thiết bị Android. Có xác thực tài khoản, hỗ trợ đăng kí, đăng nhập.
+
+
+## Thành viên
+
+| Họ và tên          | Mã sinh viên | Phân công                                                                                                                                                   |
+| :----------------- | :----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Trần Việt Dũng     |  B21DCCN036  | Nghiên cứu kết nối dữ liệu Firebase Cloud Store và Imgur để lưu trữ ảnh (Dao + Model), 7 trang quản lý bên admin, Thiết kế cấu trúc dữ liệu, Logic tìm kiếm |
+| Trần Đức Lộc       |  B21DCCN492  | Trang chi tiết đồ uống, bình luận và đánh giá, trang tìm kiếm có filter theo chuỗi nhập, category, ingredient kết hợp sắp xếp theo tên, ngày tạo, rate      |
+| Nguyễn Trần Đạt    |  B21DCCN216  | Home, Profile, Navigation, Welcoming, Login, Signup, Xây dựng cấu trúc MVP                                                                                  |
+| Đặng Thị Hồng Ngát |  B21DCCN564  | Trang discover, trang favorite                                                                                                                              |
+| Nguyễn Quang Hà    |  B21DCCN312  | Chức năng tạo, copy, sửa công thức mới, tạo nguyên liệu mới (Logic + giao diện)                                                                             |
+
+
+
 
 ## Các công nghệ áp dụng
+
 - Công cụ: Android studio
 - Ngôn ngữ: Java
 - UI framework: 
@@ -31,13 +35,19 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
   - Firebase FireStore Database + Imgur
   - SharedPreferences (lưu cài đặt người dùng cục bộ)
 - Các thư viện hỗ trợ:
-  - Retrofit: gọi API ngoài
+  - com.squareup.okhttp3:okhttp:4.12.0: xử lý API với Imgur để down/up ảnh
+  - com.google.firebase:firebase-firestore, com.google.firebase:firebase-bom:33.13.0: kết nối và xử lý truy vấn đến cơ sở dữ liệu
   - Glide: Thư viện load và caching ảnh từ link
+  - androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01: Kéo để load lại trang
+  - com.google.android.material:material:1.2.0: Thư viện giao diện của Google
+  - com.ogaclejapan.arclayout:library:1.1.0@aar: Áp dụng hỗ trợ giao diện chào mừng.
 
 ## Các chức năng chính
 
-- Đăng nhập, Đăng ký bằng Firebase AUthentication
-- Trang chủ có các danh mục: Nổi bật, Trà, Nước trái cây, Cocktail không cồn, Cocktail có cồn, Thức uống nạp năng lượng,...
+- Đăng nhập, Đăng ký bằng Firebase Authentication
+- Trang chủ có các danh mục: 
+  - Đồ uống gợi ý ngẫu nhiên
+  - Category gợi ý ngẫu nhiên
   - Nút tìm kiếm
   - Nút thêm mới
   - Các danh sách đồ uống theo phân loại cụ thể (Trending, Recommend, Latest, Highest Rate,...)
@@ -49,6 +59,9 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
   - Thay đổi thông tin cá nhân
   - Đổi mật 
   - Đăng xuất
+- Trang admin (chỉ có tài khoản role admin mới xuất hiện):
+  - Quản lý (Thêm, Sửa, Xóa) Category, Drink, Ingredient, Recipe, Review, Favorite, User.
+  - Tìm kiếm Drink, Ingredient.
 
 ## Thiết kế model
 
@@ -151,24 +164,6 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
     - filter
       - category : checkbox + recycle view
       - ingredients: dropdown
-    - Logic tìm kiếm
-      - 1. Nếu có Category /& Name
-          - Nếu có Filter Ingredient
-              -> gọi DrinkDao -> List<Drink> a
-              -> gọi RecipeDao -> List<Recipe> b  -> Trích drinkId
-              -> For tìm giao a, b
-          - Nếu không có
-              -> gọi DrinkDao -> List<Drink> a
-      - 2. Nếu không có Category / Name
-          - Nếu có Filter Ingredient
-              -> gọi RecipeDao -> List<Recipe> b  -> Trích drinkId
-              -> Gọi DrinkDao.getByListDrinkId
-          - Nếu không có
-              -> gọi DrinkDao.getAllLimit -> List<Drink> a
-
-
-
-
 - Trang discover, trang favorite, (Ngát) (Fragment) (Package Discover)
   - Discover:
     - Category: Recycle view
@@ -181,10 +176,30 @@ App tạo và chia sẻ công thức pha chế các loại đồ uống hấp d�
       - Item: Tên, ảnh, nút trái tim (click -> thêm/xóa favourite)
     - Danh sách công thức do bản thân tạo
 
+Logic tìm kiếm và sắp xếp (Xử lý khi query và 1 phần ở DAO)
+
+Có 4 trường hợp chính:
+
+1. Nếu có Category / Name và có list IngredientID
+   - Bước 1 Đầu tiên gọi tới hàm public void searchDrinksByCategory(String query, @Nullable String categoryId, DrinkListCallback callback) nhận về được list<Drink>  thỏa mãn 2 điều kiện SearchString và CategoryID
+   - Bước 2 Lấy list<String> DrinkID từ list<Drink> dùng hàm của RecipeDAO: public void searchDrinkIDByIngredient(list<String> DrinkID, list<String> IngredientID, DrinkIDListCallback callback)
+   - Bước 3 Nhận về list<String> DrinkID mới thì lọc lại list<Drink> ban đầu, lấy ra các Drink thỏa mã cả 3 điều kiện lọc
+   - Bước 4 Sort lại theo name Drink
+2. Nếu có Category / Name và không có list IngredientID
+   - Bước 1 Đầu tiên gọi tới hàm public void searchDrinksByCategory(String query, @Nullable String categoryId, DrinkListCallback callback) nhận về được list<Drink>  thỏa mãn 2 điều kiện SearchString và CategoryID
+   - Bước 2 Sort lại theo name Drink
+3. Nếu không có Category / Name và có list IngredientID
+   - Bước 1 Gọi tới RecipeDAO trước public void searchDrinkIDByIngredientNoListDrinkID(list<String> IngredientID, DrinkIDListCallback callback)
+   - Bước 2 Trả về 1 list<String> DrinkID 
+   - Bước 3 Bên DrinkDAO gọi hàm getAllDrinkWithListDrinkID (list<String> DrinkID, DrinkListCallback callback)
+   - Bước 4 Sort lại theo name Drink
+4. Nếu không có Category / Name và không có list IngredientID
+   - Bước 1 Gọi getAllDrinkWithLimit(int limit, DrinkListCallback callback) trong DrinkDAO
+
 
 
 ## Hướng dẫn cài đặt
 
-Tài khoản sample:
-- Email: datforitwork@gmail.com
-- Password: D@tb21dccn216
+- Có thể tự đăng kí tài khoản và test. (Với role User)
+- 
+- Tài khoản admin: liên hệ tranvietdung121@gmail.com

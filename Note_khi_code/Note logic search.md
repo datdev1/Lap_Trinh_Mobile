@@ -1,11 +1,4 @@
-Tôi muốn tìm kiếm Drink theo 3 điều kiện:
-1. Name Drink có chứa string trong ô tìm kiếm (searchString) / 1 chuỗi trống
-2. Có categoryID (nullable) (khi không chọn thì trả về tất cả)
-3. Có chứa đủ list IngredientID (Được lưu trong Recipe với dạng drinkID và ingredientID) (khi không chọn thì trả về tất cả)
-Bạn hãy viết cho tôi hàm truy vấn cho DrinkDAO và RecipeDAO để xử lý.
-Xử lý cả nếu nó trống/null. Hãy xử lý sao cho tối ưu nhất vì có thể drink là rất nhiều, còn Ingredient thì vừa phải.
-Đây là hướng tớ nghĩ ra:
-Viết hàm public void searchDrinksByCategoryAndIngredientID(String query, @Nullable String categoryId, DrinkListCallback callback) bên trong xử lý 4 trường hợp
+
 
 1. Nếu có Category / Name và có list IngredientID
    - Bước 1 Đầu tiên gọi tới hàm public void searchDrinksByCategory(String query, @Nullable String categoryId, DrinkListCallback callback) nhận về được list<Drink>  thỏa mãn 2 điều kiện SearchString và CategoryID
