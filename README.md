@@ -16,7 +16,7 @@ Mạng xã hội về tạo và chia sẻ công thức pha chế các loại đ�
 | Trần Việt Dũng     |  B21DCCN036  | Nghiên cứu kết nối dữ liệu Firebase Cloud Store và Imgur để lưu trữ ảnh (Dao + Model), 7 trang quản lý bên admin, Thiết kế cấu trúc dữ liệu, Logic tìm kiếm |
 | Trần Đức Lộc       |  B21DCCN492  | Trang chi tiết đồ uống, bình luận và đánh giá, trang tìm kiếm có filter theo chuỗi nhập, category, ingredient kết hợp sắp xếp theo tên, ngày tạo, rate      |
 | Nguyễn Trần Đạt    |  B21DCCN216  | Home, Profile, Navigation, Welcoming, Login, Signup, Xây dựng cấu trúc MVP                                                                                  |
-| Đặng Thị Hồng Ngát |  B21DCCN564  | Trang discover, trang favorite                                                                                                                              |
+| Đặng Thị Hồng Ngát |  B21DCCN564  | Trang discover hiển thị danh sách Category và danh sách Ingredient, trang favorite hiển thị các đồ uống yêu thích và các công thức cá nhân.                                                                                                                              |
 | Nguyễn Quang Hà    |  B21DCCN312  | Chức năng tạo, copy, sửa công thức mới, tạo nguyên liệu mới (Logic + giao diện)                                                                             |
 
 
@@ -176,7 +176,7 @@ Mạng xã hội về tạo và chia sẻ công thức pha chế các loại đ�
       - Item: Tên, ảnh, nút trái tim (click -> thêm/xóa favourite)
     - Danh sách công thức do bản thân tạo
 
-Logic tìm kiếm và sắp xếp (Xử lý khi query và 1 phần ở DAO)
+Logic tìm kiếm và sắp xếp (Xử lý khi query và 1 phần ở DAO) (Dũng)
 
 Có 4 trường hợp chính:
 
@@ -196,10 +196,46 @@ Có 4 trường hợp chính:
 4. Nếu không có Category / Name và không có list IngredientID
    - Bước 1 Gọi getAllDrinkWithLimit(int limit, DrinkListCallback callback) trong DrinkDAO
 
+## Giao diện
+
+### Homepage
+
+![Homepage](image.png)  
+
+### Discover
+
+![Discover](image-2.png)
+
+### Favorite
+
+![Favorite](image-3.png)
+
+### Profile
+
+![Profile](image-4.png)
+
+### Tìm kiếm
+
+![Tìm kiếm](image-5.png)
+
+### Trang tạo, sửa, copy đồ uống
+
+![Trang tạo, sửa, copy đồ uống](image-6.png)
+
+### Trang tạo nguyên liệu
+
+![Trang tạo nguyên liệu](image-8.png)
+
+### Trang chi tiết đồ uống
+
+![Trang chi tiết đồ uống](image-1.png)
+
+### Trang quản lý admin
+
+![Trang quản lý Drink](image-7.png)
 
 
 ## Hướng dẫn cài đặt
 
 - Có thể tự đăng kí tài khoản và test. (Với role User)
-- 
 - Tài khoản admin: liên hệ tranvietdung121@gmail.com
