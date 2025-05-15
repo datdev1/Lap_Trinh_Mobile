@@ -6,10 +6,23 @@
     android:orientation="vertical"
     android:weightSum="80">
 
+    <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@android:drawable/editbox_background"
+        android:hint="Tìm kiếm nguyên liệu..."
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:layout_marginBottom="1dp"
+        android:textSize="16sp"
+        android:layout_weight="1"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="40">
+        android:layout_weight="35">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -90,6 +103,17 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:scaleType="centerCrop" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Viet Dung"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                style="@style/AppLogo"
+                android:textSize="36sp"
+                android:textColor="@color/primary_light"
+                />
         </LinearLayout>
 
     </ScrollView>

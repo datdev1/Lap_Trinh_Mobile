@@ -411,7 +411,8 @@ public class IngredientDAO {
     }
 
     public void searchIngredients(String query, IngredientListCallback callback) {
-        ingredientRef.get()
+        ingredientRef//.whereArrayContains("name", query)
+                .get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<Ingredient> ingredients = new ArrayList<>();
                     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
@@ -419,6 +420,7 @@ public class IngredientDAO {
                         if (ingredient != null && matchesSearchQuery(ingredient, query)) {
                             ingredients.add(ingredient);
                         }
+//                        ingredients.add(ingredient);
                     }
                     callback.onIngredientListLoaded(ingredients);
                 })

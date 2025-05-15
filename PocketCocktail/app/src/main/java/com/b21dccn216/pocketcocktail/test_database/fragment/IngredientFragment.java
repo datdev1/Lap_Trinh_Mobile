@@ -3,6 +3,8 @@ package com.b21dccn216.pocketcocktail.test_database.fragment;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,8 +29,9 @@ import java.util.Locale;
 
 public class IngredientFragment extends BaseModelFragment {
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int SEARCH_DELAY = 500; // Delay in milliseconds
 
-    private EditText etName, etDescription;
+    private EditText etSearch, etName, etDescription;
     private EditText etUuid, etCreatedAt, etUpdatedAt;
     private Spinner spinnerUnit;
     private Button btnChooseImage, btnSave, btnUpdate, btnDelete;
@@ -48,6 +51,9 @@ public class IngredientFragment extends BaseModelFragment {
         "jigger", "cup ~ 250ml", "pt ~ 500ml", "qt ~ 1l", "gal ~ 4l", 
         "piece", "leaves", "cup"
     };
+    private android.os.Handler searchHandler = new android.os.Handler();
+    private Runnable searchRunnable;
+    private String currentSearchQuery = "";
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -69,6 +75,7 @@ public class IngredientFragment extends BaseModelFragment {
     protected void initViews() {
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         
+        etSearch = rootView.findViewById(R.id.etSearch);
         etName = rootView.findViewById(R.id.etName);
         etDescription = rootView.findViewById(R.id.etDescription);
         etUuid = rootView.findViewById(R.id.etUuid);
@@ -90,6 +97,7 @@ public class IngredientFragment extends BaseModelFragment {
 
         setupUnitSpinner();
         setupListeners();
+        setupSearchListener();
         loadData();
     }
 
@@ -119,6 +127,53 @@ public class IngredientFragment extends BaseModelFragment {
             fillInputs(selectedIngredient);
             btnUpdate.setEnabled(true);
             btnDelete.setEnabled(true);
+        });
+    }
+
+    private void setupSearchListener() {
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (searchRunnable != null) {
+                    searchHandler.removeCallbacks(searchRunnable);
+                }
+                searchRunnable = () -> {
+                    String query = s.toString().trim();
+                    if (!query.equals(currentSearchQuery)) {
+                        currentSearchQuery = query;
+                        searchIngredients(query);
+                    }
+                };
+                searchHandler.postDelayed(searchRunnable, SEARCH_DELAY);
+            }
+        });
+    }
+
+    private void searchIngredients(String query) {
+        if (query.isEmpty()) {
+            loadData();
+            return;
+        }
+
+        ingredientDAO.searchIngredients(query, new IngredientDAO.IngredientListCallback() {
+            @Override
+            public void onIngredientListLoaded(List<Ingredient> ingredientList) {
+                ingredientList.sort((c1, c2) -> c2.getUpdatedAt().compareTo(c1.getUpdatedAt()));
+                ingredients.clear();
+                ingredients.addAll(ingredientList);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                showToast("Error searching ingredients: " + e.getMessage());
+            }
         });
     }
 

@@ -69,8 +69,6 @@
                     android:inputType="textMultiLine"
                     android:minLines="2" />
 
-
-
                 <ImageView
                     android:id="@+id/ivImage"
                     android:layout_width="200dp"
@@ -78,6 +76,19 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="16dp"
                     android:scaleType="centerCrop" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Viet Dung"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    style="@style/AppLogo"
+                    android:textSize="36sp"
+                    android:textColor="@color/primary_light"
+                    />
+
+
         </LinearLayout>
     </ScrollView>
 
