@@ -252,7 +252,11 @@ Có 4 trường hợp chính:
   <img src="image-7.png" alt="Trang quản lý Drink" width="300"/>
 </div>
 
+## Nguồn tham khảo giao diện
 
+- https://play.google.com/store/apps/details?id=com.cocktailarium.mobile
+- https://play.google.com/store/apps/details?id=com.gelostech.pocketbartender
+- https://play.google.com/store/apps/details?id=com.shaker.app
 
 ## Hướng dẫn cài đặt
 

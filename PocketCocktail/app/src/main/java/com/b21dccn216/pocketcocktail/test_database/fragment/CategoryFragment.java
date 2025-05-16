@@ -332,7 +332,7 @@ public class CategoryFragment extends BaseModelFragment {
 
     private void performDelete() {
         setButtonsEnabled(false);
-        categoryDAO.deleteCategory(selectedCategory.getUuid(),
+        categoryDAO.deleteCategory(getContext(),  selectedCategory.getUuid(),
                 aVoid -> {
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(() -> {
