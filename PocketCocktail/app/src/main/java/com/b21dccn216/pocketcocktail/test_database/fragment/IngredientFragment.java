@@ -430,7 +430,7 @@ public class IngredientFragment extends BaseModelFragment {
             .setMessage("Bạn có chắc chắn muốn xóa nguyên liệu này?")
             .setPositiveButton("Có", (dialog, which) -> {
                 setButtonsEnabled(false);
-                ingredientDAO.deleteIngredient(selectedIngredient.getUuid(),
+                ingredientDAO.deleteIngredient(getContext(), selectedIngredient.getUuid(),
                     aVoid -> {
                         if (getActivity() != null) {
                             getActivity().runOnUiThread(() -> {

@@ -41,7 +41,7 @@ public class UserDAO {
         db = FirebaseFirestore.getInstance();
         userRef = db.collection("user");
         imageDAO = new ImageDAO();
-        authenticateImgur();
+//        authenticateImgur();
     }
 
     private void authenticateImgur() {
@@ -126,7 +126,7 @@ public class UserDAO {
                 .addOnFailureListener(onFailure);
     }
 
-    public void addUserWithImage(Context context, User user, Uri imageUri,
+    public void addUserWithImageWithImgur(Context context, User user, Uri imageUri,
                                 OnSuccessListener<Void> onSuccess,
                                 OnFailureListener onFailure) {
         String title = ImageDAO.ImageDaoFolderForAvatar + "_" + user.getName() + "_" + user.getUuid();
@@ -264,7 +264,7 @@ public class UserDAO {
                 .addOnFailureListener(onFailure);
     }
 
-    public void updateUserWithImage(Context context, User updatedUser, Uri newImageUri,
+    public void updateUserWithImageWithImgur(Context context, User updatedUser, Uri newImageUri,
                                   OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         if (newImageUri != null) {
             String title = ImageDAO.ImageDaoFolderForAvatar + "_" + updatedUser.getName() + "_" + updatedUser.getUuid();
@@ -275,28 +275,28 @@ public class UserDAO {
                     imageDAO.deleteImageFromImgur(updatedUser.getImage(), new ImageDAO.DeleteCallback() {
                         @Override
                         public void onSuccess() {
-                            uploadNewImageAuthenticated(context, updatedUser, newImageUri, title, onSuccess, onFailure);
+                            uploadNewImageAuthenticatedWithImgur(context, updatedUser, newImageUri, title, onSuccess, onFailure);
                         }
 
                         @Override
                         public void onFailure(Exception e) {
                             Log.e("vietdung", "Failed to delete old image: " + e.getMessage());
-                            uploadNewImageAuthenticated(context, updatedUser, newImageUri, title, onSuccess, onFailure);
+                            uploadNewImageAuthenticatedWithImgur(context, updatedUser, newImageUri, title, onSuccess, onFailure);
                         }
                     });
                 } else {
-                    uploadNewImageAuthenticated(context, updatedUser, newImageUri, title, onSuccess, onFailure);
+                    uploadNewImageAuthenticatedWithImgur(context, updatedUser, newImageUri, title, onSuccess, onFailure);
                 }
             } else {
                 // Anonymous upload without deleting old image
-                uploadNewImageAnonymous(context, updatedUser, newImageUri, title, onSuccess, onFailure);
+                uploadNewImageAnonymousWithImgur(context, updatedUser, newImageUri, title, onSuccess, onFailure);
             }
         } else {
             updateUser(updatedUser, onSuccess, onFailure);
         }
     }
 
-    private void uploadNewImageAuthenticated(Context context, User updatedUser, Uri newImageUri,
+    private void uploadNewImageAuthenticatedWithImgur(Context context, User updatedUser, Uri newImageUri,
                                            String title, OnSuccessListener<Void> onSuccess, 
                                            OnFailureListener onFailure) {
         imageDAO.uploadImageAuthenticated(context, newImageUri, title, new ImageDAO.UploadCallback() {
@@ -313,7 +313,7 @@ public class UserDAO {
         });
     }
 
-    private void uploadNewImageAnonymous(Context context, User updatedUser, Uri newImageUri,
+    private void uploadNewImageAnonymousWithImgur(Context context, User updatedUser, Uri newImageUri,
                                        String title, OnSuccessListener<Void> onSuccess, 
                                        OnFailureListener onFailure) {
         imageDAO.uploadImageAnonymous(context, newImageUri, title, new ImageDAO.UploadCallback() {
@@ -384,7 +384,7 @@ public class UserDAO {
         });
     }
 
-    public void deleteUser(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+    public void deleteUserWithImgur(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         // First check dependencies
         checkUserDependencies(uuid, 
             success -> {
@@ -427,5 +427,117 @@ public class UserDAO {
                 .delete()
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
+    }
+
+    public void addUserWithImage(Context context, User user, Uri imageUri,
+                               OnSuccessListener<Void> onSuccess,
+                               OnFailureListener onFailure) {
+        String title = user.getName().replaceAll("\\s+", "_") + "_" + user.getUuid();
+        ImageDAOCloudinary imageDAO = new ImageDAOCloudinary(context);
+        
+        imageDAO.uploadImage(context, imageUri, ImageDAOCloudinary.ImageDaoFolderForAvatar, title, new ImageDAOCloudinary.ImageUploadCallback() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                user.generateUUID();
+                user.setImage(imageUrl);
+                Map<String, Object> data = convertUserToMap(user);
+
+                userRef.document(user.getUuid())
+                        .set(data)
+                        .addOnSuccessListener(onSuccess)
+                        .addOnFailureListener(onFailure);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
+    }
+
+    public void updateUserWithImage(Context context, User updatedUser, Uri newImageUri,
+                                  OnSuccessListener<Void> onSuccess,
+                                  OnFailureListener onFailure) {
+        ImageDAOCloudinary imageDAO = new ImageDAOCloudinary(context);
+        
+        // Delete old image if exists
+        if (updatedUser.getImage() != null && !updatedUser.getImage().isEmpty()) {
+            imageDAO.deleteImageByUrl(updatedUser.getImage(), new ImageDAOCloudinary.DeleteCallback() {
+                @Override
+                public void onSuccess() {
+                    uploadNewImage(context, updatedUser, newImageUri, onSuccess, onFailure);
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("vietdung", "Failed to delete old image: " + e.getMessage());
+                    // Continue with upload even if delete fails
+                    uploadNewImage(context, updatedUser, newImageUri, onSuccess, onFailure);
+                }
+            });
+        } else {
+            uploadNewImage(context, updatedUser, newImageUri, onSuccess, onFailure);
+        }
+    }
+
+    private void uploadNewImage(Context context, User user, Uri imageUri,
+                              OnSuccessListener<Void> onSuccess,
+                              OnFailureListener onFailure) {
+        String title = user.getName().replaceAll("\\s+", "_") + "_" + user.getUuid();
+        ImageDAOCloudinary imageDAO = new ImageDAOCloudinary(context);
+        
+        imageDAO.uploadImage(context, imageUri, ImageDAOCloudinary.ImageDaoFolderForAvatar, title, new ImageDAOCloudinary.ImageUploadCallback() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                user.setImage(imageUrl);
+                Map<String, Object> data = convertUserToMap(user);
+                
+                userRef.document(user.getUuid())
+                        .set(data)
+                        .addOnSuccessListener(onSuccess)
+                        .addOnFailureListener(onFailure);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
+    }
+
+    public void deleteUser(Context context, String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        // First check dependencies
+        checkUserDependencies(uuid, 
+            canDelete -> {
+                if (canDelete) {
+                    userRef.document(uuid).get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                User user = convertDocumentToUser(documentSnapshot);
+                                if (user != null && user.getImage() != null && !user.getImage().isEmpty()) {
+                                    // Try to delete image
+                                    ImageDAOCloudinary imageDAO = new ImageDAOCloudinary(context);
+                                    imageDAO.deleteImageByUrl(user.getImage(), new ImageDAOCloudinary.DeleteCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            deleteUserDocument(uuid, onSuccess, onFailure);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            Log.e("vietdung", "Failed to delete image: " + e.getMessage());
+                                            // Continue with user deletion even if image deletion fails
+                                            deleteUserDocument(uuid, onSuccess, onFailure);
+                                        }
+                                    });
+                                } else {
+                                    // If no image, just delete the user
+                                    deleteUserDocument(uuid, onSuccess, onFailure);
+                                }
+                            })
+                            .addOnFailureListener(onFailure);
+                }
+            },
+            onFailure
+        );
     }
 } 
