@@ -219,7 +219,7 @@ public class IngredientFragment extends BaseModelFragment {
         spinnerUnit.setSelection(0);
         selectedImageUri = null;
         selectedIngredient = null;
-        ivPreview.setImageResource(R.drawable.place_holder_drink);
+        ivPreview.setImageResource(R.drawable.icon_default_ingredient);
         btnUpdate.setEnabled(false);
         btnDelete.setEnabled(false);
     }
@@ -251,11 +251,11 @@ public class IngredientFragment extends BaseModelFragment {
             if (ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
                 Glide.with(this)
                         .load(ingredient.getImage())
-                        .placeholder(R.drawable.place_holder_drink)
+                        .placeholder(R.drawable.icon_default_ingredient)
                         .error(R.drawable.error_icon)
                         .into(ivPreview);
             } else {
-                ivPreview.setImageResource(R.drawable.place_holder_drink);
+                ivPreview.setImageResource(R.drawable.icon_default_ingredient);
             }
         }
     }

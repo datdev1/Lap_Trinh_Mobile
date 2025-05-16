@@ -186,7 +186,7 @@ public class UserFragment extends BaseModelFragment {
         spinnerRole.setSelection(0);
         selectedImageUri = null;
         selectedUser = null;
-        ivPreview.setImageResource(R.drawable.place_holder_drink);
+        ivPreview.setImageResource(R.drawable.icon_default_people);
         btnUpdate.setEnabled(false);
         btnDelete.setEnabled(false);
         setEmailPasswordEnabled(true); // Enable email and password for new user
@@ -213,11 +213,11 @@ public class UserFragment extends BaseModelFragment {
             if (user.getImage() != null && !user.getImage().isEmpty()) {
                 Glide.with(this)
                         .load(user.getImage())
-                        .placeholder(R.drawable.place_holder_drink)
+                        .placeholder(R.drawable.icon_default_people)
                         .error(R.drawable.error_icon)
                         .into(ivPreview);
             } else {
-                ivPreview.setImageResource(R.drawable.place_holder_drink);
+                ivPreview.setImageResource(R.drawable.icon_default_people);
             }
         }
     }
