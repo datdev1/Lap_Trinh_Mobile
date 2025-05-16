@@ -47,7 +47,8 @@ public class CocktailHomeItemAdapter extends RecyclerView.Adapter<CocktailHomeIt
         Glide.with(context)
             .load(drink.getImage())
             .centerCrop()
-            .error(R.drawable.baseline_downloading_24)
+                .placeholder(R.drawable.place_holder_drink)
+            .error(R.drawable.place_holder_drink)
             .into(holder.binding.image);
 
         holder.binding.name.setText(drink.getName());

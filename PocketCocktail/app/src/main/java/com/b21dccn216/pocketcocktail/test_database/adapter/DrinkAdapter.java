@@ -48,7 +48,7 @@ public class DrinkAdapter extends ArrayAdapter<Drink> {
         if (drink.getImage() != null && !drink.getImage().isEmpty()) {
             Glide.with(context)
                 .load(drink.getImage())
-                .placeholder(R.drawable.cocktail_logo)
+                .placeholder(R.drawable.place_holder_drink)
                 .error(R.drawable.error_icon)
                 .into(ivImage);
         } else {

@@ -140,7 +140,7 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
                             );
                         },
                         e -> {
-                            showAlertDialog("Fail to save",
+                            showAlertDialog("Lỗi khi upload ảnh lên server\n Vui lòng thử lại sau",
                                     e.getMessage(), HelperDialog.DialogType.ERROR);
                         });
             }catch (Exception e){

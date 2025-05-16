@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/cocktail_logo"
+                android:src="@drawable/place_holder_drink"
                 android:background="@drawable/border_image"/>
         </androidx.cardview.widget.CardView>
 

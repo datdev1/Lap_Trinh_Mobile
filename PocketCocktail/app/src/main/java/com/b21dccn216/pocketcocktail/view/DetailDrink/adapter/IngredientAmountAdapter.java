@@ -66,7 +66,7 @@ public class IngredientAmountAdapter extends RecyclerView.Adapter<IngredientAmou
             Glide
                     .with(context)
                     .load(ingredient.getIngredient().getImage())
-                    .placeholder(R.drawable.baseline_downloading_24)
+                    .placeholder(R.drawable.place_holder_drink)
                     .into(binding.imgIcon);
         }
     }
