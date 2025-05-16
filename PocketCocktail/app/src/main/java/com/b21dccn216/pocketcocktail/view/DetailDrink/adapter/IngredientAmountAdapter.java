@@ -1,7 +1,9 @@
 package com.b21dccn216.pocketcocktail.view.DetailDrink.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -18,7 +20,7 @@ import java.util.List;
 public class IngredientAmountAdapter extends RecyclerView.Adapter<IngredientAmountAdapter.ViewHolder>{
     private List<IngredientWithAmountDTO> ingredientList;
     private Context context;
-    private static final int MIN_ITEMS = 3;
+    private static final int MIN_ITEMS = 2;
     private boolean showAll = false;
 
 
@@ -42,6 +44,7 @@ public class IngredientAmountAdapter extends RecyclerView.Adapter<IngredientAmou
 
     @Override
     public int getItemCount() {
+//        return ingredientList.size();
         return showAll ? ingredientList.size() : Math.min(ingredientList.size(), MIN_ITEMS);
     }
 
@@ -71,8 +74,17 @@ public class IngredientAmountAdapter extends RecyclerView.Adapter<IngredientAmou
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void toggleShowAll() {
         showAll = !showAll;
+        notifyDataSetChanged();
+        Log.d("showIngredient", "showIngredient: " + ingredientList.size());
+    }
+
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setIngredientList(List<IngredientWithAmountDTO> list){
+        this.ingredientList = list;
         notifyDataSetChanged();
     }
 

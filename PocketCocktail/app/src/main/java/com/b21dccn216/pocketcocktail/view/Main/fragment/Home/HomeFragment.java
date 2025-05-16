@@ -217,7 +217,7 @@ public class HomeFragment extends BaseFragment<HomeContract.View, HomeContract.P
         Glide
                 .with(requireActivity())
                 .load(bannerDrink.getImage())
-                .placeholder(R.drawable.bg_btn_outline_pink_pastel) // Replace with your placeholder
+                .placeholder(R.drawable.place_holder_drink) // Replace with your placeholder
                 .error(R.drawable.baseline_error_outline_24)
                 .into(binding.featureImage);
         binding.featureTitle.setText(bannerDrink.getName());
