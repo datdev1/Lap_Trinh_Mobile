@@ -35,16 +35,10 @@ import com.b21dccn216.pocketcocktail.model.Recipe;
 import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.b21dccn216.pocketcocktail.helper.DialogHelper;
@@ -152,19 +146,19 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
                         Log.d("CreateDrinkActivity", "Loading image with Glide in edit mode");
                         Glide.with(this)
                                 .load(editingDrink.getImage())
-                                .placeholder(R.drawable.cocktail_logo)
-                                .error(R.drawable.cocktail_logo)
+                                .placeholder(R.drawable.place_holder_drink)
+                                .error(R.drawable.place_holder_drink)
                                 .into(ivDrinkImage);
                     } else {
                         Log.d("CreateDrinkActivity", "No image URL available in edit mode");
-                        ivDrinkImage.setImageResource(R.drawable.cocktail_logo);
+                        ivDrinkImage.setImageResource(R.drawable.place_holder_drink);
                     }
                     selectedImageUri = null;
                 } else {
                     titleText.setText("Copy Recipe: " + editingDrink.getName());
                     // Trong chế độ copy, reset ảnh về mặc định
                     Log.d("CreateDrinkActivity", "Reset image in copy mode");
-                    ivDrinkImage.setImageResource(R.drawable.cocktail_logo);
+                    ivDrinkImage.setImageResource(R.drawable.place_holder_drink);
                     selectedImageUri = null;
                 }
             }
