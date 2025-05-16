@@ -424,7 +424,7 @@ public class UserFragment extends BaseModelFragment {
             .setMessage("Bạn có chắc chắn muốn xóa người dùng này?")
             .setPositiveButton("Có", (dialog, which) -> {
                 setButtonsEnabled(false);
-                userDAO.deleteUser(selectedUser.getUuid(),
+                userDAO.deleteUser(getContext(), selectedUser.getUuid(),
                     aVoid -> {
                         if (getActivity() != null) {
                             getActivity().runOnUiThread(() -> {

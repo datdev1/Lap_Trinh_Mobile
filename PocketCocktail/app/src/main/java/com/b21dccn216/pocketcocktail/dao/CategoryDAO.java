@@ -28,7 +28,10 @@ import java.util.concurrent.CountDownLatch;
 public class CategoryDAO {
     private final FirebaseFirestore db;
     private final CollectionReference categoryRef;
-    private final ImageDAO imageDAO;
+
+//    private final ImageDAO imageDAO;
+    private ImageDAO imageDAO; // Khai báo để tránh lỗi các hàm Imagur, comment lại và dùng private final ImageDAO imageDAO; để dùng lại Imgur
+
     private static final String IMGUR_REFRESH_TOKEN = "2396b095b3402713d6dd7895146265c06f22fc71";
     private boolean isAuthenticated = false;
     private final CountDownLatch authLatch = new CountDownLatch(1);
@@ -38,8 +41,8 @@ public class CategoryDAO {
     public CategoryDAO() {
         db = FirebaseFirestore.getInstance();
         categoryRef = db.collection("category");
-        imageDAO = new ImageDAO();
-        authenticateImgur();
+//        imageDAO = new ImageDAO();
+//        authenticateImgur();
     }
 
     private void authenticateImgur() {
@@ -118,7 +121,7 @@ public class CategoryDAO {
                 .addOnFailureListener(onFailure);
     }
 
-    public void addCategoryWithImage(Context context, Category category, Uri imageUri,
+    public void addCategoryWithImageWithImgur(Context context, Category category, Uri imageUri,
                                      OnSuccessListener<Void> onSuccess,
                                      OnFailureListener onFailure) {
         String title = ImageDAO.ImageDaoFolderForCategory + "_" + category.getName() + "_" + category.getUuid();
@@ -172,7 +175,7 @@ public class CategoryDAO {
                 .addOnFailureListener(onFailure);
     }
 
-    public void updateCategoryWithImage(Context context, Category updatedCategory, @Nullable Uri newImageUri,
+    public void updateCategoryWithImageWithImgur(Context context, Category updatedCategory, @Nullable Uri newImageUri,
                                         OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         if (newImageUri != null) {
             String title = ImageDAO.ImageDaoFolderForCategory + "_" + updatedCategory.getName() + "_" + updatedCategory.getUuid();
@@ -183,28 +186,28 @@ public class CategoryDAO {
                     imageDAO.deleteImageFromImgur(updatedCategory.getImage(), new ImageDAO.DeleteCallback() {
                         @Override
                         public void onSuccess() {
-                            uploadNewImageAuthenticated(context, updatedCategory, newImageUri, title, onSuccess, onFailure);
+                            uploadNewImageAuthenticatedWithImgur(context, updatedCategory, newImageUri, title, onSuccess, onFailure);
                         }
 
                         @Override
                         public void onFailure(Exception e) {
                             Log.e("vietdung", "Failed to delete old image: " + e.getMessage());
-                            uploadNewImageAuthenticated(context, updatedCategory, newImageUri, title, onSuccess, onFailure);
+                            uploadNewImageAuthenticatedWithImgur(context, updatedCategory, newImageUri, title, onSuccess, onFailure);
                         }
                     });
                 } else {
-                    uploadNewImageAuthenticated(context, updatedCategory, newImageUri, title, onSuccess, onFailure);
+                    uploadNewImageAuthenticatedWithImgur(context, updatedCategory, newImageUri, title, onSuccess, onFailure);
                 }
             } else {
                 // Anonymous upload without deleting old image
-                uploadNewImageAnonymous(context, updatedCategory, newImageUri, title, onSuccess, onFailure);
+                uploadNewImageAnonymousWithImgur(context, updatedCategory, newImageUri, title, onSuccess, onFailure);
             }
         } else {
             updateCategory(updatedCategory, onSuccess, onFailure);
         }
     }
 
-    private void uploadNewImageAuthenticated(Context context, Category updatedCategory, Uri newImageUri,
+    private void uploadNewImageAuthenticatedWithImgur(Context context, Category updatedCategory, Uri newImageUri,
                                            String title, OnSuccessListener<Void> onSuccess, 
                                            OnFailureListener onFailure) {
         imageDAO.uploadImageAuthenticated(context, newImageUri, title, new ImageDAO.UploadCallback() {
@@ -225,7 +228,7 @@ public class CategoryDAO {
         });
     }
 
-    private void uploadNewImageAnonymous(Context context, Category updatedCategory, Uri newImageUri,
+    private void uploadNewImageAnonymousWithImgur(Context context, Category updatedCategory, Uri newImageUri,
                                        String title, OnSuccessListener<Void> onSuccess, 
                                        OnFailureListener onFailure) {
         imageDAO.uploadImageAnonymous(context, newImageUri, title, new ImageDAO.UploadCallback() {
@@ -267,7 +270,7 @@ public class CategoryDAO {
         });
     }
 
-    public void deleteCategory(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+    public void deleteCategoryWithImgur(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         // First check dependencies
         checkCategoryDependencies(uuid, 
             canDelete -> {
@@ -367,6 +370,118 @@ public class CategoryDAO {
         public String getValue() {
             return value;
         }
+    }
+
+    public void addCategoryWithImage(Context context, Category category, Uri imageUri,
+                                   OnSuccessListener<Void> onSuccess,
+                                   OnFailureListener onFailure) {
+        String title = category.getName().replaceAll("\\s+", "_") + "_" + category.getUuid();
+        ImageDAOCloudinary imageDAO = new ImageDAOCloudinary(context);
+        
+        imageDAO.uploadImage(context, imageUri, ImageDAOCloudinary.ImageDaoFolderForCategory, title, new ImageDAOCloudinary.ImageUploadCallback() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                category.generateUUID();
+                category.setImage(imageUrl);
+                Map<String, Object> data = convertCategoryToMap(category);
+
+                categoryRef.document(category.getUuid())
+                        .set(data)
+                        .addOnSuccessListener(onSuccess)
+                        .addOnFailureListener(onFailure);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
+    }
+
+    public void updateCategoryWithImage(Context context, Category updatedCategory, Uri newImageUri,
+                                      OnSuccessListener<Void> onSuccess,
+                                      OnFailureListener onFailure) {
+        ImageDAOCloudinary imageDAO = new ImageDAOCloudinary(context);
+        
+        // Delete old image if exists
+        if (updatedCategory.getImage() != null && !updatedCategory.getImage().isEmpty()) {
+            imageDAO.deleteImageByUrl(updatedCategory.getImage(), new ImageDAOCloudinary.DeleteCallback() {
+                @Override
+                public void onSuccess() {
+                    uploadNewImage(context, updatedCategory, newImageUri, onSuccess, onFailure);
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("vietdung", "Failed to delete old image: " + e.getMessage());
+                    // Continue with upload even if delete fails
+                    uploadNewImage(context, updatedCategory, newImageUri, onSuccess, onFailure);
+                }
+            });
+        } else {
+            uploadNewImage(context, updatedCategory, newImageUri, onSuccess, onFailure);
+        }
+    }
+
+    private void uploadNewImage(Context context, Category category, Uri imageUri,
+                              OnSuccessListener<Void> onSuccess,
+                              OnFailureListener onFailure) {
+        String title = category.getName().replaceAll("\\s+", "_") + "_" + category.getUuid();
+        ImageDAOCloudinary imageDAO = new ImageDAOCloudinary(context);
+        
+        imageDAO.uploadImage(context, imageUri, ImageDAOCloudinary.ImageDaoFolderForCategory, title, new ImageDAOCloudinary.ImageUploadCallback() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                category.setImage(imageUrl);
+                Map<String, Object> data = convertCategoryToMap(category);
+                
+                categoryRef.document(category.getUuid())
+                        .set(data)
+                        .addOnSuccessListener(onSuccess)
+                        .addOnFailureListener(onFailure);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
+    }
+
+    public void deleteCategory(Context context, String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        // First check dependencies
+        checkCategoryDependencies(uuid, 
+            canDelete -> {
+                if (canDelete) {
+                    categoryRef.document(uuid).get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                Category category = convertDocumentToCategory(documentSnapshot);
+                                if (category != null && category.getImage() != null && !category.getImage().isEmpty()) {
+                                    // Try to delete image
+                                    ImageDAOCloudinary imageDAO = new ImageDAOCloudinary(context);
+                                    imageDAO.deleteImageByUrl(category.getImage(), new ImageDAOCloudinary.DeleteCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            deleteCategoryDocument(uuid, onSuccess, onFailure);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            Log.e("vietdung", "Failed to delete image: " + e.getMessage());
+                                            // Continue with category deletion even if image deletion fails
+                                            deleteCategoryDocument(uuid, onSuccess, onFailure);
+                                        }
+                                    });
+                                } else {
+                                    // If no image, just delete the category
+                                    deleteCategoryDocument(uuid, onSuccess, onFailure);
+                                }
+                            })
+                            .addOnFailureListener(onFailure);
+                }
+            },
+            onFailure
+        );
     }
 
 }

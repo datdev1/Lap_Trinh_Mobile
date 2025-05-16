@@ -658,7 +658,7 @@ public class DrinkFragment extends BaseModelFragment {
             .setPositiveButton("Có", (dialog, which) -> {
                 Log.d(TAG, "Deleting drink: " + selectedDrink.getName() + " with UUID: " + selectedDrink.getUuid());
                 setButtonsEnabled(false);
-                drinkDAO.deleteDrink(selectedDrink.getUuid(),
+                drinkDAO.deleteDrink(getContext(), selectedDrink.getUuid(),
                     aVoid -> {
                         Log.d(TAG, "Drink deleted successfully");
                         showToast("Xóa đồ uống thành công");
