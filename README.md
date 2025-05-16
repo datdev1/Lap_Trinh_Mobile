@@ -66,7 +66,7 @@ Mạng xã hội về tạo và chia sẻ công thức pha chế các loại đ�
 
 ## Thiết kế model
 
-![Database diagram](Database_diagram.png)
+![Database diagram](res/Database_diagram.png)
 
 - Model Drink đồ uống:
   - uuid
@@ -202,55 +202,55 @@ Có 4 trường hợp chính:
 ### Homepage
 
 <div align="center">
-  <img src="image.png" alt="Homepage" width="300"/>
+  <img src="res/image.png" alt="Homepage" width="300"/>
 </div>
 
 ### Discover
 
 <div align="center">
-  <img src="image-2.png" alt="Discover" width="300"/>
+  <img src="res/image-2.png" alt="Discover" width="300"/>
 </div>
 
 ### Favorite
 
 <div align="center">
-  <img src="image-3.png" alt="Favorite" width="300"/>
+  <img src="res/image-3.png" alt="Favorite" width="300"/>
 </div>
 
 ### Profile
 
 <div align="center">
-  <img src="image-4.png" alt="Profile" width="300"/>
+  <img src="res/image-4.png" alt="Profile" width="300"/>
 </div>
 
 ### Tìm kiếm
 
 <div align="center">
-  <img src="image-5.png" alt="Tìm kiếm" width="300"/>
+  <img src="res/image-5.png" alt="Tìm kiếm" width="300"/>
 </div>
 
 ### Trang tạo, sửa, copy đồ uống
 
 <div align="center">
-  <img src="image-6.png" alt="Trang tạo, sửa, copy đồ uống" width="300"/>
+  <img src="res/image-6.png" alt="Trang tạo, sửa, copy đồ uống" width="300"/>
 </div>
 
 ### Trang tạo nguyên liệu
 
 <div align="center">
-  <img src="image-8.png" alt="Trang tạo nguyên liệu" width="300"/>
+  <img src="res/image-8.png" alt="Trang tạo nguyên liệu" width="300"/>
 </div>
 
 ### Trang chi tiết đồ uống
 
 <div align="center">
-  <img src="image-1.png" alt="Trang chi tiết đồ uống" width="300"/>
+  <img src="res/image-1.png" alt="Trang chi tiết đồ uống" width="300"/>
 </div>
 
 ### Trang quản lý admin
 
 <div align="center">
-  <img src="image-7.png" alt="Trang quản lý Drink" width="300"/>
+  <img src="res/image-7.png" alt="Trang quản lý Drink" width="300"/>
 </div>
 
 ## Nguồn tham khảo giao diện
