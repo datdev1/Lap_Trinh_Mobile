@@ -96,6 +96,9 @@ dependencies {
     // Firebase Storage
     implementation 'com.google.firebase:firebase-storage:20.3.0'
 
+    // Cloudinary
+    implementation 'com.cloudinary:cloudinary-android:2.3.1'
+
 //    // animation
 //    implementation("com.github.LottieFiles:dotlottie-android:0.0.3")
 

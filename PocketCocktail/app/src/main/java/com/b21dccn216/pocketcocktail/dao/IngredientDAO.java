@@ -28,19 +28,25 @@ import java.util.concurrent.CountDownLatch;
 public class IngredientDAO {
     private final FirebaseFirestore db;
     private final CollectionReference ingredientRef;
-    private final ImageDAO imageDAO;
+
+//    private final ImageDAO imageDAO;
+    private ImageDAO imageDAO; // Khai báo để tránh lỗi các hàm Imagur, comment lại và dùng private final ImageDAO imageDAO; để dùng lại Imgur
+
     private static final String IMGUR_REFRESH_TOKEN = "2396b095b3402713d6dd7895146265c06f22fc71";
     private boolean isAuthenticated = false;
     private final CountDownLatch authLatch = new CountDownLatch(1);
 
     public static final String ERROR_USER_NOT_AUTH = "User not authenticated";
 
+
     public IngredientDAO() {
         db = FirebaseFirestore.getInstance();
         ingredientRef = db.collection("ingredient");
-        imageDAO = new ImageDAO();
-        authenticateImgur();
+//        imageDAO = new ImageDAO();
+//        authenticateImgur();
     }
+
+
 
     private void authenticateImgur() {
         imageDAO.authenticate(IMGUR_REFRESH_TOKEN, new ImageDAO.AuthCallback() {
@@ -120,7 +126,7 @@ public class IngredientDAO {
                 .addOnFailureListener(onFailure);
     }
 
-    public void addIngredientWithImage(Context context, Ingredient ingredient, Uri imageUri,
+    public void addIngredientWithImageWithIgmur(Context context, Ingredient ingredient, Uri imageUri,
                                      OnSuccessListener<Void> onSuccess,
                                      OnFailureListener onFailure) {
         String title = ImageDAO.ImageDaoFolderForIngredient + "_" + ingredient.getName() + "_" + ingredient.getUuid();
@@ -236,81 +242,7 @@ public class IngredientDAO {
                 .addOnFailureListener(onFailure);
     }
 
-    public void updateIngredientWithImage(Context context, Ingredient updatedIngredient, @Nullable Uri newImageUri,
-                                     OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        if (newImageUri != null) {
-            String title = ImageDAO.ImageDaoFolderForIngredient + "_" + updatedIngredient.getName() + "_" + updatedIngredient.getUuid();
-            
-            if (isAuthenticated) {
-                // Delete old image first if it exists
-                if (updatedIngredient.getImage() != null && !updatedIngredient.getImage().isEmpty()) {
-                    imageDAO.deleteImageFromImgur(updatedIngredient.getImage(), new ImageDAO.DeleteCallback() {
-                        @Override
-                        public void onSuccess() {
-                            uploadNewImageAuthenticated(context, updatedIngredient, newImageUri, title, onSuccess, onFailure);
-                        }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            Log.e("vietdung", "Failed to delete old image: " + e.getMessage());
-                            uploadNewImageAuthenticated(context, updatedIngredient, newImageUri, title, onSuccess, onFailure);
-                        }
-                    });
-                } else {
-                    uploadNewImageAuthenticated(context, updatedIngredient, newImageUri, title, onSuccess, onFailure);
-                }
-            } else {
-                // Anonymous upload without deleting old image
-                uploadNewImageAnonymous(context, updatedIngredient, newImageUri, title, onSuccess, onFailure);
-            }
-        } else {
-            updateIngredient(updatedIngredient, onSuccess, onFailure);
-        }
-    }
-
-    private void uploadNewImageAuthenticated(Context context, Ingredient updatedIngredient, Uri newImageUri,
-                                           String title, OnSuccessListener<Void> onSuccess, 
-                                           OnFailureListener onFailure) {
-        imageDAO.uploadImageAuthenticated(context, newImageUri, title, new ImageDAO.UploadCallback() {
-            @Override
-            public void onSuccess(String imageUrl) {
-                updatedIngredient.setImage(imageUrl);
-                Map<String, Object> data = convertIngredientToMap(updatedIngredient);
-                
-                ingredientRef.document(updatedIngredient.getUuid())
-                        .set(data)
-                        .addOnSuccessListener(onSuccess)
-                        .addOnFailureListener(onFailure);
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                onFailure.onFailure(e);
-            }
-        });
-    }
-
-    private void uploadNewImageAnonymous(Context context, Ingredient updatedIngredient, Uri newImageUri,
-                                       String title, OnSuccessListener<Void> onSuccess, 
-                                       OnFailureListener onFailure) {
-        imageDAO.uploadImageAnonymous(context, newImageUri, title, new ImageDAO.UploadCallback() {
-            @Override
-            public void onSuccess(String imageUrl) {
-                updatedIngredient.setImage(imageUrl);
-                Map<String, Object> data = convertIngredientToMap(updatedIngredient);
-                
-                ingredientRef.document(updatedIngredient.getUuid())
-                        .set(data)
-                        .addOnSuccessListener(onSuccess)
-                        .addOnFailureListener(onFailure);
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                onFailure.onFailure(e);
-            }
-        });
-    }
 
     private void checkIngredientDependencies(String ingredientId, OnSuccessListener<Boolean> onSuccess, OnFailureListener onFailure) {
         // Check Recipe dependencies
@@ -334,44 +266,7 @@ public class IngredientDAO {
         });
     }
 
-    public void deleteIngredient(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        // First check dependencies
-        checkIngredientDependencies(uuid, 
-            canDelete -> {
-                if (canDelete) {
-                    ingredientRef.document(uuid).get()
-                            .addOnSuccessListener(documentSnapshot -> {
-                                Ingredient ingredient = convertDocumentToIngredient(documentSnapshot);
-                                if (ingredient != null && ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
-                                    if (isAuthenticated) {
-                                        // Delete image if authenticated
-                                        imageDAO.deleteImageFromImgur(ingredient.getImage(), new ImageDAO.DeleteCallback() {
-                                            @Override
-                                            public void onSuccess() {
-                                                deleteIngredientDocument(uuid, onSuccess, onFailure);
-                                            }
 
-                                            @Override
-                                            public void onFailure(Exception e) {
-                                                Log.e("vietdung", "Failed to delete image: " + e.getMessage());
-                                                deleteIngredientDocument(uuid, onSuccess, onFailure);
-                                            }
-                                        });
-                                    } else {
-                                        // If not authenticated, just delete ingredient document
-                                        deleteIngredientDocument(uuid, onSuccess, onFailure);
-                                    }
-                                } else {
-                                    // If no image, just delete the ingredient
-                                    deleteIngredientDocument(uuid, onSuccess, onFailure);
-                                }
-                            })
-                            .addOnFailureListener(onFailure);
-                }
-            },
-            onFailure
-        );
-    }
 
     private void deleteIngredientDocument(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         ingredientRef.document(uuid)
@@ -437,5 +332,231 @@ public class IngredientDAO {
         return (ingredient.getName() != null && ingredient.getName().toLowerCase().contains(query)) ||
                 (ingredient.getDescription() != null && ingredient.getDescription().toLowerCase().contains(query)) ||
                 (ingredient.getUnit() != null && ingredient.getUnit().toLowerCase().contains(query));
+    }
+
+    //    public void updateIngredientWithImageWithIgmur(Context context, Ingredient updatedIngredient, @Nullable Uri newImageUri,
+//                                     OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+//        if (newImageUri != null) {
+//            String title = ImageDAO.ImageDaoFolderForIngredient + "_" + updatedIngredient.getName() + "_" + updatedIngredient.getUuid();
+//
+//            if (isAuthenticated) {
+//                // Delete old image first if it exists
+//                if (updatedIngredient.getImage() != null && !updatedIngredient.getImage().isEmpty()) {
+//                    imageDAO.deleteImageFromImgur(updatedIngredient.getImage(), new ImageDAO.DeleteCallback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            uploadNewImageAuthenticatedWithIgmur(context, updatedIngredient, newImageUri, title, onSuccess, onFailure);
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Exception e) {
+//                            Log.e("vietdung", "Failed to delete old image: " + e.getMessage());
+//                            uploadNewImageAuthenticatedWithIgmur(context, updatedIngredient, newImageUri, title, onSuccess, onFailure);
+//                        }
+//                    });
+//                } else {
+//                    uploadNewImageAuthenticatedWithIgmur(context, updatedIngredient, newImageUri, title, onSuccess, onFailure);
+//                }
+//            } else {
+//                // Anonymous upload without deleting old image
+//                uploadNewImageAnonymousWithIgmur(context, updatedIngredient, newImageUri, title, onSuccess, onFailure);
+//            }
+//        } else {
+//            updateIngredient(updatedIngredient, onSuccess, onFailure);
+//        }
+//    }
+//
+//    private void uploadNewImageAuthenticatedWithIgmur(Context context, Ingredient updatedIngredient, Uri newImageUri,
+//                                           String title, OnSuccessListener<Void> onSuccess,
+//                                           OnFailureListener onFailure) {
+//        imageDAO.uploadImageAuthenticated(context, newImageUri, title, new ImageDAO.UploadCallback() {
+//            @Override
+//            public void onSuccess(String imageUrl) {
+//                updatedIngredient.setImage(imageUrl);
+//                Map<String, Object> data = convertIngredientToMap(updatedIngredient);
+//
+//                ingredientRef.document(updatedIngredient.getUuid())
+//                        .set(data)
+//                        .addOnSuccessListener(onSuccess)
+//                        .addOnFailureListener(onFailure);
+//            }
+//
+//            @Override
+//            public void onFailure(Exception e) {
+//                onFailure.onFailure(e);
+//            }
+//        });
+//    }
+//
+//    private void uploadNewImageAnonymousWithIgmur(Context context, Ingredient updatedIngredient, Uri newImageUri,
+//                                       String title, OnSuccessListener<Void> onSuccess,
+//                                       OnFailureListener onFailure) {
+//        imageDAO.uploadImageAnonymous(context, newImageUri, title, new ImageDAO.UploadCallback() {
+//            @Override
+//            public void onSuccess(String imageUrl) {
+//                updatedIngredient.setImage(imageUrl);
+//                Map<String, Object> data = convertIngredientToMap(updatedIngredient);
+//
+//                ingredientRef.document(updatedIngredient.getUuid())
+//                        .set(data)
+//                        .addOnSuccessListener(onSuccess)
+//                        .addOnFailureListener(onFailure);
+//            }
+//
+//            @Override
+//            public void onFailure(Exception e) {
+//                onFailure.onFailure(e);
+//            }
+//        });
+//    }
+//    public void deleteIngredientWithIgmur(String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+//        // First check dependencies
+//        checkIngredientDependencies(uuid,
+//            canDelete -> {
+//                if (canDelete) {
+//                    ingredientRef.document(uuid).get()
+//                            .addOnSuccessListener(documentSnapshot -> {
+//                                Ingredient ingredient = convertDocumentToIngredient(documentSnapshot);
+//                                if (ingredient != null && ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
+//                                    if (isAuthenticated) {
+//                                        // Delete image if authenticated
+//                                        imageDAO.deleteImageFromImgur(ingredient.getImage(), new ImageDAO.DeleteCallback() {
+//                                            @Override
+//                                            public void onSuccess() {
+//                                                deleteIngredientDocument(uuid, onSuccess, onFailure);
+//                                            }
+//
+//                                            @Override
+//                                            public void onFailure(Exception e) {
+//                                                Log.e("vietdung", "Failed to delete image: " + e.getMessage());
+//                                                deleteIngredientDocument(uuid, onSuccess, onFailure);
+//                                            }
+//                                        });
+//                                    } else {
+//                                        // If not authenticated, just delete ingredient document
+//                                        deleteIngredientDocument(uuid, onSuccess, onFailure);
+//                                    }
+//                                } else {
+//                                    // If no image, just delete the ingredient
+//                                    deleteIngredientDocument(uuid, onSuccess, onFailure);
+//                                }
+//                            })
+//                            .addOnFailureListener(onFailure);
+//                }
+//            },
+//            onFailure
+//        );
+//    }
+
+    public void addIngredientWithImage(Context context, Ingredient ingredient, Uri imageUri,
+                                     OnSuccessListener<Void> onSuccess,
+                                     OnFailureListener onFailure) {
+        String title = ingredient.getName().replaceAll("\\s+", "_") + "_" + ingredient.getUuid();
+        ImageDAOCloudinary imageDAO = new ImageDAOCloudinary(context);
+        
+        imageDAO.uploadImage(context, imageUri, ImageDAOCloudinary.ImageDaoFolderForIngredient, title, new ImageDAOCloudinary.ImageUploadCallback() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                ingredient.generateUUID();
+                ingredient.setImage(imageUrl);
+                Map<String, Object> data = convertIngredientToMap(ingredient);
+
+                ingredientRef.document(ingredient.getUuid())
+                        .set(data)
+                        .addOnSuccessListener(onSuccess)
+                        .addOnFailureListener(onFailure);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
+    }
+
+    public void updateIngredientWithImage(Context context, Ingredient updatedIngredient, Uri newImageUri,
+                                        OnSuccessListener<Void> onSuccess,
+                                        OnFailureListener onFailure) {
+        ImageDAOCloudinary imageDAO = new ImageDAOCloudinary(context);
+        
+        // Delete old image if exists
+        if (updatedIngredient.getImage() != null && !updatedIngredient.getImage().isEmpty()) {
+            imageDAO.deleteImageByUrl(updatedIngredient.getImage(), new ImageDAOCloudinary.DeleteCallback() {
+                @Override
+                public void onSuccess() {
+                    uploadNewImage(context, updatedIngredient, newImageUri, onSuccess, onFailure);
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("vietdung", "Failed to delete old image: " + e.getMessage());
+                    // Continue with upload even if delete fails
+                    uploadNewImage(context, updatedIngredient, newImageUri, onSuccess, onFailure);
+                }
+            });
+        } else {
+            uploadNewImage(context, updatedIngredient, newImageUri, onSuccess, onFailure);
+        }
+    }
+
+    private void uploadNewImage(Context context, Ingredient ingredient, Uri imageUri,
+                              OnSuccessListener<Void> onSuccess,
+                              OnFailureListener onFailure) {
+        String title = ingredient.getName().replaceAll("\\s+", "_") + "_" + ingredient.getUuid();
+        ImageDAOCloudinary imageDAO = new ImageDAOCloudinary(context);
+        
+        imageDAO.uploadImage(context, imageUri, ImageDAOCloudinary.ImageDaoFolderForIngredient, title, new ImageDAOCloudinary.ImageUploadCallback() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                ingredient.setImage(imageUrl);
+                Map<String, Object> data = convertIngredientToMap(ingredient);
+                
+                ingredientRef.document(ingredient.getUuid())
+                        .set(data)
+                        .addOnSuccessListener(onSuccess)
+                        .addOnFailureListener(onFailure);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                onFailure.onFailure(e);
+            }
+        });
+    }
+
+    public void deleteIngredient(Context context, String uuid, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        // First check dependencies
+        checkIngredientDependencies(uuid, 
+            canDelete -> {
+                if (canDelete) {
+                    ingredientRef.document(uuid).get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                Ingredient ingredient = convertDocumentToIngredient(documentSnapshot);
+                                if (ingredient != null && ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
+                                    // Try to delete image
+                                    ImageDAOCloudinary imageDAO = new ImageDAOCloudinary(context);
+                                    imageDAO.deleteImageByUrl(ingredient.getImage(), new ImageDAOCloudinary.DeleteCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            deleteIngredientDocument(uuid, onSuccess, onFailure);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            Log.e("vietdung", "Failed to delete image: " + e.getMessage());
+                                            // Continue with ingredient deletion even if image deletion fails
+                                            deleteIngredientDocument(uuid, onSuccess, onFailure);
+                                        }
+                                    });
+                                } else {
+                                    // If no image, just delete the ingredient
+                                    deleteIngredientDocument(uuid, onSuccess, onFailure);
+                                }
+                            })
+                            .addOnFailureListener(onFailure);
+                }
+            },
+            onFailure
+        );
     }
 } 
