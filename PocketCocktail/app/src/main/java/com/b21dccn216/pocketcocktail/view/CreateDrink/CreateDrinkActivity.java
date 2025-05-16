@@ -47,6 +47,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
+
 public class CreateDrinkActivity extends AppCompatActivity implements IngredientAdapter.OnIngredientRemoveListener {
 
     public static final int FAIL_TO_SAVE_DRINK_RESULT_CODE = 2003;
@@ -410,9 +413,8 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         float rating = ratingBar.getRating();
         int categoryPosition = spCategory.getSelectedItemPosition();
 
-        if (name.isEmpty() || description.isEmpty() || instructions.isEmpty() ||
-                (selectedImageUri == null && ("copy".equals(mode) || ("edit".equals(mode) && (editingDrink == null || editingDrink.getImage() == null))))) {
-            Toast.makeText(CreateDrinkActivity.this, "Vui lòng điền đầy đủ thông tin và chọn ảnh", Toast.LENGTH_SHORT).show();
+        if (name.isEmpty() || description.isEmpty() || instructions.isEmpty()) {
+            Toast.makeText(CreateDrinkActivity.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             btnSave.setEnabled(true);
             return;
         }
@@ -472,31 +474,65 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
             drink.setCategoryId(selectedCategory.getUuid());
             drink.setUserId(currentUser.getUuid());
 
-            drinkDAO.addDrinkWithImage(this, drink, selectedImageUri,
-                    aVoid -> {
-                        editingDrink = drink;
-                        saveRecipes(drink.getUuid());
-                    },
-                    e -> {
-                        runOnUiThread(() -> {
-                            String errorMessage = "Lỗi: ";
-                            if (e.getMessage() != null) {
-                                String msg = e.getMessage();
-                                if (msg.contains("webp")) {
-                                    errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
-                                } else if (msg.contains("400") || msg.toLowerCase().contains("upload failed")) {
-                                    errorMessage = "Ảnh không hợp lệ hoặc không được hỗ trợ. Vui lòng chọn ảnh khác!";
-                                } else {
-                                    errorMessage += msg;
-                                }
-                            } else {
-                                errorMessage += "Không xác định";
+            if (selectedImageUri == null) {
+                DialogHelper.showAlertDialog(this, "Xác nhận", "Bạn có chắc chắn tạo đồ uống mà không có ảnh không?", HelperDialog.DialogType.SUCCESS,
+                        new HelperDialog.OnDialogButtonClickListener() {
+                            @Override
+                            public void onPressNegative() {
+                                btnSave.setEnabled(true);
                             }
-                            Toast.makeText(CreateDrinkActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                            btnSave.setEnabled(true);
+
+                            @Override
+                            public void onPressPositive() {
+                                saveDrinkWithoutImage(drink);
+                            }
                         });
-                    });
+            } else {
+                saveDrinkWithImage(drink);
+            }
         }
+    }
+
+    private void saveDrinkWithImage(Drink drink) {
+        drinkDAO.addDrinkWithImage(this, drink, selectedImageUri,
+                aVoid -> {
+                    editingDrink = drink;
+                    saveRecipes(drink.getUuid());
+                },
+                e -> {
+                    runOnUiThread(() -> {
+                        String errorMessage = "Lỗi: ";
+                        if (e.getMessage() != null) {
+                            String msg = e.getMessage();
+                            if (msg.contains("webp")) {
+                                errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
+                            } else if (msg.contains("400") || msg.toLowerCase().contains("upload failed")) {
+                                errorMessage = "Ảnh không hợp lệ hoặc không được hỗ trợ. Vui lòng chọn ảnh khác!";
+                            } else {
+                                errorMessage += msg;
+                            }
+                        } else {
+                            errorMessage += "Không xác định";
+                        }
+                        Toast.makeText(CreateDrinkActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        btnSave.setEnabled(true);
+                    });
+                });
+    }
+
+    private void saveDrinkWithoutImage(Drink drink) {
+        drinkDAO.addDrink(drink,
+                aVoid -> {
+                    editingDrink = drink;
+                    saveRecipes(drink.getUuid());
+                },
+                e -> {
+                    runOnUiThread(() -> {
+                        String errorMessage = "Lỗi: " + (e.getMessage() != null ? e.getMessage() : "Không xác định");
+                        Toast.makeText(CreateDrinkActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        btnSave.setEnabled(true);
+                    });
+                });
     }
 
     private void deleteOldRecipesAndSaveNew(String drinkId) {
