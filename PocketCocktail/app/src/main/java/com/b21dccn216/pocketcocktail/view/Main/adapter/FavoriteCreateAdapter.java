@@ -37,7 +37,8 @@ public class FavoriteCreateAdapter extends RecyclerView.Adapter<FavoriteCreateAd
         Glide.with(context)
                 .load(favoriteCreate.getImage())
                 .centerCrop()
-                .error(R.drawable.baseline_error_outline_24)
+                .placeholder(R.drawable.place_holder_drink)
+                .error(R.drawable.place_holder_drink)
                 .into(holder.binding.image);
 
         holder.binding.name.setText(favoriteCreate.getName());
@@ -66,6 +67,7 @@ public class FavoriteCreateAdapter extends RecyclerView.Adapter<FavoriteCreateAd
             binding.name.setText(favoriteCreate.getName());
             Glide.with(context)
                     .load(favoriteCreate.getImage())
+                    .placeholder(R.drawable.place_holder_drink)
                     .into(binding.image);
         }
     }

@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemHomeRecommendDrinkBinding;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
-import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithCategoryDTO;
 import com.b21dccn216.pocketcocktail.view.Main.model.DrinkWithFavCount;
 import com.bumptech.glide.Glide;
 
@@ -64,7 +63,7 @@ public class RecommendDrinkAdapter  extends RecyclerView.Adapter<RecommendDrinkA
 
             Glide.with(context)
                     .load(drink.getDrink().getImage())
-                    .placeholder(R.drawable.baseline_downloading_24) // Replace with your placeholder
+                    .placeholder(R.drawable.place_holder_drink) // Replace with your placeholder
                     .error(R.drawable.baseline_error_outline_24)             // Replace with your error drawable
                     .into(binding.image);
         }

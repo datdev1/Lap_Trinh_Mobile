@@ -13,8 +13,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.dao.CategoryDAO;
-import com.b21dccn216.pocketcocktail.helper.DialogHelper;
-import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.test_database.adapter.CategoryAdapter;
 import com.bumptech.glide.Glide;

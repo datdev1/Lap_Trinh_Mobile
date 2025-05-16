@@ -62,7 +62,7 @@ public class IngredientDiscoverAdapter extends RecyclerView.Adapter<IngredientDi
 
             Glide.with(context)
                     .load(ingredient.getImage())
-                    .placeholder(R.drawable.baseline_downloading_24)
+                    .placeholder(R.drawable.place_holder_drink)
                     .error(R.drawable.baseline_error_outline_24)
                     .into(binding.imageDiscover);
         }

@@ -3,7 +3,6 @@ package com.b21dccn216.pocketcocktail.test_database.fragment;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
