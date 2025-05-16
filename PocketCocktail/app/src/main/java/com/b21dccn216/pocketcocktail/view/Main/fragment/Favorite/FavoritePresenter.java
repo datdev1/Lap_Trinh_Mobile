@@ -22,15 +22,13 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
         implements FavoriteContract.Presenter{
     private final FavoriteDAO favoriteDAO;
 
-    private final UserDAO userDAO;
     private final DrinkDAO drinkDAO;
 
     private String currentUserId;
-    private boolean isFavorite = false;
+
 
     public FavoritePresenter() {
         favoriteDAO = new FavoriteDAO();
-        userDAO = new UserDAO();
         drinkDAO = new DrinkDAO();
     }
 
@@ -43,7 +41,7 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
     @Override
     public void onResume() {
         super.onResume();
-        getAllFavoriteByUserId(); // Gọi lại để refresh danh sách
+        getAllFavoriteByUserId(); //refresh
     }
 
     public void getAllFavoriteByUserId() {
@@ -55,20 +53,26 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
                 Log.d("favourite", "Size: " + favorites.size());
 
                 if (favorites.isEmpty() && view != null) {
-                    view.showFavoriteDrinkList(new ArrayList<>()); // Truyền list rỗng để xử lý hiển thị thông báo
+                    view.showFavoriteDrinkList(new ArrayList<>()); // hien thi thong bao list rong
                     return;
                 }
 
                 List<Drink> drinks = new ArrayList<>();
+                int total = favorites.size();
+                int[] loadedCount = {0};
                 for(Favorite favorite : favorites){
                     drinkDAO.getDrink(favorite.getDrinkId(),
                             new DrinkDAO.DrinkCallback() {
                                 @Override
                                 public void onDrinkLoaded(Drink drink) {
                                     drinks.add(drink);
-                                    drinks.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
-                                    if(view == null) return;
-                                    view.showFavoriteDrinkList(drinks);
+                                    loadedCount[0]++;
+
+                                    if(loadedCount[0] == total){
+                                        drinks.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
+                                        if(view == null) return;
+                                        view.showFavoriteDrinkList(drinks);
+                                    }
 
                                 }
 
@@ -97,10 +101,10 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
                 Log.d("drink", "Drinks created by user: " + drinks.size());
                 if(view == null) return;
                 if (drinks.isEmpty()) {
-                    view.showFavoriteDrinkList(new ArrayList<>()); // Truyền list rỗng để xử lý hiển thị thông báo
+                    view.showFavoriteDrinkList(new ArrayList<>());
                     return;
                 }
-                view.showFavoriteDrinkCreateByUserId(drinks); // Hiển thị danh sách nếu có
+                view.showFavoriteDrinkCreateByUserId(drinks);
             }
 
             @Override
@@ -115,6 +119,6 @@ public class FavoritePresenter extends BasePresenter<FavoriteContract.View>
     @Override
     public void refreshScreen() {
         getAllDrinksCreatedByCurrentUser();
-        getAllFavoriteByUserId(); // Gọi lại để refresh danh sách
+        getAllFavoriteByUserId();
     }
 }
