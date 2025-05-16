@@ -232,7 +232,7 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
 
             List<Ingredient> searchResults = new ArrayList<>();
             for (Ingredient ingredient : ingredients) {
-                if (ingredient.getName().toLowerCase().contains(searchQuery)) {
+                if (ingredient.getName().toLowerCase().contains(searchQuery) || ingredient.getDescription().toLowerCase().contains(searchQuery)) {
                     searchResults.add(ingredient);
                 }
             }
