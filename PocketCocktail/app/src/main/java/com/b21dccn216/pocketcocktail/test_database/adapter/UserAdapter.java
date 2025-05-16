@@ -46,11 +46,11 @@ public class UserAdapter extends ArrayAdapter<User> {
         if (user.getImage() != null && !user.getImage().isEmpty()) {
             Glide.with(context)
                 .load(user.getImage())
-                .placeholder(R.drawable.cocktail_logo)
+                .placeholder(R.drawable.icon_default_people)
                 .error(R.drawable.error_icon)
                 .into(ivUserImage);
         } else {
-            ivUserImage.setImageResource(R.drawable.cocktail_logo);
+            ivUserImage.setImageResource(R.drawable.icon_default_people);
         }
 
         return convertView;

@@ -53,11 +53,11 @@ public class IngredientAdapter extends ArrayAdapter<Ingredient> {
         if (ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
             Glide.with(context)
                     .load(ingredient.getImage())
-                    .placeholder(R.drawable.cocktail_logo)
+                    .placeholder(R.drawable.icon_default_ingredient)
                     .error(R.drawable.error_icon)
                     .into(holder.ivIngredientImage);
         } else {
-            holder.ivIngredientImage.setImageResource(R.drawable.cocktail_logo);
+            holder.ivIngredientImage.setImageResource(R.drawable.icon_default_ingredient);
         }
 
         return convertView;

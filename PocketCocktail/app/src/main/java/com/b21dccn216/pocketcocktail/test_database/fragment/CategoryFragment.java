@@ -127,7 +127,7 @@ public class CategoryFragment extends BaseModelFragment {
         etUpdatedAt.setText("");
         etName.setText("");
         etDescription.setText("");
-        ivImage.setImageResource(R.drawable.ic_launcher_background);
+        ivImage.setImageResource(R.drawable.icon_default_category);
         selectedImageUri = null;
         selectedCategory = null;
         btnUpdate.setEnabled(false);
@@ -147,11 +147,11 @@ public class CategoryFragment extends BaseModelFragment {
             if (category.getImage() != null && !category.getImage().isEmpty()) {
                 Glide.with(this)
                     .load(category.getImage())
-                    .placeholder(R.drawable.cocktail_logo)
+                    .placeholder(R.drawable.icon_default_category)
                     .error(R.drawable.error_icon)
                     .into(ivImage);
             } else {
-                ivImage.setImageResource(R.drawable.ic_launcher_background);
+                ivImage.setImageResource(R.drawable.icon_default_category);
             }
         }
     }
