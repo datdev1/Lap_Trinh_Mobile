@@ -31,6 +31,7 @@ public class ImageDAO {
     private static final String IMGUR_CLIENT_ID = "af84fe7b3e738e6";
     private static final String IMGUR_CLIENT_SECRET = "1e5be60ad5fc5ed7e2e26f1f6970a69c24ce3d9a"; // Add your client secret here
     private static final String IMGUR_UPLOAD_URL = "https://api.imgur.com/3/image";
+//    private static final String IMGUR_UPLOAD_URL = "https://api.imgur.com/3/upload";
     private static final String IMGUR_DELETE_URL = "https://api.imgur.com/3/image/";
     private static final String IMGUR_TOKEN_URL = "https://api.imgur.com/oauth2/token";
     

@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.b21dccn216.pocketcocktail.R;
 import com.bumptech.glide.Glide;
 import com.b21dccn216.pocketcocktail.databinding.ItemSimilarDrinkBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
@@ -40,6 +41,7 @@ public class SimilarDrinkAdapter extends RecyclerView.Adapter<SimilarDrinkAdapte
         holder.binding.nameDrink.setText(drink.getName());
         Glide.with(holder.binding.getRoot().getContext())
                 .load(drink.getImage())
+                .placeholder(R.drawable.place_holder_drink)
                 .into(holder.binding.imageDrink);
 
         holder.binding.getRoot().setOnClickListener(v -> listener.onDrinkClick(drink));

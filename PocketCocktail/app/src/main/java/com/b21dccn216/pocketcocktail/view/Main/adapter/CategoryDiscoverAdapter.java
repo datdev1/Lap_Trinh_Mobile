@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemDiscoverBinding;
 import com.b21dccn216.pocketcocktail.model.Category;
-import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.b21dccn216.pocketcocktail.view.Search.SearchActivity;
 import com.bumptech.glide.Glide;
 
@@ -62,7 +61,7 @@ public class CategoryDiscoverAdapter extends RecyclerView.Adapter<CategoryDiscov
 
             Glide.with(context)
                     .load(category.getImage())
-                    .placeholder(R.drawable.baseline_downloading_24)
+                    .placeholder(R.drawable.place_holder_drink)
                     .error(R.drawable.baseline_error_outline_24)
                     .into(binding.imageDiscover);
         }

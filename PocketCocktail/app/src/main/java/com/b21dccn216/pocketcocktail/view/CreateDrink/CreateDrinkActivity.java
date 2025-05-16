@@ -35,17 +35,18 @@ import com.b21dccn216.pocketcocktail.model.Recipe;
 import com.b21dccn216.pocketcocktail.model.User;
 import com.b21dccn216.pocketcocktail.helper.SessionManager;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 
 public class CreateDrinkActivity extends AppCompatActivity implements IngredientAdapter.OnIngredientRemoveListener {
 
@@ -149,19 +150,19 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
                         Log.d("CreateDrinkActivity", "Loading image with Glide in edit mode");
                         Glide.with(this)
                                 .load(editingDrink.getImage())
-                                .placeholder(R.drawable.cocktail_logo)
-                                .error(R.drawable.cocktail_logo)
+                                .placeholder(R.drawable.place_holder_drink)
+                                .error(R.drawable.place_holder_drink)
                                 .into(ivDrinkImage);
                     } else {
                         Log.d("CreateDrinkActivity", "No image URL available in edit mode");
-                        ivDrinkImage.setImageResource(R.drawable.cocktail_logo);
+                        ivDrinkImage.setImageResource(R.drawable.place_holder_drink);
                     }
                     selectedImageUri = null;
                 } else {
                     titleText.setText("Copy Recipe: " + editingDrink.getName());
                     // Trong chế độ copy, reset ảnh về mặc định
                     Log.d("CreateDrinkActivity", "Reset image in copy mode");
-                    ivDrinkImage.setImageResource(R.drawable.cocktail_logo);
+                    ivDrinkImage.setImageResource(R.drawable.place_holder_drink);
                     selectedImageUri = null;
                 }
             }
@@ -410,9 +411,8 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
         float rating = ratingBar.getRating();
         int categoryPosition = spCategory.getSelectedItemPosition();
 
-        if (name.isEmpty() || description.isEmpty() || instructions.isEmpty() ||
-                (selectedImageUri == null && ("copy".equals(mode) || ("edit".equals(mode) && (editingDrink == null || editingDrink.getImage() == null))))) {
-            Toast.makeText(CreateDrinkActivity.this, "Vui lòng điền đầy đủ thông tin và chọn ảnh", Toast.LENGTH_SHORT).show();
+        if (name.isEmpty() || description.isEmpty() || instructions.isEmpty()) {
+            Toast.makeText(CreateDrinkActivity.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             btnSave.setEnabled(true);
             return;
         }
@@ -472,83 +472,176 @@ public class CreateDrinkActivity extends AppCompatActivity implements Ingredient
             drink.setCategoryId(selectedCategory.getUuid());
             drink.setUserId(currentUser.getUuid());
 
-            drinkDAO.addDrinkWithImage(this, drink, selectedImageUri,
-                    aVoid -> {
-                        editingDrink = drink;
-                        saveRecipes(drink.getUuid());
-                    },
-                    e -> {
-                        runOnUiThread(() -> {
-                            String errorMessage = "Lỗi: ";
-                            if (e.getMessage() != null) {
-                                String msg = e.getMessage();
-                                if (msg.contains("webp")) {
-                                    errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
-                                } else if (msg.contains("400") || msg.toLowerCase().contains("upload failed")) {
-                                    errorMessage = "Ảnh không hợp lệ hoặc không được hỗ trợ. Vui lòng chọn ảnh khác!";
-                                } else {
-                                    errorMessage += msg;
-                                }
-                            } else {
-                                errorMessage += "Không xác định";
+            if (selectedImageUri == null) {
+                DialogHelper.showAlertDialog(this, "Xác nhận", "Bạn có chắc chắn tạo đồ uống mà không có ảnh không?", HelperDialog.DialogType.SUCCESS,
+                        new HelperDialog.OnDialogButtonClickListener() {
+                            @Override
+                            public void onPressNegative() {
+                                btnSave.setEnabled(true);
                             }
-                            Toast.makeText(CreateDrinkActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                            btnSave.setEnabled(true);
+
+                            @Override
+                            public void onPressPositive() {
+                                saveDrinkWithoutImage(drink);
+                            }
                         });
-                    });
+            } else {
+                saveDrinkWithImage(drink);
+            }
         }
+    }
+
+    private void saveDrinkWithImage(Drink drink) {
+        drinkDAO.addDrinkWithImage(this, drink, selectedImageUri,
+                aVoid -> {
+                    editingDrink = drink;
+                    saveRecipes(drink.getUuid());
+                },
+                e -> {
+                    runOnUiThread(() -> {
+                        String errorMessage = "Lỗi: ";
+                        if (e.getMessage() != null) {
+                            String msg = e.getMessage();
+                            if (msg.contains("webp")) {
+                                errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
+                            } else if (msg.contains("400") || msg.toLowerCase().contains("upload failed")) {
+                                errorMessage = "Ảnh không hợp lệ hoặc không được hỗ trợ. Vui lòng chọn ảnh khác!";
+                            } else {
+                                errorMessage += msg;
+                            }
+                        } else {
+                            errorMessage += "Không xác định";
+                        }
+                        Toast.makeText(CreateDrinkActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        btnSave.setEnabled(true);
+                    });
+                });
+    }
+
+    private void saveDrinkWithoutImage(Drink drink) {
+        drinkDAO.addDrink(drink,
+                aVoid -> {
+                    editingDrink = drink;
+                    saveRecipes(drink.getUuid());
+                },
+                e -> {
+                    runOnUiThread(() -> {
+                        String errorMessage = "Lỗi: " + (e.getMessage() != null ? e.getMessage() : "Không xác định");
+                        Toast.makeText(CreateDrinkActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        btnSave.setEnabled(true);
+                    });
+                });
     }
 
     private void deleteOldRecipesAndSaveNew(String drinkId) {
         RecipeDAO recipeDAO = new RecipeDAO();
-        // Xóa hết recipe cũ
+        // Lấy danh sách recipe cũ
         recipeDAO.getRecipesByDrinkId(drinkId, new RecipeDAO.RecipeListCallback() {
             @Override
             public void onRecipeListLoaded(List<Recipe> oldRecipes) {
-                AtomicInteger deleteCount = new AtomicInteger(0);
-                int totalOldRecipes = oldRecipes.size();
-
-                if (totalOldRecipes == 0) {
-                    // Không có recipe cũ, lưu recipe mới và trả về kết quả
-                    saveRecipes(drinkId);
-                    return;
+                // Tạo map để dễ dàng tìm kiếm recipe cũ
+                Map<String, Recipe> oldRecipeMap = new HashMap<>();
+                for (Recipe oldRecipe : oldRecipes) {
+                    oldRecipeMap.put(oldRecipe.getIngredientId(), oldRecipe);
                 }
 
+                // Tạo map cho recipe mới
+                Map<String, Recipe> newRecipeMap = new HashMap<>();
+                for (Recipe newRecipe : recipeList) {
+                    newRecipeMap.put(newRecipe.getIngredientId(), newRecipe);
+                }
+
+                // Xử lý từng recipe
+                AtomicInteger operationCount = new AtomicInteger(0);
+                int totalOperations = recipeList.size() + oldRecipes.size();
+
+                // 1. Update hoặc thêm mới recipes
+                for (Recipe newRecipe : recipeList) {
+                    Recipe oldRecipe = oldRecipeMap.get(newRecipe.getIngredientId());
+                    if (oldRecipe != null) {
+                        // Recipe đã tồn tại -> update
+                        oldRecipe.setAmount(newRecipe.getAmount());
+                        recipeDAO.updateRecipe(oldRecipe,
+                                aVoid -> {
+                                    if (operationCount.incrementAndGet() == totalOperations) {
+                                        finishWithSuccess();
+                                    }
+                                },
+                                e -> {
+                                    Toast.makeText(CreateDrinkActivity.this,
+                                            "Lỗi khi cập nhật công thức: " + e.getMessage(),
+                                            Toast.LENGTH_SHORT).show();
+                                    finishWithError();
+                                });
+                    } else {
+                        // Recipe mới -> thêm mới
+                        newRecipe.setDrinkId(drinkId);
+                        recipeDAO.addRecipe(newRecipe,
+                                aVoid -> {
+                                    if (operationCount.incrementAndGet() == totalOperations) {
+                                        finishWithSuccess();
+                                    }
+                                },
+                                e -> {
+                                    Toast.makeText(CreateDrinkActivity.this,
+                                            "Lỗi khi thêm công thức mới: " + e.getMessage(),
+                                            Toast.LENGTH_SHORT).show();
+                                    finishWithError();
+                                });
+                    }
+                }
+
+                // 2. Xóa những recipe không còn trong danh sách mới
                 for (Recipe oldRecipe : oldRecipes) {
-                    recipeDAO.deleteRecipe(oldRecipe.getUuid(),
-                            aVoid -> {
-                                int currentCount = deleteCount.incrementAndGet();
-                                if (currentCount == totalOldRecipes) {
-                                    // Đã xóa hết recipe cũ, lưu recipe mới
-                                    saveRecipes(drinkId);
-                                    // Trả về kết quả sau khi lưu thành công
-                                    Intent resultIntent = new Intent();
-                                    resultIntent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, editingDrink);
-                                    setResult(RESULT_OK, resultIntent);
-                                    finish();
-                                }
-                            },
-                            e -> {
-                                Toast.makeText(CreateDrinkActivity.this,
-                                        "Lỗi khi xóa công thức cũ: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                // Trả về kết quả thất bại nếu cần
-                                Intent resultIntent = new Intent();
-                                setResult(FAIL_TO_SAVE_DRINK_RESULT_CODE, resultIntent);
-                                finish();
-                            });
+                    if (!newRecipeMap.containsKey(oldRecipe.getIngredientId())) {
+                        recipeDAO.deleteRecipe(oldRecipe.getUuid(),
+                                aVoid -> {
+                                    if (operationCount.incrementAndGet() == totalOperations) {
+                                        finishWithSuccess();
+
+
+
+
+
+
+
+                                    }
+                                },
+                                e -> {
+                                    Toast.makeText(CreateDrinkActivity.this,
+                                            "Lỗi khi xóa công thức: " + e.getMessage(),
+                                            Toast.LENGTH_SHORT).show();
+                                    finishWithError();
+
+
+                                });
+                    }
                 }
             }
 
             @Override
             public void onError(Exception e) {
                 Toast.makeText(CreateDrinkActivity.this,
-                        "Lỗi khi lấy công thức cũ: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                // Trả về kết quả thất bại
-                Intent resultIntent = new Intent();
-                setResult(FAIL_TO_SAVE_DRINK_RESULT_CODE, resultIntent);
-                finish();
+                        "Lỗi khi lấy công thức cũ: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+                finishWithError();
+
+
             }
         });
+    }
+
+    private void finishWithSuccess() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(DetailDrinkActivity.EXTRA_DRINK_OBJECT, editingDrink);
+        setResult(RESULT_OK, resultIntent);
+        finish();
+    }
+
+    private void finishWithError() {
+        Intent resultIntent = new Intent();
+        setResult(FAIL_TO_SAVE_DRINK_RESULT_CODE, resultIntent);
+        finish();
     }
 
     private void saveRecipes(String drinkId) {

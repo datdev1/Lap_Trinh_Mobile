@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -218,7 +219,7 @@ public class IngredientFragment extends BaseModelFragment {
         spinnerUnit.setSelection(0);
         selectedImageUri = null;
         selectedIngredient = null;
-        ivPreview.setImageResource(R.drawable.cocktail_logo);
+        ivPreview.setImageResource(R.drawable.icon_default_ingredient);
         btnUpdate.setEnabled(false);
         btnDelete.setEnabled(false);
     }
@@ -250,11 +251,11 @@ public class IngredientFragment extends BaseModelFragment {
             if (ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
                 Glide.with(this)
                         .load(ingredient.getImage())
-                        .placeholder(R.drawable.cocktail_logo)
+                        .placeholder(R.drawable.icon_default_ingredient)
                         .error(R.drawable.error_icon)
                         .into(ivPreview);
             } else {
-                ivPreview.setImageResource(R.drawable.cocktail_logo);
+                ivPreview.setImageResource(R.drawable.icon_default_ingredient);
             }
         }
     }
@@ -306,7 +307,7 @@ public class IngredientFragment extends BaseModelFragment {
                     e -> {
                         if (getActivity() != null) {
                             getActivity().runOnUiThread(() -> {
-                                String errorMessage = "Lỗi khi thêm nguyên liệu";
+                                String errorMessage = "Lỗi:";
                                 if (e.getMessage() != null) {
                                     if (e.getMessage().contains("webp")) {
                                         errorMessage = "Định dạng ảnh WebP không được hỗ trợ. Vui lòng chọn ảnh khác.";
@@ -314,6 +315,7 @@ public class IngredientFragment extends BaseModelFragment {
                                         errorMessage += ": " + e.getMessage();
                                     }
                                 }
+                                Log.e("vietdung", "Ingredient Add: " + errorMessage );
                                 showToast(errorMessage);
                                 setButtonsEnabled(true);
                             });
@@ -335,6 +337,7 @@ public class IngredientFragment extends BaseModelFragment {
                         if (getActivity() != null) {
                             getActivity().runOnUiThread(() -> {
                                 showToast("Lỗi khi thêm nguyên liệu: " + e.getMessage());
+                                Log.e("vietdung", "Ingredient Add 2: " + e.getMessage() );
                                 setButtonsEnabled(true);
                             });
                         }

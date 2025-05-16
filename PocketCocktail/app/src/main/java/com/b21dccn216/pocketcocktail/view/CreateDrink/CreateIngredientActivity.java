@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.dao.IngredientDAO;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
+import com.b21dccn216.pocketcocktail.helper.DialogHelper;
+import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,10 +113,6 @@ public class CreateIngredientActivity extends AppCompatActivity {
             Toast.makeText(CreateIngredientActivity.this, "Vui lòng chọn đơn vị", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (selectedImageUri == null) {
-            Toast.makeText(CreateIngredientActivity.this, "Vui lòng thêm ảnh nguyên liệu", Toast.LENGTH_SHORT).show();
-            return false;
-        }
         return true;
     }
 
@@ -128,6 +126,25 @@ public class CreateIngredientActivity extends AppCompatActivity {
         );
         ingredient.generateUUID();
 
+        if (selectedImageUri == null) {
+            DialogHelper.showAlertDialog(this, "Xác nhận", "Bạn có chắc chắn tạo nguyên liệu mà không có ảnh không?", HelperDialog.DialogType.SUCCESS,
+                    new HelperDialog.OnDialogButtonClickListener() {
+                        @Override
+                        public void onPressNegative() {
+                            btnSave.setEnabled(true);
+                        }
+
+                        @Override
+                        public void onPressPositive() {
+                            saveIngredientWithoutImage(ingredient);
+                        }
+                    });
+        } else {
+            saveIngredientWithImage(ingredient);
+        }
+    }
+
+    private void saveIngredientWithImage(Ingredient ingredient) {
         ingredientDAO.addIngredientWithImage(this, ingredient, selectedImageUri,
                 aVoid -> {
                     Toast.makeText(CreateIngredientActivity.this, "Thêm nguyên liệu thành công!", Toast.LENGTH_SHORT).show();
@@ -135,7 +152,7 @@ public class CreateIngredientActivity extends AppCompatActivity {
                 },
                 e -> {
                     runOnUiThread(() -> {
-                        String errorMessage = "Lỗi khi thêm nguyên liệu";
+                        String errorMessage = "Lỗi:";
                         if (e.getMessage() != null) {
                             String msg = e.getMessage();
                             if (msg.contains("webp")) {
@@ -146,6 +163,21 @@ public class CreateIngredientActivity extends AppCompatActivity {
                                 errorMessage += ": " + msg;
                             }
                         }
+                        Toast.makeText(CreateIngredientActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        btnSave.setEnabled(true); // Enable lại nếu lỗi
+                    });
+                });
+    }
+
+    private void saveIngredientWithoutImage(Ingredient ingredient) {
+        ingredientDAO.addIngredient(ingredient,
+                aVoid -> {
+                    Toast.makeText(CreateIngredientActivity.this, "Thêm nguyên liệu thành công!", Toast.LENGTH_SHORT).show();
+                    finish();
+                },
+                e -> {
+                    runOnUiThread(() -> {
+                        String errorMessage = "Lỗi khi thêm nguyên liệu: " + e.getMessage();
                         Toast.makeText(CreateIngredientActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                         btnSave.setEnabled(true); // Enable lại nếu lỗi
                     });

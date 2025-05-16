@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -391,7 +390,7 @@ public class DrinkFragment extends BaseModelFragment {
         spinnerCategory.setSelection(0);
         selectedImageUri = null;
         selectedDrink = null;
-        ivImage.setImageResource(R.drawable.cocktail_logo);
+        ivImage.setImageResource(R.drawable.icon_default_drink);
         btnUpdate.setEnabled(false);
         btnDelete.setEnabled(false);
     }
@@ -439,11 +438,11 @@ public class DrinkFragment extends BaseModelFragment {
                 Log.d(TAG, "Loading drink image: " + drink.getImage());
                 Glide.with(this)
                         .load(drink.getImage())
-                        .placeholder(R.drawable.cocktail_logo)
+                        .placeholder(R.drawable.icon_default_drink)
                         .error(R.drawable.error_icon)
                         .into(ivImage);
             } else {
-                ivImage.setImageResource(R.drawable.cocktail_logo);
+                ivImage.setImageResource(R.drawable.icon_default_drink);
             }
         }
     }

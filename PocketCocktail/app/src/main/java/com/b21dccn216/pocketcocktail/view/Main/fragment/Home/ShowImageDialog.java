@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.DialogPreviewDrinkBinding;
-import com.b21dccn216.pocketcocktail.model.Ingredient;
 import com.bumptech.glide.Glide;
 
 public class ShowImageDialog extends Dialog {
@@ -35,7 +34,7 @@ public class ShowImageDialog extends Dialog {
         Glide.with(getContext())
                 .load(url)
                 .centerCrop()
-                .placeholder(R.drawable.baseline_downloading_24)
+                .placeholder(R.drawable.place_holder_drink)
                 .into(binding.imageViewDialog);
     }
 }

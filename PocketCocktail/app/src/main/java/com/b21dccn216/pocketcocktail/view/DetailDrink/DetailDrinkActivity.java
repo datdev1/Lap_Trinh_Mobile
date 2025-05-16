@@ -1,20 +1,15 @@
 package com.b21dccn216.pocketcocktail.view.DetailDrink;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import static com.b21dccn216.pocketcocktail.view.CreateDrink.CreateDrinkActivity.FAIL_TO_SAVE_DRINK_RESULT_CODE;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -167,7 +162,10 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     @Override
     public void showDrinkDetail(Drink drink) {
         if(!drink.getUserId().equals(currentUser.getUuid())) binding.btnEditOrCopy.setImageDrawable(getResources().getDrawable(R.drawable.ic_copy));
-        Glide.with(this).load(drink.getImage()).into(binding.drinkImage);
+        Glide.with(this)
+                .load(drink.getImage())
+                .placeholder(R.drawable.place_holder_drink)
+                .into(binding.drinkImage);
         binding.drinkTitle.setText(drink.getName());
         binding.drinkDescription.setText(drink.getDescription());
     }
@@ -305,7 +303,7 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         binding.creatorName.setText(creator.getName());
         Glide.with(this)
                 .load(creator.getImage())
-                .placeholder(R.drawable.baseline_downloading_24)
+                .placeholder(R.drawable.place_holder_drink)
                 .placeholder(R.drawable.user)
                 .into(binding.creatorImage);
     }

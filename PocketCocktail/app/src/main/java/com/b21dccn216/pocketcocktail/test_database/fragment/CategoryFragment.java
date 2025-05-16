@@ -13,8 +13,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.dao.CategoryDAO;
-import com.b21dccn216.pocketcocktail.helper.DialogHelper;
-import com.b21dccn216.pocketcocktail.helper.HelperDialog;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.test_database.adapter.CategoryAdapter;
 import com.bumptech.glide.Glide;
@@ -127,7 +125,7 @@ public class CategoryFragment extends BaseModelFragment {
         etUpdatedAt.setText("");
         etName.setText("");
         etDescription.setText("");
-        ivImage.setImageResource(R.drawable.ic_launcher_background);
+        ivImage.setImageResource(R.drawable.icon_default_category);
         selectedImageUri = null;
         selectedCategory = null;
         btnUpdate.setEnabled(false);
@@ -147,11 +145,11 @@ public class CategoryFragment extends BaseModelFragment {
             if (category.getImage() != null && !category.getImage().isEmpty()) {
                 Glide.with(this)
                     .load(category.getImage())
-                    .placeholder(R.drawable.cocktail_logo)
+                    .placeholder(R.drawable.icon_default_category)
                     .error(R.drawable.error_icon)
                     .into(ivImage);
             } else {
-                ivImage.setImageResource(R.drawable.ic_launcher_background);
+                ivImage.setImageResource(R.drawable.icon_default_category);
             }
         }
     }

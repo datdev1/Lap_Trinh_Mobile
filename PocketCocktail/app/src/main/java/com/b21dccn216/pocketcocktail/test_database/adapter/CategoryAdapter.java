@@ -42,9 +42,11 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         if (category.getImage() != null && !category.getImage().isEmpty()) {
             Glide.with(context)
                     .load(category.getImage())
+                    .placeholder(R.drawable.icon_default_category)
+                    .error(R.drawable.error_icon)
                     .into(ivImage);
         } else {
-            ivImage.setImageResource(0);
+            ivImage.setImageResource(R.drawable.icon_default_category);
         }
 
         return convertView;

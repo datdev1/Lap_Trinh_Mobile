@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -17,7 +18,7 @@ import com.b21dccn216.pocketcocktail.base.BaseFragment;
 import com.b21dccn216.pocketcocktail.databinding.FragmentDiscoverBinding;
 import com.b21dccn216.pocketcocktail.model.Category;
 import com.b21dccn216.pocketcocktail.model.Ingredient;
-import com.b21dccn216.pocketcocktail.view.Main.adapter.CategoryDiscoverAdapter;;
+import com.b21dccn216.pocketcocktail.view.Main.adapter.CategoryDiscoverAdapter;
 import com.b21dccn216.pocketcocktail.view.Main.adapter.IngredientDiscoverAdapter;
 
 import java.io.Serializable;
@@ -91,10 +92,13 @@ public class DiscoverFragment extends BaseFragment<DiscoverContract.View, Discov
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void showCategoryList(List<Category> categoriesList) {
+    public void showCategoryList(List<Category> list) {
+
+        ItemDiffCallback diffCallback = new ItemDiffCallback(categoryList, list);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
         categoryList.clear();
-        categoryList.addAll(categoriesList);
-        categoryDiscoverAdapter.notifyDataSetChanged();
+        categoryList.addAll(list);
+        diffResult.dispatchUpdatesTo(categoryDiscoverAdapter);
     }
 
     @SuppressLint("NotifyDataSetChanged")

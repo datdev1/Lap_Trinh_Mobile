@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.b21dccn216.pocketcocktail.R;
 import com.b21dccn216.pocketcocktail.databinding.ItemFavoriteBinding;
 import com.b21dccn216.pocketcocktail.model.Drink;
-import com.b21dccn216.pocketcocktail.model.Favorite;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.bumptech.glide.Glide;
 
@@ -40,7 +39,7 @@ public class ItemFavoriteAdapter extends RecyclerView.Adapter<ItemFavoriteAdapte
         Glide.with(context)
                 .load(favorite.getImage())
                 .centerCrop()
-                .error(R.drawable.baseline_downloading_24)
+                .error(R.drawable.place_holder_drink)
                 .into(holder.binding.image);
 
         holder.binding.name.setText(favorite.getName());

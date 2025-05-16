@@ -64,9 +64,8 @@ public class FavoriteFragment extends BaseFragment<FavoriteContract.View, Favori
         if(savedInstanceState != null){
             favoriteList = (List<Drink>) savedInstanceState.getSerializable("favoriteList");
             favoriteCreateList = (List<Drink>) savedInstanceState.getSerializable("favoriteCreateList");
-        }else{
-            presenter.refreshScreen();
         }
+        presenter.refreshScreen();
     }
 
     @Override

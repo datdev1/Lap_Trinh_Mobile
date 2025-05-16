@@ -49,11 +49,11 @@ public class IngredientSelectionAdapter extends RecyclerView.Adapter<IngredientS
         if (ingredient.getImage() != null && !ingredient.getImage().isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(ingredient.getImage())
-                    .placeholder(R.drawable.cocktail_logo)
+                    .placeholder(R.drawable.place_holder_drink)
                     .error(R.drawable.error_icon)
                     .into(holder.ivImage);
         } else {
-            holder.ivImage.setImageResource(R.drawable.cocktail_logo);
+            holder.ivImage.setImageResource(R.drawable.place_holder_drink);
         }
 
         holder.itemView.setSelected(position == selectedPosition);
