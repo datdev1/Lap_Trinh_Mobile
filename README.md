@@ -13,7 +13,7 @@ Mạng xã hội về tạo và chia sẻ công thức pha chế các loại đ�
 
 | Họ và tên          | Mã sinh viên | Phân công                                                                                                                                                   |
 | :----------------- | :----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Trần Việt Dũng     |  B21DCCN036  | Nghiên cứu kết nối dữ liệu Firebase Cloud Store và Imgur để lưu trữ ảnh (Dao + Model), 7 trang quản lý bên admin, Thiết kế cấu trúc dữ liệu, Logic tìm kiếm |
+| Trần Việt Dũng     |  B21DCCN036  | Nghiên cứu kết nối dữ liệu Firebase Cloud Store và Cloudinary (Imgur đã loại bỏ) để lưu trữ ảnh (Dao + Model), 7 trang quản lý bên admin, Thiết kế cấu trúc dữ liệu, Logic tìm kiếm |
 | Trần Đức Lộc       |  B21DCCN492  | Trang chi tiết đồ uống, bình luận và đánh giá, trang tìm kiếm có filter theo chuỗi nhập, category, ingredient kết hợp sắp xếp theo tên, ngày tạo, rate      |
 | Nguyễn Trần Đạt    |  B21DCCN216  | Home, Profile, Navigation, Welcoming, Login, Signup, Xây dựng cấu trúc MVP                                                                                  |
 | Đặng Thị Hồng Ngát |  B21DCCN564  | Trang discover hiển thị danh sách Category và danh sách Ingredient, trang favorite hiển thị các đồ uống yêu thích và các công thức cá nhân.                                                                                                                              |
@@ -35,7 +35,8 @@ Mạng xã hội về tạo và chia sẻ công thức pha chế các loại đ�
   - Firebase FireStore Database + Imgur
   - SharedPreferences (lưu cài đặt người dùng cục bộ)
 - Các thư viện hỗ trợ:
-  - com.squareup.okhttp3:okhttp:4.12.0: xử lý API với Imgur để down/up ảnh
+  - com.squareup.okhttp3:okhttp:4.12.0: xử lý API với Imgur để down/up ảnh (không còn sử dụng do Imgur đã ban ip Việt Name)
+  - com.cloudinary:cloudinary-android:2.3.1: xử lý API với Cloudinary để down/up ảnh
   - com.google.firebase:firebase-firestore, com.google.firebase:firebase-bom:33.13.0: kết nối và xử lý truy vấn đến cơ sở dữ liệu
   - Glide: Thư viện load và caching ảnh từ link
   - androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01: Kéo để load lại trang
@@ -65,7 +66,7 @@ Mạng xã hội về tạo và chia sẻ công thức pha chế các loại đ�
 
 ## Thiết kế model
 
-![Database diagram](Database_diagram.png)
+![Database diagram](res/Database_diagram.png)
 
 - Model Drink đồ uống:
   - uuid
@@ -131,7 +132,7 @@ Mạng xã hội về tạo và chia sẻ công thức pha chế các loại đ�
   - updatedAt
 
 ## Các đầu mục công việc
-- Nghiên cứu kết nối dữ liệu FireStore và Imagur, Dao + Model, các trang quản lý db (admin) (Dũng) (Package data)
+- Nghiên cứu kết nối dữ liệu FireStore và Cloudinary (Imgur đã loại bỏ do ban ip upload từ Việt Nam), Dao + Model, các trang quản lý db (admin) (Dũng) (Package data)
 - Chức năng đăng kí, đăng nhập bằng Email, password với Firebase Authentication (Package Login) (Đạt)
 - Chức năng tạo công thức mới (Logic + giao diện) (Hà) (Activity) (Package CreateDrink)
   - Ô nhập tên đồ uống
@@ -201,55 +202,55 @@ Có 4 trường hợp chính:
 ### Homepage
 
 <div align="center">
-  <img src="image.png" alt="Homepage" width="300"/>
+  <img src="res/image.png" alt="Homepage" width="300"/>
 </div>
 
 ### Discover
 
 <div align="center">
-  <img src="image-2.png" alt="Discover" width="300"/>
+  <img src="res/image-2.png" alt="Discover" width="300"/>
 </div>
 
 ### Favorite
 
 <div align="center">
-  <img src="image-3.png" alt="Favorite" width="300"/>
+  <img src="res/image-3.png" alt="Favorite" width="300"/>
 </div>
 
 ### Profile
 
 <div align="center">
-  <img src="image-4.png" alt="Profile" width="300"/>
+  <img src="res/image-4.png" alt="Profile" width="300"/>
 </div>
 
 ### Tìm kiếm
 
 <div align="center">
-  <img src="image-5.png" alt="Tìm kiếm" width="300"/>
+  <img src="res/image-5.png" alt="Tìm kiếm" width="300"/>
 </div>
 
 ### Trang tạo, sửa, copy đồ uống
 
 <div align="center">
-  <img src="image-6.png" alt="Trang tạo, sửa, copy đồ uống" width="300"/>
+  <img src="res/image-6.png" alt="Trang tạo, sửa, copy đồ uống" width="300"/>
 </div>
 
 ### Trang tạo nguyên liệu
 
 <div align="center">
-  <img src="image-8.png" alt="Trang tạo nguyên liệu" width="300"/>
+  <img src="res/image-8.png" alt="Trang tạo nguyên liệu" width="300"/>
 </div>
 
 ### Trang chi tiết đồ uống
 
 <div align="center">
-  <img src="image-1.png" alt="Trang chi tiết đồ uống" width="300"/>
+  <img src="res/image-1.png" alt="Trang chi tiết đồ uống" width="300"/>
 </div>
 
 ### Trang quản lý admin
 
 <div align="center">
-  <img src="image-7.png" alt="Trang quản lý Drink" width="300"/>
+  <img src="res/image-7.png" alt="Trang quản lý Drink" width="300"/>
 </div>
 
 ## Nguồn tham khảo giao diện
