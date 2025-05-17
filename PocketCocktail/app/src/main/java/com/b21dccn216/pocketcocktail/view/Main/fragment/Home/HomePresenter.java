@@ -40,6 +40,7 @@ public class HomePresenter
         super.onResume();
 //        getBannerDrink();
 //        getOneCategoryDrinkList();
+        getLatestDrinkList();
         Log.d("datdev1", "onResume:");
     }
 
@@ -107,7 +108,7 @@ public class HomePresenter
     private void getLatestDrinkList(){
         //
         drinkDAO.getDrinksSortAndLimit(
-                DrinkDAO.DRINK_FIELD.CREATED_AT, Query.Direction.DESCENDING,10,
+                DrinkDAO.DRINK_FIELD.UPDATED_AT, Query.Direction.DESCENDING,10,
                 new DrinkDAO.DrinkListCallback() {
             @Override
             public void onDrinkListLoaded(List<Drink> drinkList) {

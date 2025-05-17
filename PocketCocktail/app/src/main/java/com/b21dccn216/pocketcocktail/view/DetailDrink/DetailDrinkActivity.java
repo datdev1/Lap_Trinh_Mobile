@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -87,7 +88,13 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
 
         ingredientAmountAdapter = new IngredientAmountAdapter(this, ingredientWithAmountList);
         binding.recyclerIngredients.setAdapter(ingredientAmountAdapter);
-        binding.recyclerIngredients.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        LinearLayoutManager linearLayoutManager =new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false){
+//            @Override
+//            public boolean canScrollVertically() {
+//                return false;
+//            }
+        };
+        binding.recyclerIngredients.setLayoutManager(linearLayoutManager);
 
         // Get current drink
         currentDrink = (Drink) getIntent().getSerializableExtra(EXTRA_DRINK_OBJECT);
@@ -111,6 +118,10 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
         // Binding data
         binding.showMore.setOnClickListener(v -> {
             ingredientAmountAdapter.toggleShowAll();
+            binding.recyclerIngredients.requestLayout();
+            binding.layout.requestLayout();
+            binding.layout2.requestLayout();
+            binding.layout3.requestLayout();
             binding.showMore.setText(ingredientAmountAdapter.isShowingAll() ? "Show less" : "Show more");
         });
         binding.favoriteButton.setOnClickListener(v -> presenter.toggleFavorite(currentDrink));
@@ -173,9 +184,12 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showIngredient(List<IngredientWithAmountDTO> list){
+        Log.d("showIngredient", "showIngredient: " + list.size());
+       // binding.recyclerIngredients.setNestedScrollingEnabled(true);
         ingredientWithAmountList.clear();
         ingredientWithAmountList.addAll(list);
-        ingredientAmountAdapter.notifyDataSetChanged();
+        ingredientAmountAdapter.setIngredientList(list);
+        //binding.recyclerIngredients.setNestedScrollingEnabled(false);
         //TextView textView = createBulletTextView(ingredientText);
         //binding.ingredientsLayout.addView(textView);
     }
@@ -376,4 +390,6 @@ public class DetailDrinkActivity extends BaseAppCompatActivity<DetailDrinkContra
     public void showMessage(String title, String message, HelperDialog.DialogType type){
         DialogHelper.showAlertDialog(this, title, message, type);
     }
+
+
 }
