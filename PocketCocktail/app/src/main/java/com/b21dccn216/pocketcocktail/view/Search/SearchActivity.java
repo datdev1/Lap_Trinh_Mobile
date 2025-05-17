@@ -30,7 +30,6 @@ import com.b21dccn216.pocketcocktail.view.Search.adapter.DrinkAdapter;
 import com.b21dccn216.pocketcocktail.view.Search.adapter.IngredientAdapter;
 import com.b21dccn216.pocketcocktail.view.DetailDrink.DetailDrinkActivity;
 import com.b21dccn216.pocketcocktail.view.Search.helper.GridSpacingItemDecoration;
-import com.b21dccn216.pocketcocktail.view.Search.helper.TestItemDecoration;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.firestore.Query;
 
