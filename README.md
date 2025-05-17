@@ -35,7 +35,7 @@ Mạng xã hội về tạo và chia sẻ công thức pha chế các loại đ�
   - Firebase FireStore Database + Imgur
   - SharedPreferences (lưu cài đặt người dùng cục bộ)
 - Các thư viện hỗ trợ:
-  - com.squareup.okhttp3:okhttp:4.12.0: xử lý API với Imgur để down/up ảnh (không còn sử dụng do Imgur đã ban ip Việt Name)
+  - com.squareup.okhttp3:okhttp:4.12.0: xử lý API với Imgur để down/up ảnh (không còn sử dụng do Imgur đã ban ip Việt Nam)
   - com.cloudinary:cloudinary-android:2.3.1: xử lý API với Cloudinary để down/up ảnh
   - com.google.firebase:firebase-firestore, com.google.firebase:firebase-bom:33.13.0: kết nối và xử lý truy vấn đến cơ sở dữ liệu
   - Glide: Thư viện load và caching ảnh từ link
@@ -182,7 +182,7 @@ Logic tìm kiếm và sắp xếp (Xử lý khi query và 1 phần ở DAO) (Dũ
 Có 4 trường hợp chính:
 
 1. Nếu có Category / Name và có list IngredientID
-   - Bước 1 Đầu tiên gọi tới hàm public void searchDrinksByCategory(String query, @Nullable String categoryId, DrinkListCallback callback) nhận về được list<Drink>  thỏa mãn 2 điều kiện SearchString và CategoryID
+   - Bước 1 Đầu tiên gọi tới hàm public void searchDrinksByCategory (String query, @Nullable String categoryId, DrinkListCallback callback) nhận về được list<Drink>  thỏa mãn 2 điều kiện SearchString và CategoryID
    - Bước 2 Lấy list<String> DrinkID từ list<Drink> dùng hàm của RecipeDAO: public void searchDrinkIDByIngredient(list<String> DrinkID, list<String> IngredientID, DrinkIDListCallback callback)
    - Bước 3 Nhận về list<String> DrinkID mới thì lọc lại list<Drink> ban đầu, lấy ra các Drink thỏa mã cả 3 điều kiện lọc
    - Bước 4 Sort lại theo name Drink
